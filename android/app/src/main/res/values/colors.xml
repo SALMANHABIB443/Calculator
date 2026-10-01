@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Adaptive-icon background colour (**D-66**).
+
+    This is the only colour resource in the app. The dark field exists so the
+    adaptive icon's background layer is a flat fill, which is what lets the
+    launcher's mask cut any shape it wants into it without the artwork
+    inheriting a corner radius we chose.
+
+    Value is AppColors.buttonDigit (#1E1E1E), the same ground the keypad's
+    digit keys sit on and the same colour tool/generate_assets.ps1 draws for the
+    legacy and store icons. Changing it here without changing the script would
+    make the launcher icon and the store icon visibly disagree.
+-->
+<resources>
+    <color name="ic_launcher_background">#1E1E1E</color>
+</resources>

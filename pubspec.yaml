@@ -1,0 +1,87 @@
+name: calculator
+description: "A clean, minimal dark-themed calculator (PRD.md)."
+publish_to: 'none'
+
+# Must stay in sync with AppInfo.version in lib/core/config/app_info.dart
+# and with the About screen, which displays the version to the user (D-12).
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.13.2
+
+# Dependency set locked in Phase 1 (D-01, struction.md §15).
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management.
+  flutter_riverpod: 2.6.1
+  riverpod: 2.6.1
+
+  # Declarative navigation, exposed as a Riverpod provider.
+  go_router: 14.8.1
+
+  # Settings + history persistence (D-02). No database package needed.
+  shared_preferences: 2.5.3
+
+  # About screen system actions (D-08).
+  in_app_review: ^2.0.12
+  share_plus: ^13.3.0
+
+  # Key-press sound and haptics use Flutter's built-in services APIs, so no
+  # audio or haptics package is used (D-16).
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+  # Builds the Android launcher icon from Assets/Icon.png. A build-time tool
+  # only: nothing here is imported by the app, and the image it reads lives
+  # outside `flutter: assets:` so it is never bundled into the APK.
+  flutter_launcher_icons: ^0.14.4
+
+flutter:
+  uses-material-design: true
+
+# Launcher icon generation (D-66).
+#
+# The mark is supplied as a raster, not drawn from tokens: Assets/Icon.png is the
+# single source of truth, and every Android launcher resource derives from it
+# through tool/generate_assets.ps1 + this generator.
+#
+# adaptive_icon_foreground_inset is 0 on purpose. The source already sits at 63%
+# of its canvas, inside the 72/108dp safe zone Android guarantees to show, so the
+# generator's default 16% inset would shrink the mark to ~43% and make it read
+# noticeably smaller than the artwork intends.
+#
+# There is deliberately no adaptive_icon_monochrome: D-66 rejects it, because
+# tinting this four-colour mark to a single hue produces an unreadable blob on
+# exactly the themed-icon surfaces the layer exists for.
+#
+# image_path_android points at the derived legacy bitmap rather than at
+# Assets/Icon.png, because a launcher on API < 26 applies no mask of its own and
+# would otherwise show a hard square. The rounded variant is produced by
+# tool/generate_assets.ps1, which is what makes it reproducible.
+#
+# adaptive_icon_background is #1E1E1E, not the #000000 the Icon.png field is.
+# D-66 ties the adaptive background to AppColors.buttonDigit - the ground the
+# keypad's digit keys sit on - so the launcher icon and the app agree. It used to
+# say #000000 here, which was invisible until this file was ever read: the
+# generator only writes values/colors.xml when it runs, and the value it wrote
+# silently contradicted the committed colours.xml (D-66) every single time.
+# Keep this line and the <color> in android/app/src/main/res/values/colors.xml
+# equal, or the next regeneration unpicks D-66.
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path_android: "Assets/icon_source/icon_legacy_rounded.png"
+  adaptive_icon_foreground: "Assets/Icon.png"
+  adaptive_icon_background: "#1E1E1E"
+  adaptive_icon_foreground_inset: 0
+  min_sdk_android: 21
+  remove_alpha_android: true

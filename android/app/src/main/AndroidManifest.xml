@@ -1,0 +1,77 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--
+        No <uses-permission> is declared here, and that is load-bearing rather
+        than incidental. The release APK ships with no INTERNET permission at
+        all (verified with aapt2 in Phase 10), which is what makes the Privacy
+        Policy's "the app makes no network requests" claim true at the platform
+        level rather than merely intended. Adding any permission that implies
+        network access would falsify it.
+    -->
+    <application
+        android:label="Calculator"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="false">
+        <!--
+            android:allowBackup="false" (**D-65**).
+
+            The app's central privacy claim is that calculation history never
+            leaves the device. Android's automatic backup would break that claim
+            in a way no in-app setting can prevent: with the default
+            allowBackup="true", the system uploads the app's shared_preferences
+            (the 200-entry history and the five settings keys) to the user's
+            Google account, and restores it onto a new device. The user would
+            have no way to see that happen from inside the app.
+
+            Turning it off is what makes the in-app policy text literally true,
+            and it matches the trade the app already makes elsewhere: everything
+            is local, and deleting the app deletes the data. It also means
+            history does not follow a user to a new phone — the deliberate cost,
+            and the reason this is a recorded decision rather than a default.
+
+            The data extraction rules file is present for the same reason and is
+            required from API 31 onward to be explicit; it excludes everything.
+        -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:taskAffinity=""
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+            <!-- Specifies an Android theme to apply to this Activity as soon as
+                 the Android process has started. This theme is visible to the user
+                 while the Flutter UI initializes. After that, this theme continues
+                 to determine the Window background behind the Flutter UI. -->
+            <meta-data
+              android:name="io.flutter.embedding.android.NormalTheme"
+              android:resource="@style/NormalTheme"
+              />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <!-- Don't delete the meta-data below.
+             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+    </application>
+    <!-- Required to query activities that can process text, see:
+         https://developer.android.com/training/package-visibility and
+         https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
+
+         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT"/>
+            <data android:mimeType="text/plain"/>
+        </intent>
+    </queries>
+</manifest>

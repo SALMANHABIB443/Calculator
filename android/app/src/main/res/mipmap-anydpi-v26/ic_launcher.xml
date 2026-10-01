@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Adaptive icon for API 26+ (Android 8.0).
+
+    The launcher's mask is a system-drawn shape that varies by OEM and by the
+    user's chosen icon shape, so neither layer carries a rounded corner or a
+    shadow — those are the launcher's job. The background is therefore a flat
+    fill and all the artwork lives in the foreground (**D-66**, **D-67**).
+
+    The foreground's grid is inset further than the legacy icon's (see the
+    GridFraction arithmetic in tool/generate_assets.ps1) because the launcher
+    may crop the outer 18dp of the 108dp canvas, and because this layer has no
+    background of its own to bleed into the cropped ring.
+
+    There is deliberately no <monochrome> layer. Themed-icon support wants a
+    single-colour silhouette, and this artwork is a four-colour grid whose
+    meaning comes from the gray/orange split. Pointing <monochrome> at the
+    colour foreground would just have the system tint the whole bitmap one
+    colour, producing four indistinct blobs — an icon that looks broken on
+    exactly the themed-icon surfaces the layer exists for. Omitting the layer
+    means Android falls back to the colour adaptive icon, which is correct. If
+    a monochrome silhouette is ever wanted it needs its own drawn asset.
+-->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@color/ic_launcher_background" />
+    <foreground android:drawable="@mipmap/ic_launcher_foreground" />
+</adaptive-icon>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Android 12+ (API 31) requires an explicit data-extraction declaration when
+    cloud backup and device-to-device transfer are in play. This app allows
+    neither, because calculation history and settings are private to the device
+    the user typed them on and the Privacy Policy says so (**D-65**).
+
+    `cloud-backup` governs Android's automatic Google-account backup.
+    `device-transfer` governs direct handset-to-handset transfer, which is a
+    separate channel and is opted out of separately — declaring only the first
+    would have left a path out of the app that the policy does not mention.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="root" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+        <exclude domain="external" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="root" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+        <exclude domain="external" />
+    </device-transfer>
+</data-extraction-rules>

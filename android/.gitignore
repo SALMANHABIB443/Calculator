@@ -1,0 +1,19 @@
+gradle-wrapper.jar
+/.gradle
+/captures/
+/gradlew
+/gradlew.bat
+/local.properties
+GeneratedPluginRegistrant.java
+.cxx/
+
+# Gradle's build output. The root .gitignore's `/build/` is root-anchored, so it
+# does not cover `android/build/`; without this line `android/build/reports/`
+# (Gradle's own problems-report.html) shows up as untracked and gets committed.
+/build/
+
+# Remember to never publicly share your keystore.
+# See https://flutter.dev/to/reference-keystore
+key.properties
+**/*.keystore
+**/*.jks

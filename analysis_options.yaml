@@ -1,0 +1,21 @@
+# This file configures the analyzer, which statically analyzes Dart code to
+# check for errors, warnings, and lints. Run locally with `flutter analyze`.
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - docs/**
+
+linter:
+  # The house style for this app, on top of the flutter_lints baseline.
+  rules:
+    # Require braces on all if/else/for bodies.
+    curly_braces_in_flow_control_structures: true
+
+    # Disallow `print`; a real logger is added if one is ever needed.
+    avoid_print: true
+
+    # Sort `child` arguments last in widget constructors.
+    sort_child_properties_last: true
