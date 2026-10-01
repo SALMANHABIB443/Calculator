@@ -76,6 +76,14 @@ flutter:
 # silently contradicted the committed colours.xml (D-66) every single time.
 # Keep this line and the <color> in android/app/src/main/res/values/colors.xml
 # equal, or the next regeneration unpicks D-66.
+#
+# There is deliberately no round-icon option here. flutter_launcher_icons 0.14.4
+# generates no ic_launcher_round.png at all (neither `round_icon` nor
+# `round_icon_android` is a key it reads), yet AndroidManifest.xml declares
+# android:roundIcon="@mipmap/ic_launcher_round", which API < 26 launchers
+# resolve to a bitmap. If a regeneration deletes those files, re-create them by
+# copying mipmap-*/ic_launcher.png alongside the legacy set, or round-icon
+# launchers on Android 7 and below lose their icon entirely.
 flutter_launcher_icons:
   android: true
   ios: false
