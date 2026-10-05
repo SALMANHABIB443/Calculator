@@ -109,7 +109,7 @@ void main() {
           decoration.borderRadius,
           BorderRadius.circular(AppRadius.historyCard),
         );
-        expect(decoration.color, AppColors.surfaceRaised);
+        expect(decoration.color, AppColors.surface);
       });
     }
   });

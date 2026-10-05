@@ -24,6 +24,34 @@ abstract final class AppSpacing {
   /// how correcting the margin closed R-2 (**D-60**).
   static const double screenHorizontal = 24;
 
+  /// Side margin of the **calculator's own column** — its header, display, and
+  /// keypad (**D-110**).
+  ///
+  /// **16, not [screenHorizontal]'s 24.** Every card edge in History, Settings,
+  /// and About is measured at logical x≈24, so that token cannot move — but the
+  /// calculator is not a column of cards. It is a 4-column grid whose keys are
+  /// derived from whatever width the screen hands it, so its margin is not
+  /// decoration: it is subtracted before the division. On the 442×890 reference
+  /// canvas the grid maths reads:
+  ///
+  /// ```
+  /// margin 24, gap 14 -> (442 - 48 - 42) / 4 = 88.0
+  /// margin 16, gap 16 -> (442 - 32 - 48) / 4 = 90.5
+  /// ```
+  ///
+  /// So the tighter margin is bought together with the wider gap and the cell
+  /// comes out both **larger** *and* more generously spaced — which is the whole
+  /// of the spaciousness this redesign is after. Widening the gap alone would
+  /// have shrunk the keys; tightening the margin alone would have left them
+  /// touching.
+  ///
+  /// The column is **centred** rather than pinned to a margin
+  /// ([CalculatorScreen]), so on a window wider than
+  /// [calculatorPanelMaxWidth] the surplus falls equally on both sides and the
+  /// key at x≈16 on a phone is at x≈176 on a desktop — the same relationship the
+  /// 24 px margin describes, at a different number.
+  static const double calculatorSideMargin = 16;
+
   /// Inner padding of a card or list row (desing.md §4, ~16).
   static const double cardPadding = 16;
 
@@ -204,6 +232,30 @@ abstract final class AppSizes {
 
   /// Side of the touch target an icon-only action occupies (prd.md §12, ~44–48).
   static const double iconTouchTarget = 48;
+
+  /// Side of the calculator's two header actions — the Settings hamburger and
+  /// the History clock (**D-110**).
+  ///
+  /// **56, not [iconTouchTarget]'s 48.** Every key on that screen grew when the
+  /// grid's margin tightened and its gap widened, and a 48 px box sitting above
+  /// a 90 px `AC` key reads as a header drawn for a different, smaller app.
+  /// 56 is [headerHeight] — the bar's own height, which is the rhythm this
+  /// screen already sits on — so the boxes fill the bar's height rather than
+  /// floating in it, and it stays well clear of the prd.md §12 44 pt floor.
+  ///
+  /// A *size*, not a variant: the buttons keep the same fill, border, radius,
+  /// and glyph colour (`AppIconButton`'s [bordered] path) and only get larger.
+  /// The other five headers keep 48 — this is the calculator's own scale, not
+  /// the app's.
+  static const double calculatorHeaderAction = 56;
+
+  /// Glyph size that goes with [calculatorHeaderAction], as a ratio of it.
+  ///
+  /// **26 / 56 ≈ 0.464**, which is [rowIcon]'s own 22 / 48 to within a pixel.
+  /// Expressed as a ratio rather than a literal so `AppIconButton` can derive
+  /// the glyph from whatever box it was given instead of the caller having to
+  /// pass two numbers that could disagree.
+  static const double calculatorHeaderGlyphRatio = 26 / 56;
 
   /// Side of the About hero brand mark.
   static const double brandIcon = 88;

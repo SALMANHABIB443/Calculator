@@ -11,5 +11,6 @@ export 'data/shared_preferences_secret_repository.dart';
 export 'domain/secret_code.dart';
 export 'presentation/change_pin_screen.dart';
 export 'presentation/secret_controller.dart';
+export 'presentation/secret_lockout_controller.dart';
 export 'presentation/secret_pin_field.dart';
 export 'presentation/secret_screens.dart';

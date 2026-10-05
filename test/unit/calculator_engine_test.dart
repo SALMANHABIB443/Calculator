@@ -103,9 +103,9 @@ void main() {
     });
   });
 
-  group('backspace after equals restores the calculation (D-83)', () {
-    test('the first press hands back the whole expression', () {
-      expect(applyThenBackspace('900+100=', 1).expression, '900+100');
+  group('backspace after equals edits the calculation (D-81, D-83)', () {
+    test('the first press deletes one character instead of stalling', () {
+      expect(applyThenBackspace('900+100=', 1).expression, '900+10');
     });
 
     test('and leaves the calculator editable, not locked', () {
@@ -116,23 +116,80 @@ void main() {
     });
 
     test('repeated backspace keeps working', () {
-      expect(applyThenBackspace('900+100=', 2).expression, '900+10');
-      expect(applyThenBackspace('900+100=', 3).expression, '900+1');
-      expect(applyThenBackspace('900+100=', 4).expression, '900+');
+      expect(applyThenBackspace('900+100=', 2).expression, '900+1');
+      expect(applyThenBackspace('900+100=', 3).expression, '900+');
+      expect(applyThenBackspace('900+100=', 4).expression, '900');
+      expect(applyThenBackspace('900+100=', 9).expression, isEmpty);
+      expect(applyThenBackspace('900+100=', 9).canBackspace, isFalse);
     });
 
-    test('a digit after restoring extends the expression again', () {
+    test('the preview follows every deletion', () {
+      expect(applyThenBackspace('900+100=', 1).value, 910);
+      expect(applyThenBackspace('900+100=', 4).value, 900);
+    });
+
+    test('a digit after backspacing a result continues the expression', () {
       final engine = CalculatorEngine();
       for (final key in keysFor('900+100=')) {
         engine.apply(key);
       }
       engine.backspace();
       engine.apply(CalculatorKey.digit5);
-      expect(engine.state.expression, '900+1005');
+      expect(engine.state.expression, '900+105');
+      expect(engine.state.value, 1005);
     });
 
-    test('the answer is still shown after the restore', () {
-      expect(applyThenBackspace('900+100=', 1).value, 1000);
+    test('backspace-to-empty clears the preview rather than freezing it', () {
+      final state = applyThenBackspace('123', 3);
+      expect(state.expression, isEmpty);
+      expect(state.value, isNull);
+      expect(state.canBackspace, isFalse);
+    });
+
+    test('every key press then backspace returns to a blank calculator', () {
+      for (final key in CalculatorKey.values) {
+        final engine = CalculatorEngine();
+        engine.apply(key);
+        engine.backspace();
+        engine.backspace();
+        expect(engine.state.expression, isEmpty, reason: key.name);
+        expect(engine.state.value, isNull, reason: key.name);
+        expect(engine.state.isError, isFalse, reason: key.name);
+      }
+    });
+  });
+
+  group('the result state stays coherent (D-31, D-35, D-80)', () {
+    test('a trailing operator repeats the operand it is pending on (D-31)', () {
+      expect(valueOf('2+='), 4);
+      expect(exprOf('2+='), '2+2');
+      expect(valueOf('100−='), 0);
+      expect(valueOf('2+3+='), 8);
+    });
+
+    test('a percent after a result applies to that result', () {
+      expect(exprOf('2+2=%'), '4%');
+      expect(valueOf('2+2=%'), 0.04);
+      expect(exprOf('2+2=%+'), '4%+');
+      expect(valueOf('2+2=%+'), 0.04);
+    });
+
+    test('an operator after an open group only ever leads a minus', () {
+      expect(exprOf('()+'), '(');
+      expect(exprOf('()×'), '(');
+      expect(exprOf('()÷'), '(');
+      expect(exprOf('()+−'), '(−');
+      expect(exprOf('()−+'), '(−');
+      expect(valueOf('2+()−5()='), -3);
+    });
+
+    test('backspace shortens a value loaded from history immediately', () {
+      final engine = CalculatorEngine()..loadValue(1000);
+      engine.backspace();
+      expect(engine.state.expression, '100');
+      expect(engine.state.value, 100);
+      expect(engine.state.justEvaluated, isFalse);
+      expect(engine.state.canBackspace, isTrue);
     });
   });
 

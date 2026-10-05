@@ -37,6 +37,8 @@ class AppIconButton extends StatelessWidget {
     this.color,
     this.disabledColor,
     this.bordered = true,
+    this.size,
+    this.iconSize,
   }) : assert(
          icon != null || iconWidget != null,
          'AppIconButton needs either an IconData or a widget to draw',
@@ -82,13 +84,41 @@ class AppIconButton extends StatelessWidget {
   /// gone.
   final bool bordered;
 
-  /// The one size every header action is pinned to.
-  static const Size _size = Size.square(AppSizes.iconTouchTarget);
+  /// Overrides [AppSizes.iconTouchTarget] as this button's square side, or
+  /// `null` for the app-wide 48 (**D-110**).
+  ///
+  /// The calculator's two header actions are the only ones that take it: D-110
+  /// made every key on that screen noticeably larger, and a 48 px box above a
+  /// 90 px key reads as a header that belongs to a *smaller* calculator than the
+  /// one underneath it. 56 puts the box on the app's own 56 px rhythm
+  /// ([AppSizes.headerHeight]) and still clears the 44 pt floor with room to
+  /// spare.
+  ///
+  /// The target and the ink scale together — [iconSize] follows [size] unless a
+  /// caller says otherwise — so a caller cannot ship a 56 px box with a 22 px
+  /// glyph floating in it.
+  final double? size;
+
+  /// Overrides [AppSizes.rowIcon] as the glyph's size, or `null` to follow
+  /// [size] ([AppSizes.calculatorHeaderAction] is 56 / 26).
+  ///
+  /// Separate only so an [iconWidget] owner — which draws its own glyph at
+  /// whatever size it likes — is not forced to accept a scale it does not apply.
+  final double? iconSize;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final glyph = iconWidget ?? Icon(icon, size: AppSizes.rowIcon);
+    // One derived pair rather than two optional numbers the caller has to keep
+    // in step: an omitted [size] falls back to the app-wide 48, and the glyph
+    // follows whatever the box resolved to unless it was asked for explicitly.
+    final boxSize = Size.square(size ?? AppSizes.iconTouchTarget);
+    final glyphSize =
+        iconSize ??
+        (size == null
+            ? AppSizes.rowIcon
+            : size! * AppSizes.calculatorHeaderGlyphRatio);
+    final glyph = iconWidget ?? Icon(icon, size: glyphSize);
 
     // The bordered square, built here rather than held as a `static const`.
     //
@@ -112,9 +142,9 @@ class AppIconButton extends StatelessWidget {
       // the header and pull the title off centre.
       padding: EdgeInsets.zero,
       style: ButtonStyle(
-        fixedSize: const WidgetStatePropertyAll<Size>(_size),
-        minimumSize: const WidgetStatePropertyAll<Size>(_size),
-        maximumSize: const WidgetStatePropertyAll<Size>(_size),
+        fixedSize: WidgetStatePropertyAll<Size>(boxSize),
+        minimumSize: WidgetStatePropertyAll<Size>(boxSize),
+        maximumSize: WidgetStatePropertyAll<Size>(boxSize),
         padding: const WidgetStatePropertyAll<EdgeInsets>(EdgeInsets.zero),
         // Transparent rather than absent, so the *button* still occupies the
         // same 48 px box it does with a border: dropping the background property

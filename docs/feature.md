@@ -554,8 +554,9 @@ there is no pixel to match. Every screen below is designed from the app's existi
 Secret Mode is a hidden area reached by holding the History screen's bottom Clear History button for
 five seconds (D-82) and entering a four-digit PIN, `0000` by default (D-83). It is deliberately
 unfurnished: the screen after unlock is blank, carrying a single overflow button in the top-left
-(D-84). It exists so the PIN can be changed and nothing else — the full Settings page is **not**
-duplicated here.
+(D-84) and the floating home button D-86 added. It exists to change the PIN and to reset it, and
+nothing else — the full Settings page is **not** duplicated here. Three wrong codes lock the screen
+for 30 seconds (**D-88**), and there is no recovery from inside the lock screen itself.
 
 ---
 
@@ -603,11 +604,18 @@ A black screen that asks for a four-digit PIN and reveals the secret screen when
 **Expected Behavior**
 - Four filled/empty dots indicate progress. **The PIN itself is never displayed** — not masked with
   asterisks, simply not shown as characters.
-- On a **correct** code the entry screen pops and the secret screen (FEAT-SEC-003) is revealed.
-- On a **wrong** code the dots clear and the indicator shakes; the user may retry immediately.
-  **There is no attempt counter and no lockout** (D-85).
+- On a **correct** code the entry screen is **replaced** by the secret screen (FEAT-SEC-003), not pushed on
+  top of it, so no back gesture can return the user to a prompt they have already answered.
+- On a **wrong** code the dots clear, the indicator shakes, and **"Wrong PIN"** appears in the status line
+  under them. The next entry is allowed immediately.
+- **Three wrong codes in a row lock the screen for 30 seconds** (**D-88**, reversing D-85's "no lockout" —
+  10⁴ codes are otherwise free in under a minute). While locked the pad is inert and the status line counts
+  down: "Too many attempts. Try again in 30s". The deadline is persisted, so force-quitting the app does
+  not buy three more attempts, and a correct code clears the counter.
 - The default code is **`0000`** when nothing has been stored (D-83).
-- **No hint, label, or error text is shown** — a screen that names itself confirms it is real.
+- **Nothing on this screen names the feature or the code.** Its entire copy is the prompt "Enter your PIN"
+  and the two error strings above (D-86, **D-88**) — the original rule (no hint, no label, no title) stands
+  apart from the two additions that were made on purpose.
 
 **UI Components**
 - Four dot indicators, centred.
@@ -693,29 +701,52 @@ A minimal settings page holding two rows, reached from the secret screen's overf
 **Priority:** Must Have
 
 **Description**
-A three-step flow: verify the current PIN, enter a new one, confirm it.
+A three-step flow in one route: verify the current PIN, enter a new one, confirm it.
 
 **User Interaction**
-1. Enter the **current** PIN.
-2. Enter a **new** four-digit PIN.
-3. Re-enter the new PIN to confirm.
+1. Enter the **current** PIN — the prompt reads "Enter current PIN".
+2. Enter a **new** four-digit PIN — "Enter new PIN".
+3. Confirm it — "Confirm new PIN".
+
+The header control is a back arrow with the tooltip "Back" (**D-113**). It steps backwards instead of
+abandoning the flow: step 3 returns to step 2 with the candidate kept, step 2 returns to step 1 with it
+discarded, and step 1 leaves the flow.
 
 **Expected Behavior**
-- Step 1 rejects an incorrect current PIN and does not advance (D-85: no lockout, immediate retry).
-- Steps 2 and 3 must match; a mismatch returns to step 2 with the dots cleared.
-- On success the new code is persisted immediately and the flow ends.
+- Step 1 rejects an incorrect current PIN, says **"Incorrect PIN"**, clears the entry and does not advance
+  (D-85: no lockout, immediate retry).
+- Step 2 cannot be wrong: any four digits is a legal new PIN, including the current one, so it advances on
+  every input and shows no error of any kind (**D-113**).
+- Steps 2 and 3 must match. A mismatch clears **only** the confirmation, says **"PINs do not match"** and
+  re-asks step 3 with the candidate intact (**D-113**). The earlier behaviour returned to step 2 with the
+  dots cleared, which made the user choose a third time over a typo made in the second attempt.
+- On success the new code is persisted immediately, **"PIN changed successfully"** is shown for 1200 ms, and
+  the flow then returns to the secret settings page. The pause is deliberate: AC-021 persists the code
+  *before* the flow ends so an interruption cannot lose it, which leaves the user owed an answer.
+- Input and the back arrow are inert while that line is up.
 - A forgotten PIN is recovered through **FEAT-SEC-006** (D-86), which replaced the reinstall-only route
   D-85 left as a known limitation.
 
 **State & Data**
 - The new code is written to the `'secretPin'` key on success (D-83).
+- Until the confirmation matches, the candidate exists only in the screen's own memory, so leaving the
+  flow at any point — the arrow, the system gesture, or process death — can never lock a user out of a
+  code they did not choose (**D-113**).
 - It survives an app restart and is the code the next unlock must match.
 - The flow offers **no** reset affordance of its own: a way to destroy the code being chosen, sitting two
   screens away from where it is entered, is a trap rather than a convenience (D-86).
 
+**UI Components**
+- The shared §6.8 PIN entry screen three times over — one prompt line, four dots, the shared keypad, the
+  same bottom anchor (**D-89**) — with the prompt as the only thing telling the steps apart.
+- Rejections reuse the field's existing treatment (`AppColors.danger`, cleared entry, shake); success is a
+  caption in the same reserved status line, in **`textSecondary`**. No `Snackbar` is introduced: the app
+  has none, and this is the one screen that must not gain ink (**D-84**, **D-113**).
+
 **Validation / Errors**
 - All three steps reject anything that is not four digits; `SecretCode` refuses to hold a malformed
   value at all.
+- The flow's only two refusals are the two strings above, and neither ever speaks the code (§6.8).
 
 **Related:** FEAT-SEC-002, FR-007, AC-021
 
@@ -725,31 +756,33 @@ A three-step flow: verify the current PIN, enter a new one, confirm it.
 **Priority:** Must Have
 
 **Description**
-The route out of a forgotten PIN: a prompt that explains what the screen wants, a "Forgot PIN?" link, and
-a reset that erases the stored code (**D-86**).
+The route out of a forgotten PIN: one confirmation dialog that erases the stored code, reachable from the
+secret settings page only (**D-86**, narrowed by **D-88**).
 
 **User Interaction**
 - Read "Enter your PIN" above the dots on the PIN screen.
-- Tap "Forgot PIN?" below the dots, or "Reset PIN" in the secret settings page → the same confirmation
+- Get into Secret Mode with the code, then tap "Reset PIN" in the secret settings page → the confirmation
   dialog.
-- Confirm → the stored code is erased and `0000` becomes the code that opens the area. From the settings
-  page the user lands on the secret screen; from the PIN screen they stay there, because `0000` is the
-  answer to the prompt in front of them.
+- Confirm → the stored code is erased and `0000` becomes the code that opens the area, and the user lands on
+  the secret screen, whose other row needs the PIN they have just forgotten.
 
 **Expected Behavior**
-- The PIN screen's two added strings **never name the feature and never name the code**. "Enter your PIN"
-  says what is wanted; the code is not in it.
-- The confirmation dialog **does** name `0000`. This is the only place the feature speaks the code, and it
-  is deliberate: a bystander's screenshot must not spoil the feature, but a user who has forgotten their
-  PIN cannot act on the withholding.
+- **There is no "Forgot PIN?" link on the PIN screen** (**D-88**, reversing D-86). With the 30-second
+  lockout in place it was also an unlimited bypass of it — one tap, no waiting, three fresh attempts. The
+  reset survives only where reaching it means already being past both the lockout and the code.
+- The confirmation dialog **does** name `0000`. It is the only place the feature speaks the code, and it is
+  deliberate: a bystander's screenshot must not spoil the feature, but a user who has forgotten their PIN
+  cannot act on the withholding.
 - Cancelling changes nothing.
 - The reset **erases** the `'secretPin'` key rather than writing `0000` back, so the store holds nothing
   that looks like a stored credential, and it **survives a restart**.
-- **Anyone who reaches this screen can wipe the PIN in one tap.** The accepted trade is recorded in
+- **Anyone who reaches the settings page can wipe the PIN in one tap.** The accepted trade is recorded in
   D-86, against a user locked out with only a reinstall (D-85).
+- **A user who has forgotten the PIN and cannot get in has no in-app recovery** — only a reinstall, which
+  costs the history. That is the sharpest edge in the feature and it stands (D-85).
 
 **UI Components**
-- One `Text` prompt in `textSecondary`, one `TextButton` in `textSecondary` with a 48 px target.
+- One `SettingsRow` in `accent` with a restart glyph and a chevron, ordered after "Change PIN".
 - The shared `AppConfirmationDialog`, matching every other destructive confirmation in the app.
 
 **Related:** FEAT-SEC-002, FEAT-SEC-004, FR-007, AC-022
@@ -768,8 +801,13 @@ a reset that erases the stored code (**D-86**).
 individual history item deletion, light theme, scientific functions, cloud sync.
 
 **Also rejected, not deferred** — considered for Secret Mode and declined on the record:
-attempt lockout and rate limiting (D-85), PIN hashing and encrypted storage (D-83). Neither was
-postponed; both were turned down, and the reasons are in the decision records.
+PIN hashing and encrypted storage (D-83); an in-place PIN reset from the lock screen (D-86, withdrawn by
+**D-88** once the lockout made it a bypass). Neither was postponed; both were turned down, and the reasons
+are in the decision records.
+
+**Reversed after the fact** — specified here first, changed in the code and in the records:
+attempt lockout and rate limiting (**D-85 → D-88**, which locks for 30 seconds on the third wrong code),
+and the "Forgot PIN?" link on the PIN screen (**D-86 → D-88**).
 
 ---
 

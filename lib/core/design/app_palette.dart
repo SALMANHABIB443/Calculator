@@ -48,6 +48,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
     required this.cardShadow,
     required this.surfaceSelected,
     required this.accent,
+    required this.danger,
     required this.buttonDigit,
     required this.buttonFunction,
     required this.textPrimary,
@@ -55,21 +56,32 @@ class AppPalette extends ThemeExtension<AppPalette> {
     required this.textOnAccent,
     required this.textSecondary,
     required this.divider,
+    required this.ruleOnPage,
     required this.toggleTrackOn,
     required this.toggleTrackOff,
     required this.toggleThumb,
     required this.selectionAccent,
     required this.selectionCheck,
     required this.pressedOpacity,
+    required this.keyShadow,
+    required this.keyBorder,
   });
 
   /// Full screen background. The page colour behind every card and row.
   final Color background;
 
-  /// Card and row surface, sitting just above [background].
+  /// The app's standard card fill, sitting just above [background].
+  ///
+  /// Read by the Settings groups, the History cards, the About hero card, the
+  /// dialogs and the sheets. The History card used to read [surfaceRaised] so it
+  /// would not restyle those screens; it now reads this one, because a card
+  /// that is a different colour on one screen and the same colour on another
+  /// reads as a mistake rather than as a distinction.
   final Color surface;
 
-  /// Fill of the History cards, one step above [surface].
+  /// A surface one step above [surface] that is **not** a card — see
+  /// [AppColors.surfaceRaised]. The History card, which used to read this, now
+  /// reads [surface] like every other card in the app.
   final Color surfaceRaised;
 
   /// Fill of a selected History card.
@@ -108,6 +120,13 @@ class AppPalette extends ThemeExtension<AppPalette> {
   /// toggles when ON, Clear History, and active icons.
   final Color accent;
 
+  /// The colour a wrong entry is reported in (see [AppColors.danger]).
+  ///
+  /// Carried per-theme rather than read from [AppColors] directly for the same
+  /// reason every other colour here is: a `static const` cannot follow a theme
+  /// change, and a red that only works on black is half a token.
+  final Color danger;
+
   /// Fill for the digit keys and the decimal point.
   final Color buttonDigit;
 
@@ -136,6 +155,14 @@ class AppPalette extends ThemeExtension<AppPalette> {
   /// Separator between rows inside a grouped card.
   final Color divider;
 
+  /// The 1 px rule between the calculator's display and its keypad.
+  ///
+  /// Separate from [divider] because the two are different objects that must not
+  /// be allowed to drift: [divider] is a hairline *inside* a grouped card, this
+  /// is a rule *across* an open page, and one shared value standing for both is
+  /// the failure this class exists to prevent.
+  final Color ruleOnPage;
+
   /// Track fill of a toggle in the ON state.
   final Color toggleTrackOn;
 
@@ -155,6 +182,16 @@ class AppPalette extends ThemeExtension<AppPalette> {
   /// Opacity applied to a pressed key or button.
   final double pressedOpacity;
 
+  /// The glow a calculator key casts, or `null` where there is none (D-111).
+  ///
+  /// A dark *glow* on the black page and a dark *shadow* on the white one,
+  /// because the two themes need opposite colours to separate a key from what is
+  /// behind it — see [AppColors.keyShadow] for why elevation could not do this.
+  final Color? keyShadow;
+
+  /// The 1 px outline drawn around every calculator key (D-111).
+  final Color keyBorder;
+
   /// The dark palette — every field is the token [AppColors] already holds.
   static const AppPalette dark = AppPalette(
     background: AppColors.background,
@@ -169,6 +206,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
     // No shadow on a black page — Ethar drops it in dark for the same reason.
     cardShadow: null,
     accent: AppColors.accent,
+    danger: AppColors.danger,
     buttonDigit: AppColors.buttonDigit,
     buttonFunction: AppColors.buttonFunction,
     textPrimary: AppColors.textPrimary,
@@ -180,12 +218,18 @@ class AppPalette extends ThemeExtension<AppPalette> {
     textOnAccent: AppColors.textPrimary,
     textSecondary: AppColors.textSecondary,
     divider: AppColors.divider,
+    ruleOnPage: AppColors.ruleOnPage,
     toggleTrackOn: AppColors.toggleTrackOn,
     toggleTrackOff: AppColors.toggleTrackOff,
     toggleThumb: AppColors.toggleThumb,
     selectionAccent: AppColors.selectionAccent,
     selectionCheck: AppColors.selectionCheck,
     pressedOpacity: AppColors.pressedOpacity,
+    // D-111: elevation could not survive the black page — a framework-drawn
+    // shadow there is black on black. The key casts a faint white halo instead,
+    // plus a hard 1 px edge, which is what actually makes it an object.
+    keyShadow: AppColors.keyShadow,
+    keyBorder: AppColors.keyBorder,
   );
   /// The white palette, matching the sibling Ethar app's white theme.
   ///
@@ -204,6 +248,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
     cardBorder: Color(0xFFECEDEF),
     cardShadow: Color(0x0D0F172A),
     accent: Color(0xFFFE651B),
+    danger: Color(0xFFD92D20),
     buttonDigit: Color(0xFFF4F5F7),
     buttonFunction: Color(0xFFD9DADD),
     textPrimary: Color(0xFF0C0F16),
@@ -211,6 +256,10 @@ class AppPalette extends ThemeExtension<AppPalette> {
     textOnAccent: Color(0xFFFFFFFF),
     textSecondary: Color(0xFF656A78),
     divider: Color(0xFFECEDEF),
+    // The light half of the display-to-keypad rule. A dark-theme hairline on a
+    // white page is invisible, so the light theme states its own rather than
+    // inheriting a value that only reads on black.
+    ruleOnPage: Color(0xFFDCDEE2),
     toggleTrackOn: Color(0xFFFE651B),
     toggleTrackOff: Color(0xFFDFE1E5),
     toggleThumb: Color(0xFFFFFFFF),
@@ -220,6 +269,11 @@ class AppPalette extends ThemeExtension<AppPalette> {
     selectionAccent: Color(0xFF0C0F16),
     selectionCheck: Color(0xFFFFFFFF),
     pressedOpacity: AppColors.pressedOpacity,
+    // The white half of the pair. Here a dark shadow is the conventional and
+    // correct answer, so the light theme casts one and skips the halo entirely —
+    // the two themes differ because the page differs, not for variety.
+    keyShadow: Color(0x1F0F172A),
+    keyBorder: Color(0xFFE4E6EA),
   );
 
   /// The palette the [context] is currently painting with.
@@ -240,6 +294,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
     Color? cardBorder,
     Color? cardShadow,
     Color? accent,
+    Color? danger,
     Color? buttonDigit,
     Color? buttonFunction,
     Color? textPrimary,
@@ -247,12 +302,15 @@ class AppPalette extends ThemeExtension<AppPalette> {
     Color? textOnAccent,
     Color? textSecondary,
     Color? divider,
+    Color? ruleOnPage,
     Color? toggleTrackOn,
     Color? toggleTrackOff,
     Color? toggleThumb,
     Color? selectionAccent,
     Color? selectionCheck,
     double? pressedOpacity,
+    Color? keyShadow,
+    Color? keyBorder,
   }) => AppPalette(
     background: background ?? this.background,
     surface: surface ?? this.surface,
@@ -265,6 +323,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
     // and `CardDecoration` is the only place that wants to.
     cardShadow: cardShadow ?? this.cardShadow,
     accent: accent ?? this.accent,
+    danger: danger ?? this.danger,
     buttonDigit: buttonDigit ?? this.buttonDigit,
     buttonFunction: buttonFunction ?? this.buttonFunction,
     textPrimary: textPrimary ?? this.textPrimary,
@@ -272,12 +331,17 @@ class AppPalette extends ThemeExtension<AppPalette> {
     textOnAccent: textOnAccent ?? this.textOnAccent,
     textSecondary: textSecondary ?? this.textSecondary,
     divider: divider ?? this.divider,
+    ruleOnPage: ruleOnPage ?? this.ruleOnPage,
     toggleTrackOn: toggleTrackOn ?? this.toggleTrackOn,
     toggleTrackOff: toggleTrackOff ?? this.toggleTrackOff,
     toggleThumb: toggleThumb ?? this.toggleThumb,
     selectionAccent: selectionAccent ?? this.selectionAccent,
     selectionCheck: selectionCheck ?? this.selectionCheck,
     pressedOpacity: pressedOpacity ?? this.pressedOpacity,
+    // Nullable for the same reason [cardShadow] is: `null` means "leave the
+    // shadow alone", and that is the only way to ask for it here.
+    keyShadow: keyShadow ?? this.keyShadow,
+    keyBorder: keyBorder ?? this.keyBorder,
   );
 
   @override
@@ -289,6 +353,9 @@ class AppPalette extends ThemeExtension<AppPalette> {
     // would still see `Color?` on the third arm.
     final shadow = cardShadow;
     final otherShadow = other.cardShadow;
+    // The same local-read for the key's glow, for the same promotion reason.
+    final keyGlow = keyShadow;
+    final otherKeyGlow = other.keyShadow;
     return AppPalette(
       background: mix(background, other.background),
       surface: mix(surface, other.surface),
@@ -306,6 +373,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
           ? shadow
           : mix(shadow, otherShadow),
       accent: mix(accent, other.accent),
+      danger: mix(danger, other.danger),
       buttonDigit: mix(buttonDigit, other.buttonDigit),
       buttonFunction: mix(buttonFunction, other.buttonFunction),
       textPrimary: mix(textPrimary, other.textPrimary),
@@ -313,6 +381,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
       textOnAccent: mix(textOnAccent, other.textOnAccent),
       textSecondary: mix(textSecondary, other.textSecondary),
       divider: mix(divider, other.divider),
+      ruleOnPage: mix(ruleOnPage, other.ruleOnPage),
       toggleTrackOn: mix(toggleTrackOn, other.toggleTrackOn),
       toggleTrackOff: mix(toggleTrackOff, other.toggleTrackOff),
       toggleThumb: mix(toggleThumb, other.toggleThumb),
@@ -320,6 +389,14 @@ class AppPalette extends ThemeExtension<AppPalette> {
       selectionCheck: mix(selectionCheck, other.selectionCheck),
       pressedOpacity:
           pressedOpacity + (other.pressedOpacity - pressedOpacity) * t,
+      // Both palettes state a glow, so this normally mixes; the null arms are
+      // there only so a bespoke palette cannot make the lerp throw.
+      keyShadow: keyGlow == null
+          ? otherKeyGlow
+          : otherKeyGlow == null
+          ? keyGlow
+          : mix(keyGlow, otherKeyGlow),
+      keyBorder: mix(keyBorder, other.keyBorder),
     );
   }
 }

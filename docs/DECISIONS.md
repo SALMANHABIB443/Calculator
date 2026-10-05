@@ -1460,54 +1460,48 @@ that path has a left operand, so the operator is accepted.
 
 ### D-81 — Backspace Deletes One Character of the Editable Expression, Before or After `=`
 
-**Decision:** the ⌫ control above the display rule keeps D-19's place *outside* the keypad
+**Decision:** the ⌫ control above the display keeps D-19's place *outside* the keypad
 (it is not a twentieth `CalculatorKey`), and its single rule is: **each press deletes exactly
-one character of the currently editable expression.** Tried in order, the press acts on the
-entry being typed, then the pending operator, then the **last committed term**, then a `±`
-sign staged for a number not yet typed, and finally a finished result that has no expression
-behind it (a value loaded from history), which is shortened a digit at a time.
+one character of the expression the user is editing — in every state.** There is no cascade
+of targets (entry, then pending operator, then last committed term): the expression string
+*is* the editing buffer, because the engine never replaces it with the result.
 
-The load-bearing part is the third branch. The last committed term is **reopened as a typed
-entry** — its text becomes the entry, its operator becomes pending again, and the running
-total is re-folded left-to-right (D-17) over the terms that remain — before one character comes
-off it. So `900 + 100 =` is `1000`, and ⌫ gives an editable `900 + 10` previewing `910`; `⌫`
-again gives `900 + 1`, then `900 +`, then `900`, then `90`. The same mechanism makes a digit
-typed after an operator is taken back extend the number on screen (`900 +` ⌫ `5` is `9005`).
+So `900 + 100 =` is `1000`, and the first ⌫ both leaves the result state and deletes a
+character: the line reads `900 + 10` previewing `910`; ⌫ again gives `900 + 1`, then
+`900 +`, then `900`, then `90`. A value loaded from history follows the same rule — its
+first press shortens the number (`1000` → `100`) instead of "restoring" an expression that
+was never replaced. Deleting back to empty clears the preview as well, so the display reads
+`0` rather than freezing the last number it showed.
 
-`CalculatorState.canBackspace` mirrors those branches exactly — including the plain-decimal
-guard, so a value in scientific notation greys the control out rather than looking live while
-doing nothing — and the error state still declines: `AC` is the documented way out of an error.
+`CalculatorState.canBackspace` is simply `!isError && expression.isNotEmpty`, so the control
+greys out exactly when a press would do nothing; the error state still declines, and `AC`
+(or any key, which dismisses the error) is the documented way out.
 
-**Rationale:** the previous implementation cascaded *entry → pending operator → shred the
-result's digits* and could never reach back into the committed terms, which produced three
-defects the specification table calls out. (1) After `900 +` ⌫, the `900` was stranded: the
-control greyed out, and the next digit started a fresh entry *beside* the stale term, so the
-line read `900 5` over a result of `5` and `=` silently discarded the 900. (2) `2 + 3 +` ⌫ ⌫ left
-a dead control with an expression still on screen, so the user had to reach for `AC`. (3) After
-`=`, the press *cleared the expression* and shredded the result instead (`125 × 8 =` ⌫ read
-`100`), so the `8` the user wanted to correct could never be recovered. Reopening the last
-committed term is the single mechanism that fixes all three, and routing the digit keys through
-it too closes the same stranded state reached without a backspace — `%` or `±` on a total
-collapses the expression to that number (D-82), and the next digit used to print beside it
-(`2 + 5 =` then `±` then `3` gave `-73`).
+**Rationale:** the previous implementation "restored" `_lastExpression` on the first press
+after `=` — but in the expression-string engine that restore was always a no-op, because
+`_expression` still held `900 + 100` behind the `1000`. The press looked dead: nothing on
+screen changed, so a user read it as "delete does not work after a calculation", and a value
+loaded from history had the same dead first press. Leaving the result state *and* deleting
+in the same press makes every press visibly effective, matches the worked example above, and
+folds the normal, post-result, and history-load cases into one code path.
 
-Re-folding rather than decrementing is what D-17 requires: the engine has no precedence table,
-so removing the last term of `2 + 3 × 4` leaves `5`, not the `16` a subtraction would suggest.
+The stale-preview fix rides on the same rule: `_recompute` clears the value when the
+expression is empty. Freezing the old preview there made a fully-deleted calculator keep
+showing its last result (`1`, `9`) instead of `0`, and let a stranded result outlive the
+expression that produced it.
 
-**Consequence:** a backspace is always an *edit of the expression*, never a calculation — no key
-it can act on leaves `justEvaluated` set, so history never records one (the existing guard in
-`CalculatorController._justCompletedACalculation` is unchanged). `CalculatorState` gains
-`negativePending` purely so `canBackspace` can see a staged `±` sign, and `formatValue` /
-`isPlainDecimal` are public so the snapshot and the press that acts on it share one answer. The
-keypad, its nineteen keys, and every pixel of the display are untouched; only the engine's
-state transitions changed.
+**Consequence:** a backspace is always an *edit of the expression*, never a calculation — it
+clears `justEvaluated` without evaluating, so history never records one (the existing guard
+in `CalculatorController._justCompletedACalculation` is unchanged). The keypad, its nineteen
+keys, and every pixel of the display are untouched; only the engine's state transitions
+changed.
 
-**Known limits, stated rather than hidden:** parentheses do not exist in this calculator
-(D-19 fixes the keypad at the nineteen keys of desing.md §6.1), so there is no paren case to
-delete; a repeated `=` does not repeat the last operation (`2 + 2 = =` is `4`), which is
-pre-existing behaviour and out of scope here; and a value already collapsed into scientific
-notation has no digits to take back one at a time, so that single press is declined rather than
-producing a different number that still looks like an exponent.
+**Known limits, stated rather than hidden:** the error state still declines — `AC` is the
+documented way out of an error; the expression line blanks when only one bare number
+remains, because the number itself is what the result line shows (the pinned D-18 layout);
+a repeated `=` does not repeat the last operation (`2 + 2 = =` is `4`, which the engine
+tests pin); and an operator is declined directly after `(` unless it is a minus, so `(+`
+can never be typed into the parser.
 
 ---
 
@@ -1813,6 +1807,187 @@ expression-above-result order and its `cardPadding`-based padding; D-77's radius
 14. **Unchanged by it:** the 24 px margin (D-73), the 88 px floor (D-72/D-73),
 the day grouping, persistence, tap-to-load, the long-press gesture, the trailing
 slot, and the selection palette (all D-76).
+
+---
+
+### D-110 — The Calculator Column Runs on a Tighter Margin, a Wider Gap, and a Larger Header
+**Decision:** The calculator's single column — its header, display, and keypad —
+leaves the screen at `AppSpacing.calculatorSideMargin = 16` rather than the
+app-wide `screenHorizontal` 24. `CalculatorKeypad.keyGap` goes 14 → 16 and
+`maxCellSize` 132 → 160. The calculator's two header actions take
+`AppSizes.calculatorHeaderAction = 56` through a new optional `AppIconButton.size`
+(which derives its glyph from a ratio rather than taking a second number), and
+`AppPageHeader` takes an optional `horizontalPadding` so the calculator's bar
+rides its own column while every other header keeps 24.
+
+**Rationale:** The app looked right in every mockup and cramped on the device.
+The cause was arithmetic nobody could see: the grid's cell is
+`(width − 2·margin − 3·gap) / 4`, so the app's card margin was being *spent* on
+air on a screen that has no cards at all. On the 442-wide reference canvas the
+old numbers derived an 88 px key; the new ones derive 90.5 with 2 px more air on
+every side. Widening the gap alone would have shrunk the keys — that is why the
+two moved together and neither could be justified alone.
+
+The header is the non-obvious half. A 48 px box above a 90 px key reads as a
+header drawn for a *different, smaller* calculator, so the two header actions
+scale to 56 — the bar's own height, and the app's existing rhythm, so it is not
+a new size invented for one screen. They keep the identical fill, border, radius,
+and glyph; this is a size, not a variant.
+
+**Consequence:** `AppIconButton` takes two optional numbers, and `AppPageHeader`
+one, so the 48 px / 24 px defaults still hold everywhere else — that is why the
+new sizes are parameters rather than new widgets or a token edit.
+`header_alignment_test.dart` now measures the calculator against **the keys below
+it** rather than against the secondary headers' card margin (a bar sitting at a
+correct 16 px but 8 px inboard of its own column is the drift worth catching),
+and gained a second test asserting the secondary headers still sit at 24 and 48
+— the counterpart that stops this from quietly becoming the app's margin.
+`calculator_layout_test.dart` and `calculator_screen_test.dart` re-derive the
+measured geometry: 90.5 / 410 / 516.5 rather than 88 / 394 / 496, and the R-2
+diameter band moved with them, so a silent return to the compressed layout now
+fails a test rather than passing one that was written for it.
+
+**Supersedes:** D-60's 24 px margin and 14 px gap *for the calculator column
+only* — both tokens stand, and every card edge in History, Settings, and About is
+still measured at 24. D-69's `maxCellSize` 132. **Unchanged by it:** the palette,
+the key variants and labels, the `_layout` arrangement, the wide `0` (D-29), the
+two-line display and its right alignment (D-78/D-69), the backspace row (D-81),
+the touch floor, and every other screen.
+
+---
+
+### D-111 — The Dark Theme's Keys Get a Glow, a Hard Edge, and Bigger Operator Glyphs
+**Decision:** `AppColors.keyElevation` is **removed** and replaced by two palette
+fields: `keyShadow` (dark `#1AFFFFFF` — a faint **white halo**, light
+`#1F0F172A` — an ordinary dark shadow) and `keyBorder` (`#33333A` dark,
+`#E4E6EA` light). `CalculatorButton` draws the halo from a `ShapeDecoration`
+wrapping its `Material` and sets `elevation: 0`, so the depth is painted
+explicitly rather than by the framework. Alongside that, `buttonDigit`
+`#1E1E1E → #242428`, `buttonFunction` `#949494 → #A2A2A8`, and `ruleOnPage`
+`#3A3A3C → #45454A`. The one key label size becomes three, chosen by variant:
+`buttonLabel` 25 (digits, unchanged), `buttonOperatorLabel` 32/w600 (`+ − × ÷ =`),
+`buttonFunctionLabel` 24/w600 (`AC`, `+/−`, `%`), resolved through a new
+`CalculatorButtonVariant.labelStyle`.
+
+**Rationale:** In the black theme the keys' shadow could not be seen, and the
+cause was structural rather than a matter of degree. A `Material` casts its
+elevation shadow in a colour the *framework* chooses — black in the dark theme —
+and the page is `#000000`. A black shadow on a black page is invisible at every
+elevation value, so raising the number could never have fixed it. What a dark
+key can cast is the opposite of a shadow: a faint halo of its own light, which
+is what `keyShadow` states here. The white theme keeps the conventional dark
+shadow, so the two palettes are opposites on purpose, not for variety.
+
+The halo alone is soft and a fill step is *implied*, so neither could say where
+a key ended; `keyBorder` is the only one of the three that states a hard
+boundary, which is why it does most of the work separating nineteen keys. The
+fills were lifted one step for the same reason — a `#1E1E1E` key on a `#000000`
+page is a difference you can see but not point at.
+
+The symbols were the second half of the report and a different fault. Every key
+shared one 25 px size, so `−` and `=` — a single short bar and two — were the
+*quietest* marks on the pad despite being the column the pad is organised around.
+Bearing them at 32/w600 sizes them as the spine they are. The function keys go the
+other way, to 24: `AC` and `+/−` are the only multi-character labels, and at 25
+they are the ones the `FittedBox` squeezed — a deliberately smaller label beats a
+shrunk one.
+
+**Consequence:** `keyElevation` no longer exists on the palette or in
+`AppColors`; `AppPalette` gains `keyShadow` (nullable, lerped like `cardShadow`)
+and `keyBorder`, and `CalculatorButtonVariant` gains `labelStyle`. The size lives
+on the *variant*, not on the palette, because the three sizes are identical in
+both themes — a colour field would wrongly imply they differ. The old
+`buttonDigit`/`buttonFunction` literal assertions in `design_system_test.dart`
+moved to the new values, and D-111 added three tests: the dark palette's glow,
+edge, and fill are each asserted *lighter* than what they sit on (the
+relationships, not the hexes, so the black-on-black pairing cannot silently
+return); the light palette still casts a dark shadow; and each variant resolves
+its own label size.
+
+**Supersedes:** `keyElevation` (deleted), `buttonDigit`'s `#1E1E1E`,
+`buttonFunction`'s `#949494`, and `ruleOnPage`'s `#3A3A3C`. **Unchanged by it:**
+the light theme's key *geometry*, the variants' fills and foregrounds, the
+`_layout` arrangement, the wide `0` (D-29), D-110's margin/gap/key size, and every
+non-keypad screen.
+
+---
+
+### D-113 - Change PIN Says Which Step It Is On, Says Why an Entry Was Refused, and Keeps the New Code Until It Is Confirmed
+
+**Decision:** the three-step Change PIN flow (`ChangePinScreen`) gains four
+behaviours and reverses one.
+
+1. **Each step's prompt is named**, and the wording is the bare verb:
+   `"Enter current PIN"`, `"Enter new PIN"`, `"Confirm new PIN"` — replacing
+   `"Enter your current PIN"`, `"Enter a new PIN"`, `"Enter the new PIN again"`.
+2. **`SecretPinField.showErrors` is on for all three steps**, with a per-step
+   `wrongPinMessage` drawn from a `_stepErrors` table: `"Incorrect PIN"` on step
+   1, `null` on step 2, `"PINs do not match"` on step 3.
+3. **A mismatched confirmation re-asks step 3** with `_pending` intact, clearing
+   only the confirmation. **Reverses** the previous "a mismatch returns to step 2
+   with the dots cleared".
+4. **The header control is `Icons.arrow_back` with tooltip `Back`**, replacing
+   `Icons.close`/`"Cancel"`, and it is step-aware: step 1 pops the route; step 2
+   returns to step 1 and drops `_pending`; step 3 returns to step 2 and keeps it.
+5. **A confirmed code shows `"PIN changed successfully"` for
+   `ChangePinScreen.successPause` (1200 ms) and then pops** to the Secret settings
+   page. `SecretPinField` gains one optional `successMessage` and paints it in the
+   reserved status slot in `textSecondary`; the keypad and the back arrow are
+   inert while it is up.
+
+**Rationale:**
+
+The old prompt wording was *more* informative and less usable. All three steps ask
+the same four digits on the same pad, so the line above the dots is the only thing
+distinguishing them, and "Enter the new PIN again" describes the previous step
+rather than naming this one. Three short imperatives do the work the article and
+the clause were doing, and none of them names the code, so §6.8 still holds.
+
+The opt-in `showErrors` was reasoned from one of Change PIN's two rejections and
+misapplied to both. The argument was that a user who mistypes a code they have
+just chosen is being *asked to try again*, and painting red at them would make the
+ordinary path look like a failure — true of step 2, which has **no rejection at
+all** (any four digits is a legal new PIN, including the old one), and false of
+step 1, which rejects a genuinely wrong code. D-88's own reasoning settles it: a
+screen that stops accepting input without saying why is indistinguishable from a
+broken one, and step 1 was exactly that. The remedy for the original worry is the
+*wording*, not the absence of feedback, which is what `_stepErrors` supplies.
+
+Sending a mismatch back to step 2 was punishing the user for a mistake they did not
+make there. They typed the PIN they meant twice; the second attempt had the typo.
+Discarding `_pending` makes them choose it a third time, and a third attempt is a
+third chance to land somewhere they did not intend — and step 2 rejecting nothing
+means the cost of returning is paid entirely by the user, with nothing gained by
+the extra step. Re-asking keeps the candidate in memory, so nothing is written.
+
+The back button is where the same reasoning meets navigation. A control that always
+pops would drop a user out of the middle of a flow they are one step from
+finishing, which is the cheapest version of the lost-work problem; and `Icons.close`
+claimed a decision ("abandon this") that the flow does not offer. `arrow_back` is
+the app's ordinary way out (History, Settings, the Secret unlock screen) and now
+means exactly what it looks like: back, one step, or out.
+
+The success line is the only evidence the user gets that the change happened, and
+AC-021 persists the code *before* the flow ends so a crash cannot lose it — so the
+flow can end immediately and still owe the user an answer. It is painted in the
+reserved 18 px status slot rather than a `SnackBar` because the app has none, and
+adding one would put a new component on the only screen that must not gain any
+ink; `textSecondary` in the app's own caption type is the whole of the success
+styling that exists, and D-84 forbids this feature adding a token.
+
+**Consequence:** `SecretPinField` gains `successMessage` and a `color` on its
+internal status line; nothing else about that widget moves, so the unlock screen
+is byte-identical. `feature.md` FEAT-SEC-005's mismatch sentence is corrected. The
+new code exists only in `_pending` until the confirmation matches, so **no**
+interruption — the back arrow, the system gesture, or process death — can leave a
+user locked out of a code they did not choose. `ChangePinScreen.successPause` is
+published rather than private, for the reason D-82's hold duration is: a test must
+pump the duration that ships.
+
+**Unchanged by it:** the shared pad, its dots, the shake, the D-89 bottom anchor,
+the `SecretCode.length` cap, `_checking`, backspace, `secretController.dart`, and
+every non-Secret screen. The system back gesture still pops the route from any
+step (D-56), which is safe precisely because nothing unconfirmed is ever written.
 
 ---
 

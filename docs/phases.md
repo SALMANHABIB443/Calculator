@@ -21,8 +21,10 @@
 | 8     | Integration, Navigation & Cross-Cutting    | Glue                               | **Complete**    |
 | 9     | UI Polish, Testing & Bug Fixing            | Quality                            | **Complete**    |
 | 10    | Production Build & Release Preparation     | Ship                               | **Complete** (2 external gates open) |
+| 11    | Secret Mode                                | Hidden area: PIN entry, change, reset, lockout | **Complete** |
 
 **MVP Scope** = Phases 1–9 (all Must-Have features).  
+Phase 11 was added after Phase 10 to specify and then build Secret Mode (FR-007).  
 Optional enhancements can be deferred after Phase 10.
 
 ---
@@ -1020,26 +1022,33 @@ claim and the backup claim in `test/unit/legal_content_test.dart`.
 
 ---
 
-## Phase 11: Secret Mode — **SPECIFIED (implementation not started)**
+## Phase 11: Secret Mode — **COMPLETE**
 
-**Added after Phase 10.** Every phase above is complete and shipped; this one is the first work
-that has been **specified but not built**. No `lib/` or `test/` code exists for it yet — what
-exists is the decision record, the feature breakdown, and the screen specifications.
+**Added after Phase 10, and the first work built rather than only specified.** What shipped is the
+five-second hidden hold, the PIN entry screen, the blank secret screen, its settings page, the
+three-step Change PIN flow, the 30-second lockout, and the reset that erases the stored code —
+together with the unit, repository, and widget tests described below. The sections underneath are
+kept as they were written at the specification stage, with the decisions that were later reversed
+marked where they are now wrong; a reader wanting the shipped behaviour should follow the marked
+text to `feature.md` §G, `desing.md` §6.8–§6.10, and `DECISIONS.md`.
 
 ### What is specified
 
 Secret Mode is a hidden area reached by holding the History screen's bottom Clear History button
 for five seconds and entering a four-digit PIN (`0000` by default). What lies behind it is
 deliberately almost nothing: a blank screen with one overflow button in the top-left, leading to
-a settings page holding a single "Change PIN" row.
+a settings page that now holds two rows, "Change PIN" and "Reset PIN" (D-86).
 
-| Feature | Ref |
-|---------|-----|
-| Five-second hidden hold on Clear History; tap path untouched | D-82, FEAT-SEC-001 |
-| Four-digit PIN entry, default `0000`, corrupt value degrades to the default | D-83, FEAT-SEC-002 |
-| Blank secret screen, one top-left `AppIconButton` | D-84, FEAT-SEC-003 |
-| One-row secret Settings page | D-84, FEAT-SEC-004 |
-| Three-step Change PIN (verify → enter → confirm) | D-85, FEAT-SEC-005 |
+| Feature | Ref | Shipped |
+|---------|-----|---------|
+| Five-second hidden hold on Clear History; tap path untouched | D-82, FEAT-SEC-001 | Yes |
+| Four-digit PIN entry, default `0000`, corrupt value degrades to the default | D-83, FEAT-SEC-002 | Yes |
+| Blank secret screen, one top-left `AppIconButton`, floating home button | D-84, FEAT-SEC-003 | Yes |
+| Two-row secret Settings page (Change PIN, Reset PIN) | D-84, D-86, FEAT-SEC-004 | Yes |
+| Three-step Change PIN (verify → enter → confirm) | D-85, FEAT-SEC-005 | Yes |
+| 30-second lockout on the third wrong code | D-88, FEAT-SEC-002 | Yes (D-85 reversed) |
+| Reset that erases the stored code | D-86, FEAT-SEC-006 | Yes (no lock-screen link, D-88) |
+| Per-step prompts, stated errors, intelligent back, success line | D-113, FEAT-SEC-005 | Yes |
 
 **Four decisions carry the design, and three of them are refusals:**
 
@@ -1050,13 +1059,16 @@ a settings page holding a single "Change PIN" row.
 - **The PIN is plaintext in `shared_preferences`** (D-83). `flutter_secure_storage` was rejected
   because it would be the app's **first new dependency since Phase 1**, breaking the lockdown that
   held through ten phases; hashing was rejected because the threat is *reading* the store, not
-  brute-forcing it, and with no rate limit a hash of four digits is no stronger than the plaintext.
-- **There is no lockout** (D-85). A lockout punishes the owner who mistypes their own four-digit
-  code, and the only recovery would be a reinstall that loses the history. Wrong codes clear and
-  shake; retry is immediate.
-- **The screen is blank** (D-84) and the settings page holds exactly one row. The full Settings
-  page is not duplicated in a hidden area — that would be a second place to maintain four settings
-  no user would reach.
+  brute-forcing it, and a hash of four digits is no stronger than the plaintext.
+- ~~**There is no lockout** (D-85).~~ **Reversed by D-88, which locks for 30 seconds on the third
+  wrong code.** The original argument — a lockout punishes the owner who mistypes their own code, and
+  the only recovery was a reinstall — was sound about the *cost* and wrong about the *rate*: 10⁴
+  unguarded guesses is not a privacy affordance, it is a code anyone can have in a minute. The
+  lockout survives a restart, so it cannot be shaken off, and D-86's in-place reset link was removed
+  in the same decision because it was an unlimited bypass of the lock it introduced.
+- **The screen is blank** (D-84). The full Settings page is not duplicated in a hidden area — that
+  would be a second place to maintain four settings no user would reach. The one settings page that
+  does exist holds the PIN rows and nothing else (D-86).
 
 ### What is not specified, and why
 
@@ -1068,28 +1080,36 @@ colour of its own; that it can be built from `AppColors.background`, `AppIconBut
 
 ### Known limitations of this phase
 
-- **Nothing is implemented.** This phase wrote specifications. There is no gesture detector, no
-  `SecretCode` type, no repository, no screen, and no test. `feature.md` §G and `prd.md` FR-007
-  describe intended behaviour, not shipped behaviour, and `phases.md` is the document that says so.
 - **The PIN is not secure storage.** `shared_preferences` is unencrypted, so the code is readable on
   a rooted device (D-83). This is a *smaller* exposure than the history sitting in the same store,
   and it is stated as a limitation rather than presented as a security guarantee. Anyone reading this
   document should treat Secret Mode as a **privacy affordance against casual browsing**, not as
   authentication.
-- **A forgotten PIN has no in-app recovery.** Changing it requires the current one (D-85), so the
-  only way out is reinstalling — which clears the history the user was trying to protect. This is the
-  sharpest edge in the feature and it is deliberate: the alternative, an unverified reset, would make
-  the code decorative.
-- **Four wrong guesses are free.** 10⁴ codes brute-force in under a minute, and the store is
-  readable without guessing at all (D-83, D-85). Stated plainly so nobody mistakes this for a
-  security boundary.
-- **No test has been written, so no test has been run.** The specified tests are: unit coverage for
-  `SecretCode`'s validation and the corrupt-value fallback, a repository load/save round-trip
-  modelled on `settings_repository_test.dart`, and a widget flow covering hold → unlock → blank
-  screen → 3-dot → settings → change PIN. Note that the five-second hold has **no on-screen
-  affordance to assert on**, so its test has to pump the gesture rather than find a widget (D-82).
-- **Inherited from Phase 10, unchanged:** no device or emulator was available, so nothing in this
-  app has been seen running.
+- **A forgotten PIN has no in-app recovery.** Changing it requires the current one (D-85), and the
+  reset row sits behind the code (D-86, D-88), so the only way out is reinstalling — which clears the
+  history the user was trying to protect. This is the sharpest edge in the feature and it is
+  deliberate: the alternative, an unverified reset on the lock screen, would make the code decorative
+  and would also have been a free bypass of D-88's lockout.
+- **Brute force is slowed, not stopped.** Three wrong codes cost 30 seconds, but 10⁴ codes still fall
+  eventually, and the store is readable without guessing at all (D-83, D-88). Stated plainly so
+  nobody mistakes this for a security boundary.
+- **No device or emulator has been available**, so as in Phase 10 nothing here has been seen
+  running; the assurance is the test suite, not a screenshot.
+
+### What shipped, and how it is tested
+
+`lib/features/secret/` holds the domain (`SecretCode`), the data (`SecretRepository` over the
+`'secretPin'` key), and five presentations: the unlock screen, the blank screen, its settings page,
+the three-step Change PIN flow, and the lockout notifier. The hold itself lives in the History
+screen's bottom clear button, because that is where the gesture is.
+
+The tests are the ones specified below, and they exist: `SecretCode` validation and the corrupt-value
+fallback, a repository load/save round-trip, the lockout's counting, persistence, and countdown, and
+a widget flow covering hold → unlock → blank screen → settings → change PIN → unlock with the new
+code. Note that the five-second hold has **no on-screen affordance to assert on**, so its test pumps
+the gesture rather than finding a widget (D-82), and that Change PIN's success pause is published as
+`ChangePinScreen.successPause` so the test can pump the duration that ships (D-113, on the reasoning
+of D-82's hold duration).
 
 ---
 

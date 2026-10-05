@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../design/app_colors.dart';
 import '../design/app_typography.dart';
 
 /// The key styles on the calculator keypad (desing.md §5.1).
@@ -30,6 +31,19 @@ enum CalculatorButtonVariant {
 
   /// `AC`, `+/−`, `%`: the lightest fill, **dark** label.
   function;
+
+  /// The label size this variant paints its glyph at (D-111).
+  ///
+  /// One getter rather than a `fontSize` on the palette: the three sizes are the
+  /// *same* in both themes, so a colour field would imply they differ when they
+  /// do not. Reading it here means a key's size is chosen by its variant — the
+  /// same way its fill and foreground already are — so no call site can pair the
+  /// orange fill with the digit size.
+  TextStyle labelStyle(AppType type) => switch (this) {
+    CalculatorButtonVariant.digit => type.buttonLabel,
+    CalculatorButtonVariant.operator => type.buttonOperatorLabel,
+    CalculatorButtonVariant.function => type.buttonFunctionLabel,
+  };
 
   /// The fill and label colour pair this variant paints in [palette].
   CalculatorButtonColors colors(AppPalette palette) => switch (this) {
@@ -141,6 +155,10 @@ class _CalculatorButtonState extends State<CalculatorButton> {
         // The key's own fill and label pair, resolved once per build from the
         // theme so a switch repaints the key in the new palette.
         final key = widget.variant.colors(context.appColors);
+        // D-111: the one shadow the key casts, taken from the palette. Read
+        // once here so the `DecoratedBox` below is the only place that knows
+        // how it is drawn.
+        final glow = context.appColors.keyShadow;
 
         return Semantics(
           button: true,
@@ -158,23 +176,62 @@ class _CalculatorButtonState extends State<CalculatorButton> {
                 child: SizedBox(
                   width: width,
                   height: height,
-                  child: Material(
-                    color: key.background,
-                    shape: RoundedRectangleBorder(borderRadius: radius),
-                    clipBehavior: Clip.antiAlias,
-                    child: InkWell(
-                      onTap: widget.onPressed,
-                      onTapDown: (_) => _setPressed(true),
-                      onTapUp: (_) => _setPressed(false),
-                      onTapCancel: () => _setPressed(false),
-                      child: Center(
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
-                            widget.label,
-                            maxLines: 1,
-                            style: context.type.buttonLabel.copyWith(
-                              color: key.foreground,
+                  // D-111: the palette's glow/shadow, cast from the key's own
+                  // rounded shape — so it follows the circle, and the wide key's
+                  // stadium, exactly instead of boxing the key. It wraps the
+                  // `Material` rather than sitting inside it, because a
+                  // `Material`'s own shadow is the framework's to colour.
+                  child: DecoratedBox(
+                    decoration: ShapeDecoration(
+                      shape: RoundedRectangleBorder(borderRadius: radius),
+                      shadows: glow == null
+                          ? null
+                          : <BoxShadow>[
+                              BoxShadow(
+                                color: glow,
+                                blurRadius: AppColors.keyShadowBlur,
+                                offset: const Offset(
+                                  0,
+                                  AppColors.keyShadowOffsetY,
+                                ),
+                              ),
+                            ],
+                    ),
+                    child: Material(
+                      // D-111: elevation 0 with the depth drawn explicitly. A
+                      // `Material` shadow is painted in a colour the framework
+                      // picks — black in the dark theme — and [background] is
+                      // `#000000`, so the elevation this used to ask for was
+                      // black-on-black and could not be seen at any value. The
+                      // palette now states a colour instead, and it casts a faint
+                      // white halo on the black page rather than a shadow.
+                      color: key.background,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: radius,
+                        // The hard edge, and the one that does most of the work:
+                        // the halo is soft and a fill step is implied, but only an
+                        // outline actually says where the key stops.
+                        side: BorderSide(color: context.appColors.keyBorder),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: InkWell(
+                        onTap: widget.onPressed,
+                        onTapDown: (_) => _setPressed(true),
+                        onTapUp: (_) => _setPressed(false),
+                        onTapCancel: () => _setPressed(false),
+                        child: Center(
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              widget.label,
+                              maxLines: 1,
+                              // The variant picks the size as well as the
+                              // colour (D-111), so the operator column cannot be
+                              // painted at the digit size by accident.
+                              style: widget.variant
+                                  .labelStyle(context.type)
+                                  .copyWith(color: key.foreground),
                             ),
                           ),
                         ),

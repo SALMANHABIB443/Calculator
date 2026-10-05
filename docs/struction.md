@@ -158,13 +158,14 @@ Calculator (Root /)
 Passing state when loading a history item uses a shared state store (the calculator
 provider) rather than route parameters, so the value survives the pop.
 
-**Secret Mode routes (D-82, D-84)**
+**Secret Mode routes (D-82, D-84, D-86)**
 ```
 History /history
   └── push → Secret Unlock   /secret/unlock     # ONLY via the 5s hold
         └── replace → Secret  /secret            # on a correct code
               └── push → Secret Settings  /secret/settings
-                    └── push → Change PIN  /secret/change-pin
+                    ├── push → Change PIN  /secret/change-pin   # pops back here
+                    └── Reset PIN → confirm → replace → /secret  # the code is gone
 ```
 The unlock screen is entered **only** by the five-second hold, so it is pushed rather than
 reached by a deep link, and a correct code **replaces** it rather than pushing on top — leaving
@@ -172,6 +173,11 @@ the entry screen on the stack under the secret screen would put a back gesture t
 PIN prompt in front of the user. `history_screen.dart` knows the *route name* and nothing about
 `features/secret/`; the dependency arrow points one way, into `routing`, so the §4 one-way rule
 survives the new entry point (see §16).
+
+A confirmed **Reset PIN** also replaces the stack with `/secret`, for the same reason in reverse:
+the page the user is on, and the page behind it, both need the code that has just been erased.
+**Change PIN** pops back to `/secret/settings` and keeps its three steps in one route — three
+screens, one entry, so the back arrow inside the flow is the only navigation between them (D-113).
 
 ---
 
@@ -257,14 +263,17 @@ visible to whoever opens the file next.
   claim the rest of this app's data already makes. Recorded as a known limitation in `phases.md`.
 - **No new dependency.** `flutter_secure_storage` was rejected (D-83): it would be the first
   package added since Phase 1, breaking the §15 lockdown.
-- **No hashing.** The threat is *reading* the store, not *brute-forcing* it, and with no rate limit
-  (D-85) a hash of four digits is no stronger than the plaintext.
+- **No hashing.** The threat is *reading* the store, not *brute-forcing* it, and even with D-88's rate
+  limit a hash of four digits is no stronger against the former — which is the only one that matters.
 - Validation lives in the `SecretCode` **type** (constructor throws `FormatException`), so a
   malformed code cannot exist as a value — not at the call site, not in storage.
 - Reads go through the same `_readOrNull` guard as the settings repository, so a corrupt or
   hand-edited value degrades to `0000` instead of taking down the screen (D-42's contract).
-- **No lockout and no attempt counter** (D-85). Changing the PIN requires the current PIN, so a
-  forgotten one has **no in-app recovery** — a known limitation, not an oversight.
+- **A 30-second lockout on the third wrong code** (D-88), counting and deadline kept in a
+  `SecretLockoutNotifier` beside the code rather than in the screen, and persisted under
+  `'secretLockoutUntil'` so a force-quit does not reset it. D-85's "no lockout" was reversed.
+- Changing the PIN requires the current PIN, and the reset row sits behind the code, so a forgotten
+  one still has **no in-app recovery** — a known limitation, not an oversight (D-85, D-86, D-88).
 
 ---
 
@@ -357,11 +366,13 @@ calculator/                      # Apps/Calculator — project root (D-04)
 │   │   ├── settings/
 │   │   │   ├── settings.dart
 │   │   │   └── presentation/
-│   │   ├── secret/                 # Hidden Secret Mode (D-82, D-83, D-84)
+│   │   ├── secret/                 # Hidden Secret Mode (D-82, D-83, D-84, D-85,
+│   │   │   │                       # D-86, D-88, D-113)
 │   │   │   ├── secret.dart
 │   │   │   ├── domain/            # SecretCode — validates four digits on construction
 │   │   │   ├── data/              # secret repository over shared_preferences
-│   │   │   └── presentation/      # unlock, blank screen, settings, change PIN
+│   │   │   └── presentation/      # unlock, blank screen, settings, change PIN,
+│   │   │                          # SecretPinField, lockout controller (D-88)
 │   │   ├── about/
 │   │   │   ├── about.dart
 │   │   │   └── presentation/
@@ -439,11 +450,18 @@ Secret Unlock (5s hold on History's bottom Clear History — D-82)
                                                     # not the Secret feature
             → SecretCodeNotifier.verify(entered)
                 → SecretRepository.load()            # 'secretPin', default '0000'
-                → wrong → clear + shake, no lockout (D-85)
-                → right → Navigation replace → /secret
+                → wrong → clear + shake + "Wrong PIN"; 3rd in a row → 30s
+                  lock, persisted under 'secretLockoutUntil' (D-88)
+                → right → registerSuccess(), Navigation replace → /secret
                     → overflow tap → push /secret/settings
                         → Change PIN → verify current, enter new, confirm
-                            → SecretRepository.save(new)   # persisted immediately
+                            → mismatch → re-ask confirm, keep the candidate
+                              (D-113)
+                            → match → SecretRepository.save(new)
+                              # persisted immediately, then "PIN changed
+                              # successfully" for 1200 ms, then pop
+                        → Reset PIN → confirm → repository.reset() (erases)
+                          → Navigation go /secret
 ```
 
 ---

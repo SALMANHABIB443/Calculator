@@ -92,9 +92,10 @@ void main() {
     });
 
     test('keeps a negative sign in front of its term', () {
-      // D-85: a negative operand is written inside a group, so the sign is
-      // printed with the digits it belongs to rather than floating on its own.
-      expect(displayOf('()−1000()×=').expression, '(−1,000 ×');
+      // A negative operand is written inside a group (D-84), so the line
+      // prints the bracket, the sign and the digits as the parts they are —
+      // the same spacing rule every other part of the expression gets.
+      expect(displayOf('()−1000()×5=').expression, '( − 1,000 ) × 5');
     });
 
     test('keeps a staged sign off the line until it becomes a number', () {
@@ -105,7 +106,7 @@ void main() {
     });
 
     test('prints the signed operand once a digit completes it', () {
-      expect(displayOf('2+()−5').expression, '2 + -5');
+      expect(displayOf('2+()−5').expression, '2 + ( − 5');
     });
   });
 

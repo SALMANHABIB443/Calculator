@@ -56,7 +56,8 @@ class CalculatorScreen extends ConsumerWidget {
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final width =
-                    constraints.maxWidth - AppSpacing.screenHorizontal * 2;
+                    constraints.maxWidth -
+                    AppSpacing.calculatorSideMargin * 2;
 
                 // D-54: the display's reserved height is read from the ambient
                 // font scale, so the keypad is sized against the space the
@@ -121,15 +122,18 @@ class CalculatorScreen extends ConsumerWidget {
                     // which is what D-69 wanted the result's right edge to line
                     // up with, extended to the header.
                     AppPageHeader(
+                      horizontalPadding: AppSpacing.calculatorSideMargin,
                       leading: AppIconButton(
                         icon: Icons.menu,
                         tooltip: 'Settings',
+                        size: AppSizes.calculatorHeaderAction,
                         onPressed: () => context.push(AppRoutes.settings),
                       ),
                       actions: <Widget>[
                         AppIconButton(
                           icon: Icons.history,
                           tooltip: 'History',
+                          size: AppSizes.calculatorHeaderAction,
                           onPressed: () => context.push(AppRoutes.history),
                         ),
                       ],
@@ -172,9 +176,9 @@ class CalculatorScreen extends ConsumerWidget {
                     Divider(
                       height: AppSpacing.calculatorDisplayGap,
                       thickness: 1,
-                      indent: AppSpacing.screenHorizontal,
-                      endIndent: AppSpacing.screenHorizontal,
-                      color: context.appColors.textSecondary,
+                      indent: AppSpacing.calculatorSideMargin,
+                      endIndent: AppSpacing.calculatorSideMargin,
+                      color: context.appColors.ruleOnPage,
                     ),
                     SizedBox(
                       width: gridWidth,
@@ -212,6 +216,10 @@ class CalculatorScreen extends ConsumerWidget {
 /// state. It passes `bordered: false`, because a bordered box on the display's
 /// own row read as a screen-level action competing with the result above it
 /// rather than as an edit to that result.
+///
+/// The glyph is this app's own [AppBackspaceIcon] rather than Material's
+/// `Icons.backspace_outlined`, so that the calculator's `⌫` and the Secret Mode
+/// pad's are the same drawing (**D-112**).
 class _BackspaceButton extends ConsumerWidget {
   const _BackspaceButton();
 
@@ -223,10 +231,17 @@ class _BackspaceButton extends ConsumerWidget {
     final enabled = ref.watch(
       calculatorControllerProvider.select((state) => state.canBackspace),
     );
+    final colors = context.appColors;
 
     return AppIconButton(
       key: const Key('calculator-backspace'),
-      icon: Icons.backspace_outlined,
+      // The grey is spelled out here rather than left to `AppIconButton`'s
+      // `disabledColor`, because a painted glyph does not read the button's
+      // `foregroundColor` the way a Material one does — the same reason the
+      // History header's trash carries its own colour (`app_icon_button.dart`).
+      iconWidget: AppBackspaceIcon(
+        color: enabled ? colors.textPrimary : colors.textSecondary,
+      ),
       tooltip: 'Backspace',
       // Borderless: this edits the number sitting directly above it, so it is
       // drawn as a bare glyph rather than in the bordered square the screen-level

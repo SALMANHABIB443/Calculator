@@ -98,13 +98,19 @@ class AppType {
   TextStyle get selectionCount =>
       AppTypography.selectionCount.copyWith(color: palette.selectionAccent);
 
-  /// Label on a calculator key.
+  /// Label on a digit key.
   ///
   /// The one token with no colour of its own: a key's label takes the colour of
   /// whatever fill it is printed on, so the variant decides it per key rather
   /// than the scale deciding it once. Delegating keeps the size and weight in
   /// one place all the same.
   TextStyle get buttonLabel => AppTypography.buttonLabel;
+
+  /// Label on an operator key (`+ − × ÷ =`) — larger than a digit's (D-111).
+  TextStyle get buttonOperatorLabel => AppTypography.buttonOperatorLabel;
+
+  /// Label on a function key (`AC`, `+/−`, `%`) — D-111.
+  TextStyle get buttonFunctionLabel => AppTypography.buttonFunctionLabel;
 }
 
 /// Reads the palette-bound type scale off a [BuildContext].
@@ -259,6 +265,35 @@ abstract final class AppTypography {
   static const TextStyle buttonLabel = TextStyle(
     fontSize: 25,
     fontWeight: FontWeight.w500,
+  );
+
+  /// Label on an **operator** key — `+ − × ÷` and `=` (D-111).
+  ///
+  /// **32, not 25.** Every key used to carry one size, and at 25 the operator
+  /// glyphs were the *quietest* thing on the pad: a `−` is a single short bar and
+  /// an `=` is two, so at a digit's size they read as smaller than the digits
+  /// beside them even though they are the keys the pad is organised around. The
+  /// operator column is the calculator's spine — one full column, orange, with
+  /// `=` under it — and it is now sized as such.
+  ///
+  /// w600 rather than w500 as well: a bar has less ink to carry than a numeral,
+  /// so a larger glyph and a heavier one are what actually make it hold the eye.
+  static const TextStyle buttonOperatorLabel = TextStyle(
+    fontSize: 32,
+    fontWeight: FontWeight.w600,
+  );
+
+  /// Label on a **function** key — `AC`, `+/−`, `%` (D-111).
+  ///
+  /// **24, slightly under the digit's 25, and that is the opposite move.** These
+  /// are the only *multi-character* labels on the pad: `AC` and `+/−` are two
+  /// glyphs in the width a single operator now claims, so at 25 they are the
+  /// labels that get squeezed (the `FittedBox` shrinks them, and a shrunken
+  /// label is worse than a deliberately smaller one). `%` and `+/−` carry the
+  /// heavier weight to match the operator keys they sit beside.
+  static const TextStyle buttonFunctionLabel = TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
   );
 
   /// “Clear History” at the foot of the history screen (desing.md §3.1).

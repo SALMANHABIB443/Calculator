@@ -180,18 +180,21 @@ void main() {
   });
 
   group('keypad sizing', () {
-    testWidgets('keys match the diameter measured off the mockup (R-2, D-60)', (
+    testWidgets('keys are larger than the mockup measured (R-2, D-60, D-110)', (
       tester,
     ) async {
       await pumpCalculator(tester, surface: mockupSize);
 
       // Phase 9 read the mockup pixels and measured the five key rows at
-      // 86.5–87.5 logical px (174–178 px at 2x). Phase 1 could only report a
-      // 85–95 range, which is what left R-2 open; the range is now a band with
-      // a known cause. 88 is the cell the grid derives from the corrected 24 px
-      // margin, and 87.5 is the top of the measured band, so 88.5 is the ceiling.
+      // 86.5–87.5 logical px (174–178 px at 2x), which closed R-2 at an 88 px
+      // cell derived from the then-corrected 24 px margin. **D-110 redesigned
+      // the layout to be more spacious** and deliberately moved off that
+      // measurement: a 16 px side margin with a 16 px gap derives 90.5, so the
+      // keys are now 2.5 px wider *and* have 2 px more air on every side. The
+      // old band would fail here, which is the point — this is the assertion
+      // that will catch a silent return to the compressed layout.
       final size = tester.getSize(keyFor(CalculatorKey.digit5));
-      expect(size.width, inInclusiveRange(86, 88.5));
+      expect(size.width, inInclusiveRange(90, 91));
       expect(size.width, size.height, reason: 'a round key must be square');
     });
 
@@ -305,13 +308,14 @@ void main() {
       expect(resultText(tester), 'Error');
     });
 
-    testWidgets('computes left to right and groups the result (D-17, D-18)', (
+    testWidgets('binds × and ÷ over + and −, then groups (D-84, D-18)', (
       tester,
     ) async {
       await pumpCalculator(tester);
 
+      // D-84 supersedes D-17: 2 + (3 × 4) is 14, not the left-to-right 20.
       await tapSequence(tester, '2+3×4=');
-      expect(resultText(tester), '20');
+      expect(resultText(tester), '14');
 
       await tapSequence(tester, 'AC');
       await tapSequence(tester, '125×8=');
@@ -356,7 +360,7 @@ void main() {
       expect(resultText(tester), '7');
     });
 
-    testWidgets('percent and sign toggle both reach the display', (
+    testWidgets('percent and a typed negative reach the display', (
       tester,
     ) async {
       await pumpCalculator(tester);
@@ -364,9 +368,11 @@ void main() {
       await tapSequence(tester, '50%');
       expect(resultText(tester), '0.5');
 
+      // The ± key is gone (D-84): a negative operand is written inside a
+      // group, and `=` has to show the signed result rather than an error.
       await tapSequence(tester, 'AC');
-      await tapSequence(tester, '5±');
-      expect(resultText(tester), '-5');
+      await tapSequence(tester, '2+()−5()=');
+      expect(resultText(tester), '-3');
     });
 
     testWidgets('a leading zero is replaced rather than accumulated', (
@@ -444,7 +450,9 @@ void main() {
       expect(resultText(tester), '125');
 
       await tapBackspace(tester);
-      expect(expressionText(tester), '125');
+      // A lone number has no operation left, so the line goes blank; the
+      // number itself is what the result line below shows.
+      expect(expressionText(tester), '');
 
       await tapBackspace(tester);
       expect(expressionText(tester), '');
@@ -477,7 +485,7 @@ void main() {
 
       // The user is not trapped: the walk continues to `900` and into `90`.
       await tapBackspace(tester);
-      expect(expressionText(tester), '900');
+      expect(expressionText(tester), '');
       expect(resultText(tester), '900');
       expect(isEnabled(tester), isTrue);
 
@@ -507,7 +515,7 @@ void main() {
 
       await tapSequence(tester, '900+');
       await tapBackspace(tester);
-      expect(expressionText(tester), '900');
+      expect(expressionText(tester), '');
       // Before the fix the control was dead here, and the next digit printed
       // itself beside the stale `900` (`900 5` over a result of `5`).
       expect(isEnabled(tester), isTrue);

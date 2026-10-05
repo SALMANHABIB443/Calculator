@@ -74,7 +74,7 @@ List<HistoryEntry> threeEntries() => [
           as BoxDecoration;
 
   return (
-    fill: decoration.color ?? AppColors.surfaceRaised,
+    fill: decoration.color ?? AppColors.surface,
     outline: decoration.border == null
         ? null
         : (decoration.border! as Border).top.color,
@@ -157,7 +157,7 @@ void main() {
 
       // The chosen row is lifted off the page and outlined in the accent.
       expect(selected.fill, AppColors.surfaceSelected);
-      expect(selected.fill, isNot(AppColors.surfaceRaised));
+      expect(selected.fill, isNot(AppColors.surface));
       expect(selected.outline, AppColors.selectionAccent);
 
       // The unchosen row keeps its resting fill and its *resting* outline —
@@ -165,7 +165,7 @@ void main() {
       // gives every card a 1 px outline the way Ethar's `_appCard` does. What
       // still has to hold is that selection does not leak onto it, so the
       // assertion is that its outline is the resting one and not the accent.
-      expect(resting.fill, AppColors.surfaceRaised);
+      expect(resting.fill, AppColors.surface);
       expect(resting.outline, AppColors.cardBorder);
       expect(resting.outline, isNot(AppColors.selectionAccent));
 

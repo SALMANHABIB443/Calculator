@@ -25,11 +25,15 @@ Implementation follows [`docs/phases.md`](docs/phases.md). Phases 1–10 are
 | 8 | Integration, Navigation & Cross-Cutting Concerns | **Complete** |
 | 9 | UI/UX Matching, Testing & Bug Fixing | **Complete** |
 | 10 | Production Build & Release Preparation | **Complete** — 2 external gates open |
+| 11 | Secret Mode | **Complete** |
 
 The app is **feature-complete** and **release-ready from a source standpoint**:
-463 passing tests, a clean `flutter analyze`, and a signed release APK, AAB,
-and per-ABI split APKs that verify. See [`store/`](store/) for the listing
-copy, generated assets, and the publication checklist.
+724 passing tests with 4 skipped, a clean `flutter analyze`, and a signed release
+APK, AAB, and per-ABI split APKs that verify. Three tests fail, all in the Settings
+Theme row — `accessibility_test.dart` and `settings_screen_test.dart` still assert
+the old inline-toggle shape while `D-90`/`D-92` made that row a picker, so the row
+and its three assertions are out of step with each other. See [`store/`](store/)
+for the listing copy, generated assets, and the publication checklist.
 
 **Two things block publication, and neither is in this repository:** the app
 ships no upload keystore (release builds fail loudly without a
@@ -46,7 +50,9 @@ field lengths. It also caught two false claims in its own store copy and
 corrected them — the details are in [`docs/phases.md`](docs/phases.md) Phase 10.
 
 **Read [`docs/DECISIONS.md`](docs/DECISIONS.md) before changing anything** — it is
-the authoritative record of every product and technology decision (`D-01` … `D-72`).
+the authoritative record of every product and technology decision (`D-01` … `D-113`).
+Numbers are not contiguous: a few are reserved by decisions that were folded into
+neighbouring records rather than written up.
 
 One earlier result is worth knowing before touching the design system: Phase 9
 compared every screen against the mockup **pixels** — the first phase able to;
@@ -150,8 +156,9 @@ test/
 └── integration/       # full journeys on a real device
 ```
 
-421 tests pass as of Phase 10, with 4 skipped — the opt-in store-screenshot test
-described below. `test/widget/design_system_test.dart` asserts every
+421 tests passed as of Phase 10; **724 pass now**, with 4 skipped — the opt-in
+store-screenshot test described below — and 3 failing on the Settings Theme row (see
+**Status**). `test/widget/design_system_test.dart` asserts every
 component against its token values — the palette hexes, the type scale, the switch
 tracks, the screen margin — so a component that stops consuming the design system
 fails the suite rather than drifting quietly. Golden image tests were considered and
@@ -201,8 +208,9 @@ lib/
 │   ├── calculator/            # domain/ engine, presentation/ screen + widgets
 │   ├── history/               # data/ repository, domain/ entry, presentation/
 │   ├── settings/              # domain/ AppSettings, data/ repository
-│   ├── secret/                 # Hidden Secret Mode — SPECIFIED, not implemented
-│   │                           # (D-82, D-83, D-84, D-85)
+│   ├── secret/                 # Hidden Secret Mode: domain/ SecretCode, data/ repository,
+│   │                           # presentation/ lockout notifier + 5 screens
+│   │                           # (D-82, D-83, D-84, D-85, D-86, D-88, D-113)
 │   ├── about/                 # presentation/
 │   └── legal/                 # data/ policy text (D-68), presentation/ screens (D-07)
 └── routing/
@@ -301,15 +309,16 @@ calculation has no completed state), its 32 px selection circle (this card's
 trailing slot holds D-76's 28 px chevron/checkbox pair), and its orange selection
 accent (D-76 established that selection is a mode, not a primary action).
 
-### Secret Mode — specified, not implemented (`D-82` … `D-85`)
+### Secret Mode — shipped (`D-82` … `D-88`, `D-113`)
 
-**Documentation only.** No `lib/` or `test/` code was added or changed. This entry records
-what has been *decided and specified*, so nothing here should be read as shipping.
+**Built.** Secret Mode exists in `lib/features/secret/`: the domain type, the repository, the
+lockout notifier, and five screens, with unit, repository, and widget tests in
+`test/unit/secret_*_test.dart` and `test/widget/secret_flow_test.dart`.
 
-Secret Mode is a hidden area: hold the History screen's bottom **Clear History** button for
-five seconds and enter a four-digit PIN (`0000` by default). Behind it sits a blank screen
-with one overflow button in the top-left, leading to a settings page holding a single
-**Change PIN** row.
+It is a hidden area: hold the History screen's bottom **Clear History** button for five seconds
+and enter a four-digit PIN (`0000` by default). Behind it sits a blank screen with one overflow
+button in the top-left and a floating home button, leading to a settings page holding **Change
+PIN** and **Reset PIN** rows.
 
 **Decided** — in [`docs/DECISIONS.md`](docs/DECISIONS.md)
 
@@ -324,17 +333,22 @@ with one overflow button in the top-left, leading to a settings page holding a s
 - `D-84` — the secret screen is **blank**: one shared `AppIconButton` (`more_vert`) in
   the top-left, no title, no copy, no illustration, no back arrow, and **no new design
   token**.
-- `D-85` — a wrong code clears and shakes; there is **no lockout** and no attempt counter.
+- `D-85` — the three-step Change PIN flow, and the original "a wrong code clears and
+  shakes, with **no lockout**". **Reversed by `D-88`.**
+- `D-86` — a **Reset PIN** row that erases the stored code, and the floating home button.
+  Its "Forgot PIN?" link on the lock screen was **removed by `D-88`**.
+- `D-88` — three wrong codes lock the pad for **30 seconds**, the deadline persists across a
+  restart, and the lock screen says `Wrong PIN` rather than stopping silently.
+- `D-113` — each Change PIN step names itself ("Enter current PIN", "Enter new PIN",
+  "Confirm new PIN"), states its own error, keeps the new code until the confirmation matches,
+  and confirms the change before returning.
 
-**Specified** — `feature.md` §G (FEAT-SEC-001…005), `prd.md` FR-007 and AC-017…021,
+**Specified** — `feature.md` §G (FEAT-SEC-001…006), `prd.md` FR-007 and AC-017…022,
 `desing.md` §6.8–§6.10, `struction.md` §7/§10/§14/§16, `phases.md` Phase 11.
 
-**Still to do:** the gesture detector, `SecretCode`, the repository, the four screens, and
-the tests — none of which exist yet. Phase 11's known limitations say so plainly.
-
 **What it is not:** authentication. It is a privacy affordance against casual browsing. The
-PIN is readable on a rooted device, four wrong guesses cost nothing, and a forgotten PIN
-has no in-app recovery.
+PIN is readable on a rooted device, a 30-second lockout slows brute force without ending it,
+and a forgotten PIN has no in-app recovery — the reset row is behind the code.
 
 ### Header port (`D-74`)
 
@@ -435,6 +449,41 @@ needed.
   group off the fold.
 - `store/play/screenshots/02-history.png` is stale and needs
   `tool/generate_assets.ps1` to re-render.
+
+---
+
+### Calculator layout redesign — spacious keys (D-110)
+
+The calculator was the one screen whose own arithmetic made it look cramped: its
+keypad derives a square cell from `(width − 2·margin − 3·gap) / 4`, so the app's
+24 px *card* margin was being spent as air on a screen that has no cards. The
+layout was re-derived to be larger and more open, matching the reference
+calculator's proportions:
+
+- `AppSpacing.calculatorSideMargin = 16` — a **new** token. The calculator's
+  header, display, and keypad now ride one column on 16 px;
+  `screenHorizontal` stays 24 for every card edge in the app, and
+  `AppPageHeader.horizontalPadding` is what lets the two coexist.
+- `CalculatorKeypad.keyGap` 14 → **16**, bought together with the tighter margin
+  so the cell comes out both **larger** (90.5 px on the 442-wide reference
+  canvas, was 88) *and* more generously spaced. Widening the gap alone would have
+  shrunk the keys.
+- `CalculatorKeypad.maxCellSize` 132 → **160**, so a tablet or a resized desktop
+  window gets genuinely large keys without ever rendering button-sized buttons.
+- `AppSizes.calculatorHeaderAction = 56` with a matching glyph ratio, applied
+  through the new optional `AppIconButton.size`. The other five headers keep 48.
+  A 48 px box above a 90 px key reads as a header drawn for a smaller calculator.
+
+Unchanged on purpose: the palette, every key label and variant, the row/column
+arrangement, the wide `0` pill, the two-line right-aligned display, the backspace
+row, and every other screen. No element was added.
+
+`calculator_layout_test.dart` and `calculator_screen_test.dart` re-derive the
+measured geometry (90.5 / 410 / 516.5), and `header_alignment_test.dart` now
+measures the calculator's bar against the keys below it rather than against the
+secondary screens' margin — with a second test pinning those to 24 / 48, so the
+calculator's margin cannot quietly become the app's. Full detail in
+`D-110`, [`docs/DECISIONS.md`](docs/DECISIONS.md).
 
 ---
 

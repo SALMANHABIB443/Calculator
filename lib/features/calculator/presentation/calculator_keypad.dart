@@ -14,20 +14,25 @@ class CalculatorKeypad extends StatelessWidget {
     super.key,
   });
 
-  /// Gap between neighbouring keys, in logical px.
+  /// Gap between neighbouring keys, in logical px (**D-110**).
   ///
   /// desing.md §4 asks for "evenly spaced circular buttons with consistent
-  /// gaps" without a value. Phase 9 measured the mockup pixels and found the
-  /// horizontal gap at 13 px and the vertical gap at 15 px; 14 is the midpoint
-  /// and is within 1 px of both, so the grid uses one value for both axes
-  /// rather than a token per axis for a difference this small (**D-60**).
+  /// gaps" without a value, and Phase 9 measured the original mockup at 13 px
+  /// horizontally and 15 px vertically, which D-60 settled on the 14 px midpoint
+  /// for both axes. **D-110 raises it to 16** as part of the spacious-layout
+  /// redesign: a wider gap is what makes a big key read as a separate object
+  /// rather than as one blob, and the cells stay large because the screen's side
+  /// margin tightened by the same 8 px in total (D-69's grid maths below).
+  ///
+  /// It is still one value for both axes rather than a token per axis
+  /// (**D-60**) — a 2 px difference in a gap is not worth a second number.
   ///
   /// Phase 1 could only measure a *range* of 85–95 px for the keys (R-2), which
   /// is why `CalculatorButton` sizes from its box instead of from a diameter
-  /// token: the grid is the only place the geometry lives (D-27). Once the
-  /// screen margin was corrected to its measured 24 px in Phase 9, the grid
-  /// maths on the 442×890 mockup canvas yields an 88 px cell — inside the
-  /// 86.5–87.5 px the key rows actually measure — which closed R-2.
+  /// token: the grid is the only place the geometry lives (D-27). The grid maths
+  /// on the 442×890 reference canvas reads `(442 - 2*16 - 3*16) / 4 = 90.5`,
+  /// which is the cell D-110 landed on — 2.5 px larger than the 88 the old
+  /// 24 px margin and 14 px gap produced, with 2 px more air on every side of it.
   ///
   /// The gap is laid out as a real child rather than reserved in arithmetic
   /// (**D-69**). A reserved gap is not a gap: the rows used to be built from
@@ -35,11 +40,11 @@ class CalculatorKeypad extends StatelessWidget {
   /// neighbour and each row came up `keyGap × 3` short of the width
   /// [gridWidth] declares.
   ///
-  /// It stays at 14 on every screen, and cannot usefully grow (**D-69**): while
+  /// It stays at 16 on every screen, and cannot usefully grow (**D-69**): while
   /// the grid is width-bound its height is `1.25 × width + keyGap / 4`, so
   /// widening the gap buys 1.75 px of height for 5.25 px of key diameter, and
   /// where the height is the binding axis the grid already fills it exactly.
-  static const double keyGap = 14;
+  static const double keyGap = 16;
 
   static const int columnCount = 4;
   static const int rowCount = 5;
@@ -65,10 +70,15 @@ class CalculatorKeypad extends StatelessWidget {
   ///
   /// A genuine upper bound, unlike the floor above: it only ever shrinks the
   /// cell, so it can never overflow its box. Without it a 1280×1600 window
-  /// would derive a 268 px key from its own width (**D-69**). Nothing reaches
-  /// it in portrait — the reference 442×890 canvas derives 88 — but it is what
-  /// makes a resizable desktop window render a calculator-sized calculator.
-  static const double maxCellSize = 132;
+  /// would derive a 268 px key from its own width (**D-69**). **D-110 raises it
+  /// 132 → 160**, which is the point of the spacious redesign on a large
+  /// surface: the panel cap (480) alone still allows a 111 px cell, and a key
+  /// that large is not the bug the cap was added to prevent — the 268 px one
+  /// was. A 160 px key is a calculator key on a tablet; it is still a
+  /// calculator. Nothing reaches the ceiling in portrait on a phone — the
+  /// reference 442×890 canvas derives 90.5 — but it is what stops a desktop
+  /// window from rendering buttons the size of the app icon.
+  static const double maxCellSize = 160;
 
   /// Width of the box this grid lays out in.
   ///

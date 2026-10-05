@@ -31,8 +31,14 @@ const Size reference = Size(442, 890);
 /// The `prd.md` §12 touch-target floor.
 const double touchFloor = 44;
 
-/// The pad's ceiling: the calculator's own measured key (D-60).
-const double pinCeiling = 88;
+/// The pad's ceiling: the calculator's own key (D-60), on the reference canvas.
+///
+/// **86, not 88.** D-110 widened the calculator's `keyGap` to 16, which moved
+/// its measured key to `(442 − 48 − 16×3) / 4 = 86.5`. An 88 ceiling here would
+/// have made the "smaller echo" larger than the instrument it echoes — the
+/// precise inversion this ceiling exists to prevent — so the two are kept
+/// together and the relationship below is what actually guards them.
+const double pinCeiling = 86;
 
 /// Sub-pixel slack, for the same reason `calculator_layout_test.dart` keeps one:
 /// every rect here is a sum of tokens, and the regression being guarded is tens
@@ -79,12 +85,12 @@ Rect digitRect(WidgetTester tester, String label) =>
 /// The rect of the backspace key.
 ///
 /// Found through its **glyph**, then walked up to the enclosing `Material` —
-/// `find.byIcon` alone would measure the 22 px icon rather than the key it sits
-/// in, and the key is what has to be square. `_BackspaceKey` draws its own
+/// the glyph finder alone would measure the 22 px icon rather than the key it
+/// sits in, and the key is what has to be square. `_BackspaceKey` draws its own
 /// `Material` rather than reusing `CalculatorButton`, so that is the nearest
 /// common ancestor of the glyph and the button box.
 Rect backspaceRect(WidgetTester tester) {
-  final glyph = find.byIcon(Icons.backspace_outlined);
+  final glyph = find.byType(AppBackspaceIcon);
   final key = find.ancestor(of: glyph, matching: find.byType(Material));
   return tester.getRect(key.first);
 }
@@ -95,7 +101,7 @@ Rect dotsRect(WidgetTester tester) =>
 
 void main() {
   group('the pad is a smaller echo of the calculator, not a second instrument', () {
-    testWidgets('the reference canvas renders 88 px keys, not 123', (
+    testWidgets('the reference canvas renders 86 px keys, not 123', (
       tester,
     ) async {
       await openPinScreen(tester);
@@ -199,6 +205,106 @@ void main() {
 
       expect(zero.center.dx, closeTo(two.center.dx, slack));
       expect(zero.left, greaterThan(backspace.right));
+    });
+  });
+
+  group('the prompt is anchored to the bottom, not centred (D-89)', () {
+    /// The height `SecretPinField` is actually given on the unlock screen: the
+    /// window less the screen's own top and bottom padding.
+    ///
+    /// Derived from the tokens rather than written as a number, because the
+    /// anchor is a fraction of *this* box — a hard-coded 842 would pass on the
+    /// reference canvas and quietly assert the wrong thing the moment a padding
+    /// token moved.
+    double fieldHeight(Size window) =>
+        window.height - AppSpacing.headerTopGap - AppSpacing.bottomSafe;
+
+    /// The gap the brief asks for, as a share of the box the field is given.
+    const double anchor = 0.20;
+
+    testWidgets('the pad sits 20% of the height above the bottom edge', (
+      tester,
+    ) async {
+      await openPinScreen(tester);
+
+      // The bottom row is the bottom of the pad, so its lower edge is what the
+      // anchor is stated against — not the dots, and not the pad's box.
+      final padBottom = digitRect(tester, '0').bottom;
+      final expected = reference.height -
+          AppSpacing.bottomSafe -
+          fieldHeight(reference) * anchor;
+
+      expect(padBottom, closeTo(expected, slack));
+    });
+
+    testWidgets('the space is one band above the prompt, not split around it', (
+      tester,
+    ) async {
+      await openPinScreen(tester);
+
+      // The defect in its own terms, and the reason it cannot be stated as
+      // "nothing is near the middle": the pad is 380 px tall and legitimately
+      // reaches past the halfway line, so what is being asserted is not where
+      // the pad is but **how the leftover height is spent**.
+      //
+      // Under the old `Center` the slack was shared — half above the prompt and
+      // half below the pad, the two equal by construction. Anchored, all of it
+      // collects above and the only band below is the anchor itself, so the one
+      // above is necessarily the larger. Equal bands would mean the group had
+      // drifted back to the middle, which is exactly the regression guarded.
+      final above = tester.getRect(find.text('Enter your PIN')).top -
+          AppSpacing.headerTopGap;
+      final below = reference.height -
+          AppSpacing.bottomSafe -
+          digitRect(tester, '0').bottom;
+
+      expect(above, greaterThan(below));
+      // And the prompt is clear of the top padding rather than pinned to it —
+      // the other half of "not centred", since a centred group of this height
+      // happens to clear it by only a few px.
+      expect(above, greaterThan(reference.height * 0.2));
+    });
+
+    testWidgets('the gap is a share of the height, so it scales with the window', (
+      tester,
+    ) async {
+      // Twice the reference height: a fixed px gap would halve its relationship
+      // to the screen here, and the pad would ride much closer to the floor than
+      // the same fraction on a phone.
+      const tall = Size(1280, 1600);
+      await openPinScreen(tester, at: tall);
+
+      final padBottom = digitRect(tester, '0').bottom;
+      final expected = tall.height -
+          AppSpacing.bottomSafe -
+          fieldHeight(tall) * anchor;
+
+      expect(padBottom, closeTo(expected, slack));
+      // And the pad is still the calculator's key, not stretched to fill.
+      expect(digitRect(tester, '5').width, closeTo(pinCeiling, slack));
+    });
+
+    testWidgets('a short window gives up the gap before it gives up the pad', (
+      tester,
+    ) async {
+      // The order the two claims are made in. A window too short for both the
+      // full-size pad and a fifth of its height must shrink the pad and still
+      // honour the anchor — the reverse would push the group off the bottom.
+      const short = Size(360, 560);
+      await openPinScreen(tester, at: short);
+
+      expect(tester.takeException(), isNull);
+
+      final padBottom = digitRect(tester, '0').bottom;
+      final expected =
+          short.height - AppSpacing.bottomSafe - fieldHeight(short) * anchor;
+
+      expect(padBottom, closeTo(expected, slack));
+      // Shrunk, but never below the touch floor it has to keep.
+      expect(
+        digitRect(tester, '5').shortestSide,
+        greaterThanOrEqualTo(touchFloor),
+      );
     });
   });
 

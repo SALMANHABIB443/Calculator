@@ -225,17 +225,32 @@ and an edit that moves both is deliberate.
 20** in Phase 9 (D-60). The card edges in the History, Settings, and About mockups all sit
 at logical x ≈ 24, consistently across three independently rendered images.
 
-This one token also **fixes the calculator key size**, because the keypad derives its cells
-from the width left over after the margins. At the 442 × 890 mockup canvas:
+This one token also **fixed the calculator key size** (D-60), because the keypad derives its
+cells from the width left over after the margins. At the 442 × 890 mockup canvas:
 
 ```
 margin 20 -> cell (442 - 40 - 3*14) / 4 = 90.0   too large
-margin 24 -> cell (442 - 48 - 3*14) / 4 = 88.0   matches the pixels
+margin 24 -> cell (442 - 48 - 3*14) / 4 = 88.0   matched the pixels
 ```
 
 88 px is inside the 86.5–87.5 px the key rows actually measure, which is how correcting the
 margin closed **R-2**. The key diameter was never an independent value; measuring keys
 alone could only ever bracket a range.
+
+**The calculator left this margin in D-110.** The arithmetic above is a *cost*, and the
+calculator is the one screen that has no cards to align with — it is a 4-column grid whose
+cell is whatever width it is handed minus the margins. The spacious redesign therefore gave
+the calculator column `calculatorSideMargin = 16` and widened `keyGap` 14 → 16 together:
+
+```
+margin 16, gap 14 -> (442 - 32 - 42) / 4 = 89.5
+margin 16, gap 16 -> (442 - 32 - 48) / 4 = 90.5   the D-110 geometry
+```
+
+Widening the gap *alone* would have shrunk the keys, and tightening the margin alone would
+have left them touching; only the pair buys a bigger key **and** more air around it. Every
+card edge in every other screen is still at 24 — `screenHorizontal` did not move, and
+`calculatorSideMargin` is a second token precisely so it could not.
 
 ### 4.4 Fixed sizes
 
@@ -248,6 +263,7 @@ alone could only ever bracket a range.
 | `brandIcon` | 88 | fixed | The About hero brand mark |
 | `historyCardMinHeight` | 88 | **min** | A History card — see below |
 | `calculatorPanelMaxWidth` | 480 | fixed | The calculator's header + display + keypad column |
+| `calculatorHeaderAction` | 56 | fixed | The calculator's Settings and History buttons — its own scale, since a 48 px box above a 90 px key reads as a header for a smaller app (D-110) |
 
 **Why the minimums are minimums.** A hard `SizedBox(height: 88)` on a History card would be
 the one value that is wrong on every screen except a 1× one. At 1× its content settles at
@@ -279,14 +295,24 @@ AC      +/−     %       ÷
 Verified against mockup `02_22_43`: the operator column (`÷ × − +`) and `=` are orange, the
 `0` key spans two columns, and there is **no backspace key** (D-19).
 
-**Variants.** Each owns its own fill and label colour, so a screen can never pair a fill with
-the wrong foreground:
+**Variants.** Each owns its own fill and label colour **and its own label size**,
+so a screen can never pair a fill with the wrong foreground, or paint the orange
+column at the digit size (D-111):
 
-| Variant | Keys | Fill | Label |
-|---------|------|------|-------|
-| `digit` | `0`–`9`, `.` | `#1E1E1E` | `#FFFFFF` |
-| `operator` | `+ − × ÷` and `=` | `#F89508` | `#FFFFFF` |
-| `function` | `AC`, `+/−`, `%` | `#949494` | `#000000` |
+| Variant | Keys | Fill | Label | Label size |
+|---------|------|------|-------|------------|
+| `digit` | `0`–`9`, `.` | `#242428` | `#FFFFFF` | 25 / w500 |
+| `operator` | `+ − × ÷` and `=` | `#F89508` | `#FFFFFF` | **32 / w600** |
+| `function` | `AC`, `+/−`, `%` | `#A2A2A8` | `#000000` | **24 / w600** |
+
+**The keys are painted, not elevated (D-111).** A `Material` casts its elevation
+shadow in a colour the framework chooses — black in the dark theme — and the page
+is `#000000`, so a black shadow on a black page is invisible at *every* elevation
+value. `keyElevation` is therefore gone: the dark theme draws a faint **white
+halo** (`#1AFFFFFF`, blur 10, offset (0,2)) and the white theme an ordinary dark
+shadow (`#1F0F172A`), both from a `ShapeDecoration` outside the `Material`, plus
+a 1 px `keyBorder` (`#33333A` / `#E4E6EA`) — the outline is the only one of the
+three that says where a key *ends*.
 
 **Geometry is derived, never stored.**
 
@@ -750,10 +776,13 @@ both of those rules intact.
   tokens and the same `CalculatorButton` component, sized smaller (its cell is capped at the
   calculator's own measured 88 px key).
 
-**Wrong-code feedback.** The dots clear and the indicator **shakes** once, horizontally, then the
-screen returns to its empty state. No message, no counter, no delay, and **no lockout** (D-85) — the
-shake is the whole of the feedback, and it is there only to distinguish *wrong* from *nothing
-happened*.
+**Wrong-code feedback.** The dots clear and the indicator **shakes** once, horizontally, and a line under the
+dots reads **"Wrong PIN"** in `AppColors.danger`, with the dots themselves outlined in the same colour
+(**D-88**). The entry is cleared and the next attempt is accepted at once — **except** on the third wrong
+code in a row, which locks the pad for **30 seconds** and replaces the line with a countdown,
+"Too many attempts. Try again in 30s" (**D-88**, reversing D-85's "no lockout"). The message is there because
+a pad that has stopped accepting input without saying why is indistinguishable from a broken one; the
+lockout is there because 10⁴ codes are otherwise free in under a minute. Neither string ever names the code.
 
 **Accessibility.** The dots carry a `Semantics` label reporting how many digits have been entered,
 never their values; each key carries its digit as a label; the shake is `ExcludeSemantics`-free so
@@ -810,16 +839,33 @@ link opens, with the same wording, because it is the same problem and the same p
 is on the record in D-86: anyone who reaches this page can wipe the PIN in one tap.** The row is placed
 last because it is destructive and because the user browsing for "Change PIN" should not meet it first.
 
-**Change PIN flow.** Three consecutive screens in one route, each the §6.8 entry screen with a back
-arrow and no keypad differences:
+**Change PIN flow** (**D-85**, revised by **D-113**). Three consecutive screens in one route, each the
+§6.8 entry screen with no keypad differences:
 
-1. **Verify** — the current code. An incorrect code does not advance (D-85).
-2. **Enter** — the new four-digit code.
-3. **Confirm** — the new code again. A mismatch returns to step 2 with the dots cleared.
+1. **Verify** — the current code, under the prompt "Enter current PIN". An incorrect code does not advance
+   (D-85); it clears the entry and says **"Incorrect PIN"**.
+2. **Enter** — the new four-digit code, under "Enter new PIN". This step **cannot be wrong**: any four
+   digits is a legal new PIN, including the current one, so it advances on every entry and shows no error.
+3. **Confirm** — the code again, under "Confirm new PIN". A mismatch clears **only this screen**, says
+   **"PINs do not match"**, and re-asks step 3 with the candidate kept, so the user types their own code a
+   second time rather than choosing a third (**D-113**, replacing "a mismatch returns to step 2 with the
+   dots cleared").
+
+A match persists the code at once, shows **"PIN changed successfully"** in `textSecondary` in the same
+reserved status line, and returns to the secret settings page after **1200 ms**. The pause is deliberate:
+AC-021 persists the code *before* the flow ends so an interruption cannot lose it, which leaves the user
+owed an answer. The pad and the back arrow are inert while the line is up, and no `Snackbar` is
+introduced — the app has none, and this is the one screen that must not gain ink (D-84).
 
 Steps 2 and 3 exist as separate screens because a mistyped new PIN that is saved immediately locks
 the user out of the only page that can change it again (D-85). No step carries explanatory copy; the
-three are told apart by the header title alone.
+three are told apart by the **prompt line** alone.
+
+**The header control is a back arrow**, tooltip "Back", replacing `Icons.close`/"Cancel" (**D-113**), and it
+steps backwards instead of abandoning the flow: step 3 returns to step 2 with the candidate kept, step 2
+returns to step 1 with it discarded, step 1 leaves the flow. The system back gesture still pops the route
+from any step (D-56), which is safe because **nothing unconfirmed is ever written**: until the match, the
+candidate exists only in the screen's own memory.
 
 ---
 
@@ -1015,20 +1061,21 @@ AppTypography — 19 tokens, size / weight, §3
   buttonLabel 25/w500  bottomAction 17/w500  caption 12/w400  body 15/w400
   legalHeading 18/w600  selectionCount 20/w700
 
-AppSpacing — 12, §4.1
+AppSpacing — 13, §4.1
   screenHorizontal 24  cardPadding 16  sectionGap 32  xl 24  lg 16  md 12  sm 8
-  headerTopGap 24  bottomSafe 24  calculatorDisplayGap 24  historyCardGap 8
-  historyGroupGap 24
+  headerTopGap 24  bottomSafe 24  calculatorDisplayGap 24  calculatorSideMargin 16
+  historyCardGap 8  historyGroupGap 24
 
 AppRadius — 6, §4.2
   card 14  historyCard 14  tile 12  iconButton 12  dialog 20  button 999
 
-AppSizes — 7, §4.4
+AppSizes — 8, §4.4
   headerHeight 56 (min)  rowMinHeight 56 (min)  rowIcon 22  iconTouchTarget 48
   brandIcon 88  historyCardMinHeight 88 (min)  calculatorPanelMaxWidth 480
+  calculatorHeaderAction 56
 
 Feature-local — calculator_keypad.dart
-  keyGap 14  minTouchTarget 44  maxCellSize 132  columnCount 4  rowCount 5
+  keyGap 16  minTouchTarget 44  maxCellSize 160  columnCount 4  rowCount 5
   fallback cell 88 (CalculatorButton, unbounded boxes only)
   selectionCircle 28  selectionBorderWidth 2  (HistoryCard, §6.2.1)
   compactResultLength 10  (CalculatorDisplay, §3.2)

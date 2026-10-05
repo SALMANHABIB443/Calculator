@@ -30,8 +30,12 @@ import '../support/keypad_session.dart';
 import '../support/pump_app.dart';
 
 /// Reference canvas of mockup `02_22_43` (D-13), and the only size the
-/// mockup's measured geometry (24 px margins, 14 px gaps, 88 px keys) is
-/// stated against.
+/// mockup's measured geometry is stated against.
+///
+/// **D-110 changed the numbers on it**: the column now runs on a 16 px side
+/// margin with a 16 px gap, which derives a 90.5 px cell from this 442-wide
+/// canvas where the old 24 px margin and 14 px gap derived 88. The canvas is
+/// still the canvas — the geometry is what moved.
 const Size reference = Size(442, 890);
 
 /// The `prd.md` §12 floor, and the reservation
@@ -279,8 +283,11 @@ void main() {
       final right =
           reference.width - rectOf(tester, CalculatorKey.equals).right;
 
-      expect(left, closeTo(AppSpacing.screenHorizontal, slack));
-      expect(right, closeTo(AppSpacing.screenHorizontal, slack));
+      // D-110: the calculator's column runs on its own 16 px side margin, not
+      // the app's 24 px card margin — the grid derives its key size from
+      // whatever width it is given, so a wider margin is a *smaller key*.
+      expect(left, closeTo(AppSpacing.calculatorSideMargin, slack));
+      expect(right, closeTo(AppSpacing.calculatorSideMargin, slack));
       expect(
         left,
         closeTo(right, slack),
@@ -470,11 +477,12 @@ void main() {
     ) async {
       await pumpAt(tester, reference);
 
-      // The row costs 48 px of a fixed canvas. Reserving it in the screen's
-      // budget is what keeps it from being paid for out of the keypad, so the
-      // keys are still the measured 88 px rather than a shorter cell.
+      // The row costs 56 px of a fixed canvas — the backspace's own 48 plus the
+      // 8 the wider key leaves in it. Reserving it in the screen's budget is
+      // what keeps it from being paid for out of the keypad, so the keys are
+      // still the full cell rather than a shorter one.
       final key = rectOf(tester, CalculatorKey.digit5);
-      expect(key.width, inInclusiveRange(86, 88.5));
+      expect(key.width, inInclusiveRange(90, 91));
       expect(
         reference.height - rectOf(tester, CalculatorKey.equals).bottom,
         closeTo(AppSpacing.bottomSafe, slack),
@@ -520,9 +528,14 @@ void main() {
           // Symmetry is the invariant at every size. The absolute figure is
           // only 24 while the window is narrower than the capped panel — past
           // that the surplus is distributed to the margins on purpose (D-69),
-          // so the assertion becomes "at least the margin", not "exactly it".
+          // so the assertion becomes "at least the margin", not "exactly it". D-110
+          // moved the calculator onto its own 16 px margin, which is the
+          // number this half of the symmetry is now measured against.
           expect(left, closeTo(right, slack));
-          expect(left, greaterThanOrEqualTo(AppSpacing.screenHorizontal - slack));
+          expect(
+            left,
+            greaterThanOrEqualTo(AppSpacing.calculatorSideMargin - slack),
+          );
         },
       );
 
@@ -647,22 +660,25 @@ void main() {
       // The screen hands the grid a box and reads the grid's own answer back to
       // size the display, so the two agree by construction. These are the
       // numbers the mockup measured, and they are what proves the agreement
-      // rather than a tautology.
+      // rather than a tautology. D-110 re-derived them: the 16 px side margin
+      // and the 16 px gap give `(442 - 32 - 48) / 4 = 90.5`.
       final cell = CalculatorKeypad.cellSizeFor(
-        width: 442 - AppSpacing.screenHorizontal * 2,
+        width: 442 - AppSpacing.calculatorSideMargin * 2,
         height: 682,
       );
 
-      expect(cell, closeTo(88, 0.5));
-      expect(CalculatorKeypad.gridWidth(cell), closeTo(394, 0.5));
-      expect(CalculatorKeypad.gridHeight(cell), closeTo(496, 0.5));
+      expect(cell, closeTo(90.5, 0.5));
+      expect(CalculatorKeypad.gridWidth(cell), closeTo(410, 0.5));
+      expect(CalculatorKeypad.gridHeight(cell), closeTo(516.5, 0.5));
     });
 
     test('the measured gap is a gap on both axes', () {
       // desing.md §12.1 measured 13 px horizontally and 15 px vertically, and
-      // D-60 settled on the 14 px midpoint for both. The rendering has to match
-      // that decision or the measured geometry is only nominal.
-      expect(CalculatorKeypad.keyGap, 14);
+      // D-60 settled on the 14 px midpoint for both. D-110 widened it to 16 as
+      // part of the spacious redesign — bought together with the tighter margin,
+      // so the cell grew as well as the air around it. The rendering has to
+      // match the decision or the measured geometry is only nominal.
+      expect(CalculatorKeypad.keyGap, 16);
       expect(CalculatorKeypad.columnCount, 4);
       expect(CalculatorKeypad.rowCount, 5);
     });
@@ -671,7 +687,7 @@ void main() {
       // A cell larger than its box overflows it, so the floor cannot live in
       // `cellSizeFor` — which is why `maxCellSize` has no matching minimum.
       final tooTall = CalculatorKeypad.cellSizeFor(
-        width: 442 - AppSpacing.screenHorizontal * 2,
+        width: 442 - AppSpacing.calculatorSideMargin * 2,
         height: 40,
       );
 
@@ -693,14 +709,14 @@ void main() {
     });
   });
 
-  group('the measured geometry is unchanged (D-60, R-2)', () {
-    testWidgets('the reference canvas still renders 88 px keys', (
+  group('the measured geometry is unchanged (D-60, R-2, D-110)', () {
+    testWidgets('the reference canvas still renders its measured keys', (
       tester,
     ) async {
       await pumpAt(tester, reference);
 
       final key = rectOf(tester, CalculatorKey.digit5);
-      expect(key.width, inInclusiveRange(86, 88.5));
+      expect(key.width, inInclusiveRange(90, 91));
       expect(key.width, key.height, reason: 'a round key must be square');
     });
   });

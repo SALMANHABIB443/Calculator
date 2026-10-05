@@ -7,6 +7,7 @@ import '../../../core/design/app_spacing.dart';
 import '../../../core/widgets/core_widgets.dart';
 import '../../../routing/app_routes.dart';
 import 'secret_controller.dart';
+import 'secret_lockout_controller.dart';
 import 'secret_pin_field.dart';
 
 /// The way out of the PIN screen: one back arrow in the **top-left** corner,
@@ -147,51 +148,68 @@ class _SecretHomeButton extends StatelessWidget {
   }
 }
 
-/// Runs the reset from the PIN screen's "Forgot PIN?" link.
-///
-/// **Shares [SecretSettingsScreen]'s copy and behaviour on purpose** rather than
-/// having its own: a user who forgets their PIN is one person with one problem,
-/// and two dialogs that reset to the same place with different wording is exactly
-/// the drift the shared-token files exist to prevent. The confirm text names the
-/// default because this is the screen where that is the useful thing to say.
-///
-/// On success it stays on this screen and clears the entered digits, rather than
-/// navigating: the user is already looking at the prompt they need to answer
-/// next, and `0000` is the answer. Navigating away would make them find their
-/// way back here before typing the code the dialog just told them.
-Future<void> _resetFromPrompt(BuildContext context, WidgetRef ref) async {
-  final confirmed = await AppConfirmationDialog.show(
-    context,
-    title: SecretSettingsScreen.resetTitle,
-    message: SecretSettingsScreen.resetMessage,
-    confirmLabel: 'Reset',
-  );
-  if (!confirmed || !context.mounted) return;
-
-  await ref.read(secretControllerProvider.notifier).reset();
-}
-
 /// The black PIN prompt (FEAT-SEC-002, AC-018/AC-019).
 ///
-/// **No header, no title, no hint, and no error text** — all four are
-/// deliberate. A screen that names itself confirms it is real, and this is a
-/// hidden feature; the dots are the entire interface. The single exception is
-/// the one exit in the **top-left**: a back arrow, sharing the app's margin and
-/// its back-button component, and nothing more (D-87). It was a floating
-/// bottom-right home button until D-87 moved it, because a user who held the
-/// 0 key by accident could not otherwise reach the calculator.
-class SecretUnlockScreen extends ConsumerWidget {
+/// **No header, no title, and no hint** — all three are deliberate. A screen that
+/// names itself confirms it is real, and this is a hidden feature; the dots and
+/// the keypad are the entire interface. The one exit is in the **top-left**: a
+/// back arrow, sharing the app's margin and its back-button component, and
+/// nothing more (D-87).
+///
+/// **D-88 adds the one piece of feedback this screen had none of.** Under D-85 a
+/// wrong code cleared the dots and shook them and said nothing, because naming
+/// the failure on a screen that is itself a secret was judged worse than silence.
+/// That judgement still holds for *naming the feature*, and it still holds here —
+/// nothing on this screen says what it is. But silence cannot support a lockout,
+/// and a lockout cannot support itself: a screen that stops accepting input
+/// without saying why is indistinguishable from a broken one. So the feedback
+/// added is strictly about **the user's own last entry** — "Wrong PIN", and the
+/// countdown — and says nothing about the feature, the area, or the code (D-86,
+/// D-88).
+///
+/// **A `ConsumerStatefulWidget` where it used to be a `ConsumerWidget`**, for one
+/// reason: [SecretLockoutNotifier.restore] has to run when the screen mounts, so
+/// a lock left over from a previous run of the app is picked up rather than being
+/// silently dropped. The build itself watches the lockout, so the countdown and
+/// the enabled state follow the controller rather than being copied into local
+/// state that could fall out of step with it.
+class SecretUnlockScreen extends ConsumerStatefulWidget {
   const SecretUnlockScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SecretUnlockScreen> createState() =>
+      _SecretUnlockScreenState();
+}
+
+class _SecretUnlockScreenState extends ConsumerState<SecretUnlockScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Fire and forget: [restore] catches its own failures and the screen is
+    // usable before it resolves, so there is nothing here to await and no
+    // loading state to put in front of the keypad.
+    //
+    // Safe without `await` in `initState` — it reads `ref` only after its first
+    // `await`, and Riverpod permits that, so the context is not used across the
+    // frame this call returns from.
+    Future<void>.microtask(
+      () => ref.read(secretLockoutProvider.notifier).restore(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Watched, so the keypad enables and disables and the countdown repaints as
+    // the lock runs. The *state* is watched rather than the notifier's `isLocked`
+    // because that state changes on every tick, and the tick is what schedules
+    // the repaint — reading a plain bool would rebuild once and then sit still.
+    ref.watch(secretLockoutProvider);
+    final lockoutNotifier = ref.read(secretLockoutProvider.notifier);
+
     return Scaffold(
       backgroundColor: context.appColors.background,
       body: SafeArea(
         child: Padding(
-          // Horizontal room for the dots and the keypad's own padding. The
-          // vertical gap keeps the dot row off the top edge without centring the
-          // whole assembly, which would drift between phone heights.
           padding: const EdgeInsets.fromLTRB(
             AppSpacing.screenHorizontal,
             AppSpacing.headerTopGap,
@@ -201,12 +219,22 @@ class SecretUnlockScreen extends ConsumerWidget {
           child: Stack(
             children: <Widget>[
               SecretPinField(
-                // **Neither string names the code** (§6.8). The prompt says only
-                // that a PIN is wanted, and the recovery route is the link — which
-                // leads to a dialog that does name the default, to a user who has
-                // already tapped their way to asking for it (D-86).
+                // **Neither string names the code** (§6.8).
                 prompt: 'Enter your PIN',
-                onForgotPin: () => _resetFromPrompt(context, ref),
+                // The unlock screen is the one place a wrong code is genuinely
+                // wrong, so it is the one place the error state was first
+                // turned on. **Change PIN turned its own on later (D-113)**,
+                // which had been left off here on the reasoning that a user
+                // mistyping a code they just chose should not be shown red.
+                showErrors: true,
+                // The controller owns the wording because it owns the countdown:
+                // the seconds in the message and the seconds in the lock are the
+                // same fact, and deriving one of them here would let the two
+                // disagree.
+                lockoutMessage: lockoutNotifier.isLocked
+                    ? lockoutNotifier.lockoutMessage
+                    : null,
+                inputEnabled: !lockoutNotifier.isLocked,
                 // The one place a correct code acts: replace this screen with
                 // the secret screen rather than pushing on top of it. Leaving a
                 // PIN prompt beneath the secret screen would put a back gesture
@@ -216,13 +244,24 @@ class SecretUnlockScreen extends ConsumerWidget {
                   final accepted = await ref
                       .read(secretControllerProvider.notifier)
                       .verify(entered);
-                  if (!accepted || !context.mounted) return false;
-                  // `go`, not `push`: this **replaces** the unlock screen rather
-                  // than stacking on it. A PIN prompt left underneath would put
-                  // a back gesture that returns to it in front of the user
-                  // (struction.md §7, D-84).
-                  context.go(AppRoutes.secret);
-                  return true;
+
+                  if (accepted) {
+                    // Cleared *before* navigating, not after: the destination is
+                    // a different screen and a rebuild between the two would
+                    // show the user a keypad with three attempts left that they
+                    // have already spent.
+                    lockoutNotifier.registerSuccess();
+                    if (!context.mounted) return false;
+                    context.go(AppRoutes.secret);
+                    return true;
+                  }
+
+                  // Only a code that was actually judged wrong reaches here —
+                  // [SecretPinField] submits exactly once, on the fourth digit,
+                  // and only ever passes a well-formed code. An incomplete entry
+                  // cannot be counted, which is what "three wrong PINs" means.
+                  lockoutNotifier.registerFailure();
+                  return false;
                 },
               ),
               // The one exit on this screen, and the reason it is a top-left back
@@ -306,8 +345,10 @@ class SecretSettingsScreen extends ConsumerWidget {
 
   /// Confirmation copy for the reset.
   ///
-  /// **Public** because the PIN screen's "Forgot PIN?" link opens the same
-  /// dialog with the same wording — see `_resetFromPrompt`.
+  /// **Public** so a test can assert the wording without reaching through a
+  /// private field. It used to be reachable from a "Forgot PIN?" link on the lock
+  /// screen as well; **D-88 removed that link**, because with the 30-second lockout
+  /// in place it was an unlimited bypass of it.
   ///
   /// The message **names the default** on purpose, unlike everywhere else in
   /// this feature. §6.8 withholds the code so a screenshot cannot spoil it, but a

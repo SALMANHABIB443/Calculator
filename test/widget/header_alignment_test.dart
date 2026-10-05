@@ -3,13 +3,15 @@
 /// Three layout facts are asserted here that no other test covers, and each is
 /// something a framework default gets wrong on its own:
 ///
-/// 1. **The 24 px margin is an optical one, and it is the *box* that rides it.**
-///    The header actions are bordered squares [AppSizes.iconTouchTarget] on a
-///    side, so the box's own edge — not the glyph inside it — is what has to
-///    land on [AppSpacing.screenHorizontal], the line the cards, the section
-///    headers, and the keypad are already built on. A stock `IconButton` puts
-///    its glyph three pixels inside a line like that; only the rendered rect
-///    catches the drift, because a token assertion cannot see a position.
+/// 1. **The screen margin is an optical one, and it is the *box* that rides
+///    it.** The header actions are bordered squares on a side, so the box's own
+///    edge — not the glyph inside it — is what has to land on the screen's
+///    margin: [AppSpacing.screenHorizontal]'s 24 px for the secondary screens,
+///    and [AppSpacing.calculatorSideMargin]'s 16 px for the calculator, whose
+///    header heads a column of 90 px keys rather than a column of 24 px-margined
+///    cards (**D-110**). A stock `IconButton` puts its glyph three pixels inside
+///    a line like that; only the rendered rect catches the drift, because a token
+///    assertion cannot see a position.
 ///
 /// 2. **A secondary title is centred by geometry, not by a flag.** The header
 ///    is a row with an equal-width box (or blank) on each side, so the title's
@@ -27,6 +29,7 @@ library;
 import 'package:calculator/core/design/app_colors.dart';
 import 'package:calculator/core/design/app_spacing.dart';
 import 'package:calculator/core/widgets/core_widgets.dart';
+import 'package:calculator/features/calculator/domain/calculator_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -64,6 +67,14 @@ Finder backArrowFinder() => actionFinder(Icons.arrow_back);
 
 /// The rendered rect of the header's back button.
 Rect backArrowBox(WidgetTester tester) => actionBox(tester, Icons.arrow_back);
+
+/// The rendered rect of the calculator key [key] (**D-110**).
+///
+/// The calculator's header is judged against the column it heads rather than
+/// against the app's card margin, so this file needs to see where a key lands.
+Rect rectOfKey(WidgetTester tester, CalculatorKey key) => tester.getRect(
+  find.byKey(ValueKey('key-${key.name}')),
+);
 
 /// How far the back button's *box* sits from the screen's left edge.
 double backArrowInset(WidgetTester tester) => backArrowBox(tester).left;
@@ -206,7 +217,7 @@ void main() {
       );
     });
 
-    testWidgets('the calculator top bar agrees with the secondary screens', (
+    testWidgets('the calculator top bar rides the calculator column (D-110)', (
       tester,
     ) async {
       // The calculator panel is capped at [AppSizes.calculatorPanelMaxWidth] and
@@ -221,13 +232,54 @@ void main() {
 
       await pumpApp(tester);
 
-      expect(
-        actionBox(tester, Icons.menu).left,
-        closeTo(AppSpacing.screenHorizontal, _slack),
-      );
+      // D-110: the calculator's header is no longer on the app's 24 px card
+      // margin. Its header, display, and keypad are *one column* on a 16 px
+      // side margin, because the grid derives its key size from whatever width
+      // it is handed — so the assertion that matters is no longer "it agrees
+      // with the secondary headers" but "it agrees with the keys below it".
+      // Asserting the bare 16 px would pass on a bar floating inboard of
+      // everything else on the screen, which is the drift this file exists for.
+      const margin = AppSpacing.calculatorSideMargin;
+      expect(actionBox(tester, Icons.menu).left, closeTo(margin, _slack));
       expect(
         surfaceWidth(tester) - actionBox(tester, Icons.history).right,
-        closeTo(AppSpacing.screenHorizontal, _slack),
+        closeTo(margin, _slack),
+      );
+
+      // The header rides the *same* edge as the column it heads: the leading
+      // `AC` key and the leading button box, one right of the other.
+      expect(
+        actionBox(tester, Icons.menu).left,
+        closeTo(rectOfKey(tester, CalculatorKey.ac).left, _slack),
+      );
+
+      // And it is the calculator's own larger scale — 56, not the app-wide 48.
+      // A 48 px box above a 90 px key reads as a header drawn for a smaller
+      // calculator than the one underneath it.
+      expect(
+        tester.getSize(actionFinder(Icons.menu)),
+        Size.square(AppSizes.calculatorHeaderAction),
+      );
+      expect(
+        tester.getSize(actionFinder(Icons.history)),
+        Size.square(AppSizes.calculatorHeaderAction),
+      );
+    });
+
+    testWidgets('the secondary headers keep the 24 px card margin', (
+      tester,
+    ) async {
+      // The counterpart to the test above, and the reason the calculator took an
+      // override rather than the app-wide token moving: History, Settings, and
+      // About are columns of cards, and their edges are still measured at 24.
+      await pumpApp(tester);
+      await openHistory(tester);
+
+      expect(backArrowInset(tester), closeTo(AppSpacing.screenHorizontal, _slack));
+      expect(deleteInset(tester), closeTo(AppSpacing.screenHorizontal, _slack));
+      expect(
+        tester.getSize(backArrowFinder()),
+        Size.square(AppSizes.iconTouchTarget),
       );
     });
 

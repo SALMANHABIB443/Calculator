@@ -45,6 +45,11 @@ const double historyTitleGap = 7;
 ///   draws an empty list rather than a zero-alpha one.
 /// * **Radius 14 → [AppRadius.historyCard] 12**, the *task card's* corner. D-77
 ///   had matched the Create Task *option* rows instead.
+/// * **`surfaceRaised` → [AppPalette.surface].** The card is now the same
+///   colour as the Settings groups' cards. Two screens whose cards are the same
+///   shape and the same object should not be told apart by a one-step fill
+///   difference; the radius stays History's own, because a 12 px corner on this
+///   card is a shape decision, not a colour one.
 ///
 /// Height is unchanged: 17·1.25 + 7 + 13·1.3 is ~45 of content inside 34 of
 /// padding, so [AppSizes.historyCardMinHeight]'s floor of 88 still governs and a
@@ -149,7 +154,7 @@ class HistoryCard extends StatelessWidget {
         ? colors.selectionAccent.withValues(alpha: selectionShadowAlpha)
         : colors.cardShadow;
     return BoxDecoration(
-      color: selected ? colors.surfaceSelected : colors.surfaceRaised,
+      color: selected ? colors.surfaceSelected : colors.surface,
       borderRadius: radius,
       border: Border.all(
         color: selected ? colors.selectionAccent : colors.cardBorder,

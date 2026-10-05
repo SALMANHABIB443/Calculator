@@ -4,11 +4,12 @@
 /// isolation. The UI (presentation/calculator_screen.dart) only renders
 /// [CalculatorState]; every key press is delegated to [CalculatorEngine].
 ///
-/// Evaluation is strictly left-to-right, applying each operator as it is
-/// pressed, with no `Ã—Ã·` precedence over `+âˆ’` (D-17). So `2 + 3 Ã— 4` = 20.
+/// Evaluation binds `×` and `÷` tighter than `+` and `−`, so `2 + 3 × 4` is
+/// 14 — D-84 supersedes D-17's left-to-right rule (expression_evaluator.dart).
 ///
-/// Two aspects are pinned in DECISIONS.md: the `backspace` key does not exist
-/// (D-19 â€” the mockup shows no âŒ« key, see desing.md Â§6.1 and prd.md Â§14) and
+/// Two aspects are pinned in DECISIONS.md: the keypad itself stays at
+/// nineteen keys with no backspace among them (D-19 — the ⌫ control sits
+/// above the display and reaches the engine as `backspace()`, **D-81**), and
 /// formatting is layered with thousands separators (D-18).
 ///
 /// **The engine owns values, not display strings.** [CalculatorState] carries
@@ -396,26 +397,28 @@ class CalculatorEngine {
   /// The delete control is not a keypad key (D-19 keeps the pad at nineteen
   /// keys), so it is a method here rather than a [CalculatorKey].
   ///
-  /// Three behaviours, in order:
-  /// - After `=`, the first press hands back the whole completed expression and
-  ///   leaves the answer on screen, so a mistake can be corrected rather than
-  ///   retyped (D-83).
-  /// - Otherwise it removes exactly one character, so a digit comes off a digit
-  ///   and an operator off an operator.
-  /// - In the error state, or with nothing typed, it costs nothing â€”
-  ///   [CalculatorState.canBackspace] is false there too, so the control cannot
-  ///   be live and then do nothing.
+  /// One rule in every state: **exactly one character off the expression the
+  /// user is editing.** The engine never replaces the expression with the
+  /// result, so after `=` there is nothing to hand back; leaving the result
+  /// state and deleting in the same press is what keeps every press visibly
+  /// effective. `900 + 100 =` is `1000`, and the first backspace is already
+  /// `900 + 10` previewing `910`, then `900 + 1`, `900 +`, `900`. A value
+  /// loaded from history ([loadValue]) follows the same rule, so its first
+  /// press shortens the number instead of doing nothing.
+  ///
+  /// In the error state, or with nothing typed, it costs nothing --
+  /// [CalculatorState.canBackspace] is false there too, so the control cannot
+  /// be live and then do nothing.
   CalculatorState backspace() {
     if (_isError) return state;
-
-    if (_justEvaluated) {
-      _justEvaluated = false;
-      _expression = _lastExpression ?? '';
-      _recompute();
-      return state;
-    }
-
     if (_expression.isEmpty) return state;
+
+    // Leaving the result state in passing: [state.justEvaluated] is false
+    // again, so [CalculatorController] knows a number keyed next belongs to
+    // the expression rather than to a fresh calculation -- and because the
+    // expression was never overwritten, the delete below already edits the
+    // real calculation.
+    _justEvaluated = false;
     _expression = _expression.substring(0, _expression.length - 1);
     _recompute();
     return state;
@@ -440,22 +443,22 @@ class CalculatorEngine {
     _value = value;
     // The loaded number is the *result* of a calculation the user did not type,
     // so it is stored as the completed one: an operator pressed next continues
-    // from it rather than starting over, and a backspace hands back nothing —
-    // there is no expression to hand back (D-37).
+    // from it rather than starting over, and a backspace shortens it like any
+    // other expression (D-81), so its first press is never a dead one.
     _lastExpression = _expression;
     _lastValue = value;
     _justEvaluated = true;
   }
-/// Rewrites the expression after `=`, before the next key is applied (**D-35**).
+  /// Rewrites the expression after `=`, before the next key is applied (**D-35**).
   ///
-  /// A digit, a `.`, or a `%` begins a fresh calculation; an operator or `()`
-  /// continues from the result, so `125Ã—8=` then `+` reads `1000+` rather than
-  /// repeating the sum.
+  /// A digit or a `.` begins a fresh calculation; an operator, `()`, or `%`
+  /// continues from the result, so `125×8=` then `+` reads `1000+` and a
+  /// percent after `=` stays a percent of the answer (`4%` previewing `0.04`)
+  /// instead of stranding that answer with no expression behind it.
   void _continueFromResult(CalculatorKey key) {
     final result = _lastValue;
     _justEvaluated = false;
-    final startsFresh =
-        key.isDigit || key == CalculatorKey.dot || key == CalculatorKey.percent;
+    final startsFresh = key.isDigit || key == CalculatorKey.dot;
     _expression = (startsFresh || result == null) ? '' : _numberFor(result);
   }
 
@@ -481,7 +484,7 @@ class CalculatorEngine {
     // A leading zero is replaced rather than extended, so `0` then `5` reads
     // `5`. The lone `0` and `0.` survive, which is what lets `0.5` be typed.
     if (current == '0') {
-      return '$_expression'.substring(0, _expression.length - 1) + '$digit';
+      return '${_expression.substring(0, _expression.length - 1)}$digit';
     }
     if (_digitsIn(current) >= maxEntryDigits) return null;
     return '$_expression$digit';
@@ -522,11 +525,18 @@ class CalculatorEngine {
   ///
   /// The only key that sets [_lastExpression] and the only one that sets
   /// [_justEvaluated], so history records a completed result and never a
-  /// mid-chain preview. Returns `null` â€” it never edits the expression, because
-  /// the line above the answer has to keep showing what was typed.
+  /// mid-chain preview. Returns `null` -- it edits the expression only to
+  /// complete a trailing operator (see below), so the line above the
+  /// answer keeps showing what was typed.
   String? _applyEquals() {
     // A bare `=` on an untouched calculator does nothing at all.
     if (_expression.isEmpty) return null;
+
+    // D-31: a trailing operator is pending on an operand, and `=` supplies it
+    // by repeating the one already there -- `2+` completes to `2+2`, so
+    // `2 + =` answers `4` rather than the `2` a plain repair would leave.
+    final completed = _expressionRepeatingPendingOperand();
+    if (completed != null) _expression = completed;
 
     final result = ExpressionEvaluator.evaluate(_expression, autoClose: true);
     if (!result.isSuccess) {
@@ -544,21 +554,65 @@ class CalculatorEngine {
     return null;
   }
 
+  /// [_expression] with a trailing binary operator completed by the operand it
+  /// is pending on, or `null` when there is nothing to repeat.
+  ///
+  /// `2+` repeats into `2+2` (so D-31's `2 + =` is `4`), `2+3+` into `2+3+3`:
+  /// the last operand, not the running total, which is what a calculator
+  /// carrying a pending operator does. The operand is everything after the
+  /// last operator at the top level, so the group in `2+(3+4)+` repeats whole.
+  /// Anything the parser would not accept on its own returns `null`, leaving
+  /// the forgiving repair exactly as it was.
+  String? _expressionRepeatingPendingOperand() {
+    final trailing = _lastCharacter;
+    if (trailing == null || !isBinaryOperatorGlyph(trailing)) return null;
+
+    final pending = _expression.substring(0, _expression.length - 1);
+    var depth = 0;
+    var split = -1;
+    for (var i = 0; i < pending.length; i++) {
+      final character = pending[i];
+      if (character == openParenthesis) {
+        depth++;
+      } else if (character == closeParenthesis) {
+        if (depth > 0) depth--;
+      } else if (depth == 0 && isBinaryOperatorGlyph(character)) {
+        split = i;
+      }
+    }
+    final operand = split < 0 ? pending : pending.substring(split + 1);
+    if (operand.isEmpty) return null;
+    if (!ExpressionEvaluator.isComplete(operand)) return null;
+    return '$pending$trailing$operand';
+  }
+
   /// An operator: appended, replacing one already pending.
   ///
-  /// Declined when there is no left operand â€” `+` on a fresh calculator would
-  /// otherwise leave `+5` on the line (**D-80**).
+  /// Declined when there is no left operand -- `+` on a fresh calculator would
+  /// otherwise leave `+5` on the line (**D-80**), and `+(` is no better: a
+  /// `(` waiting for its operand may only receive a `-`, which is how a
+  /// negative operand stays typeable (`2+(−5)`).
   String? _applyOperator(CalculatorOperator operator) {
     if (_expression.isEmpty) return null;
 
-    // Consecutive operators **replace** rather than stack, so `900+Ã—` reads
-    // `900Ã—` and `2 + 3 +` followed by `âˆ’` reads `2 + 3 âˆ’`. Appending both
-    // would leave `900+Ã—` on the line, which no parser accepts and no user
+    // Consecutive operators **replace** rather than stack, so `900+×` reads
+    // `900×` and `2 + 3 +` followed by `−` reads `2 + 3 −`. Appending both
+    // would leave `900+×` on the line, which no parser accepts and no user
     // meant.
     final last = _lastCharacter!;
     if (isBinaryOperatorGlyph(last)) {
-      return '$_expression'.substring(0, _expression.length - 1) +
-          operator.symbol;
+      // Replacing the `−` that follows `(` must not turn `2+(−` into `2+(+`:
+      // only a `-` may sit directly after an opening group.
+      if (_expression.length >= 2 &&
+          _expression[_expression.length - 2] == openParenthesis &&
+          operator != CalculatorOperator.subtract) {
+        return null;
+      }
+      final head = _expression.substring(0, _expression.length - 1);
+      return '$head${operator.symbol}';
+    }
+    if (last == openParenthesis && operator != CalculatorOperator.subtract) {
+      return null;
     }
     return '$_expression${operator.symbol}';
   }
@@ -665,8 +719,15 @@ class CalculatorEngine {
   void _recompute() {
     if (_isError || _justEvaluated) return;
     final result = ExpressionEvaluator.evaluate(_expression, autoClose: true);
-    _value = result.isSuccess ? result.value : _value;
-    if (result.isSuccess) _value = result.value;
+    if (result.isSuccess) {
+      _value = result.value;
+      return;
+    }
+    // The expression is gone: so is the preview. Freezing the last number
+    // here is what made backspace-to-empty keep showing it instead of `0`.
+    if (result.status == EvaluationStatus.empty) _value = null;
+    // Any other unfinished status keeps the running total: a preview must not
+    // flash `Error` at someone still typing the divisor (**D-79**).
   }
 
   /// AC: everything back to a blank calculator.

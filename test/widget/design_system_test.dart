@@ -41,8 +41,11 @@ void main() {
       expect(AppColors.background, const Color(0xFF000000));
       expect(AppColors.surface, const Color(0xFF101011));
       expect(AppColors.accent, const Color(0xFFF89508));
-      expect(AppColors.buttonDigit, const Color(0xFF1E1E1E));
-      expect(AppColors.buttonFunction, const Color(0xFF949494));
+      // Retuned in D-111: the keypad fills were lifted so the keys separate
+      // from a `#000000` page at all. The *relationships* are asserted below and
+      // are the real contract; these literals just pin the measured values.
+      expect(AppColors.buttonDigit, const Color(0xFF242428));
+      expect(AppColors.buttonFunction, const Color(0xFFA2A2A8));
       expect(AppColors.textPrimary, const Color(0xFFFFFFFF));
       expect(AppColors.textOnFunction, const Color(0xFF000000));
       expect(AppColors.textSecondary, const Color(0xFF949AA4));
@@ -81,6 +84,62 @@ void main() {
         AppColors.surfaceSoft.computeLuminance(),
         greaterThan(AppColors.surface.computeLuminance()),
         reason: 'the tile has to separate from the card it sits on',
+      );
+    });
+
+    test(
+      'the keypad separates from a black page: glow, edge, and lift (D-111)',
+      () {
+        // D-111 is the fix for "the dark theme's shadow cannot be seen", and the
+        // cause was structural: the key cast a *black* shadow onto a *black*
+        // page. Elevation could not save it at any value. So the fix is three
+        // things, and all three are asserted here because removing any one of
+        // them puts the problem back:
+        //
+        //  * the glow is *lighter* than the page — a shadow would not be;
+        //  * the outline is lighter than the fill — the hard edge;
+        //  * the fill is lighter than the page — so the key is an object at all.
+        //
+        // Asserting the relationships rather than the hexes is what stops a
+        // future edit from quietly restoring the black-on-black pairing.
+        expect(
+          AppColors.keyShadow.computeLuminance(),
+          greaterThan(AppColors.background.computeLuminance()),
+          reason: 'a glow on a black page must be lighter than the page',
+        );
+        expect(
+          AppColors.keyShadow.a,
+          inInclusiveRange(0.05, 0.30),
+          reason: 'a halo strong enough to see but not enough to fog the pad',
+        );
+        expect(
+          AppColors.keyBorder.computeLuminance(),
+          greaterThan(AppColors.buttonDigit.computeLuminance()),
+          reason: 'the outline is the only hard edge a key has (D-111)',
+        );
+        expect(
+          AppColors.buttonDigit.computeLuminance(),
+          greaterThan(AppColors.background.computeLuminance()),
+          reason: 'a key the same value as the page is not a key (D-111)',
+        );
+        expect(
+          AppColors.ruleOnPage.computeLuminance(),
+          greaterThan(AppColors.background.computeLuminance()),
+        );
+      },
+    );
+
+    test('the white theme keeps an ordinary dark shadow (D-111)', () {
+      // The dark theme's glow is a consequence of the black page, not a house
+      // style. On white the conventional answer works, so the light palette
+      // casts a *dark* shadow and the two themes are opposites on purpose.
+      expect(
+        AppPalette.light.keyShadow!.computeLuminance(),
+        lessThan(AppPalette.light.background.computeLuminance()),
+      );
+      expect(
+        AppPalette.dark.keyShadow!.computeLuminance(),
+        greaterThan(AppPalette.dark.background.computeLuminance()),
       );
     });
 
@@ -228,6 +287,51 @@ void main() {
         reason: 'a History entry and an Ethar task are the same row (D-93)',
       );
       expect(AppTypography.buttonLabel.fontSize, inInclusiveRange(22, 28));
+
+      // D-111: the operator column is sized as the pad's spine. What matters is
+      // the *relationship* — an operator glyph bigger than a digit's, and a
+      // function label not dragged up with it — because at one shared 25 the
+      // `−` and `=` read as the quietest keys on the board despite being the
+      // ones the board is organised around.
+      expect(
+        AppTypography.buttonOperatorLabel.fontSize!,
+        greaterThan(AppTypography.buttonLabel.fontSize!),
+        reason: 'the operator glyphs are bars, not numerals (D-111)',
+      );
+      expect(
+        AppTypography.buttonOperatorLabel.fontSize!,
+        inInclusiveRange(30, 36),
+      );
+      expect(
+        AppTypography.buttonFunctionLabel.fontSize!,
+        lessThanOrEqualTo(AppTypography.buttonLabel.fontSize!),
+        reason: 'AC and +/- are two glyphs and must not crowd the key (D-111)',
+      );
+      // A heavier weight is what actually lets a short bar hold the eye at a
+      // size, so the operator and function keys carry more ink than a digit.
+      expect(
+        AppTypography.buttonOperatorLabel.fontWeight,
+        AppTypography.buttonFunctionLabel.fontWeight,
+      );
+    });
+
+    test('the key label size is chosen by the variant, not by the call site (D-111)', () {
+      // The point of putting `labelStyle` on the variant: the orange fill and
+      // the operator size are the same decision, so neither can be applied
+      // without the other. Asserted through the public helper the widget reads.
+      final type = AppType(AppPalette.dark);
+      expect(
+        CalculatorButtonVariant.operator.labelStyle(type).fontSize,
+        AppTypography.buttonOperatorLabel.fontSize,
+      );
+      expect(
+        CalculatorButtonVariant.digit.labelStyle(type).fontSize,
+        AppTypography.buttonLabel.fontSize,
+      );
+      expect(
+        CalculatorButtonVariant.function.labelStyle(type).fontSize,
+        AppTypography.buttonFunctionLabel.fontSize,
+      );
     });
 
     test('primary text is white and secondary text is gray', () {
@@ -912,10 +1016,10 @@ void main() {
       // shadow and a second opaque `Material` on top would hide both. So the
       // fill is read off the `AnimatedContainer`, which is the widget that owns
       // the card's surface.
-      expect(
-        decorationOf(tester, selected: false).color,
-        AppColors.surfaceRaised,
-      );
+      //
+      // `surface`, not `surfaceRaised`: the card now wears the same fill as the
+      // Settings groups, so the two screens' cards read as one object.
+      expect(decorationOf(tester, selected: false).color, AppColors.surface);
     });
 
     testWidgets('is a rounded, outlined card with no elevation (D-93)', (
@@ -1361,7 +1465,139 @@ void main() {
       expect(bounds.center.dy, closeTo(grid / 2, 0.01));
     });
   });
+
+  group('AppBackspaceIcon', () {
+    testWidgets('occupies the same square an AppIcon of that bucket would', (
+      tester,
+    ) async {
+      // Both call sites centre this glyph inside a box of their own — the
+      // calculator's 48 px `AppIconButton`, and the pad key's circle — so the box
+      // is the contract, not the glyph, exactly as it is for the trash.
+      await pump(tester, const Center(child: AppBackspaceIcon()));
+      expect(
+        tester.getSize(find.byType(AppBackspaceIcon)).width,
+        AppIconSize.row.value,
+      );
+
+      await pump(
+        tester,
+        const Center(child: AppBackspaceIcon(size: AppIconSize.large)),
+      );
+      expect(
+        tester.getSize(find.byType(AppBackspaceIcon)).width,
+        AppIconSize.large.value,
+      );
+    });
+
+    testWidgets('paints in the colour it is given, defaulting to white', (
+      tester,
+    ) async {
+      await pump(tester, const Center(child: AppBackspaceIcon()));
+      expect(backspacePainter(tester).color, AppColors.textPrimary);
+
+      await pump(
+        tester,
+        const Center(child: AppBackspaceIcon(color: AppColors.accent)),
+      );
+      expect(backspacePainter(tester).color, AppColors.accent);
+    });
+
+    testWidgets('is decorative unless given a semantic label', (tester) async {
+      await pump(tester, const Center(child: AppBackspaceIcon()));
+      expect(find.bySemanticsLabel('Backspace'), findsNothing);
+
+      await pump(
+        tester,
+        const Center(child: AppBackspaceIcon(semanticLabel: 'Backspace')),
+      );
+      expect(find.bySemanticsLabel('Backspace'), findsOneWidget);
+    });
+
+    testWidgets('repaints only when the colour changes', (tester) async {
+      await pump(tester, const Center(child: AppBackspaceIcon()));
+
+      expect(
+        backspacePainter(tester)
+            .shouldRepaint(const AppBackspacePainter(AppColors.textPrimary)),
+        isFalse,
+        reason: 'nothing to redraw, and the glyph is not animated',
+      );
+      expect(
+        backspacePainter(tester)
+            .shouldRepaint(const AppBackspacePainter(AppColors.accent)),
+        isTrue,
+      );
+    });
+
+    test('both sub-paths are centred on their own grid', () {
+      // The glyph is stroked, not filled, so it is the *path* that has to be
+      // centred — the pen adds its width symmetrically and so keeps the centre
+      // where the path put it. `cross` is checked separately from `outline`
+      // because it is deliberately off the grid's centre line: it sits inside the
+      // pentagon's body, not inside the pentagon's bounding box.
+      const grid = AppBackspacePainter.grid;
+      final outline = AppBackspacePainter.outline.getBounds();
+      final cross = AppBackspacePainter.cross.getBounds();
+
+      expect(outline.center.dx, closeTo(grid / 2, 0.01));
+      expect(outline.center.dy, closeTo(grid / 2, 0.01));
+
+      // The `×` shares the body's centre line and its own centre row.
+      expect(cross.center.dy, closeTo(grid / 2, 0.01));
+      expect(
+        cross.center.dx,
+        greaterThan(grid / 2),
+        reason: 'the × belongs inside the body, right of the point',
+      );
+
+      // And the `×` stays clear of the pentagon's right edge, which is what keeps
+      // the two strokes from crowding each other at 22 px.
+      expect(cross.right, lessThan(outline.right));
+    });
+
+    test('the × clears the point and sits inside the body', () {
+      // The three facts a wrong hand-authored path would break, none of which any
+      // assertion about a widget's size, colour, or position would notice: the
+      // `×` must not reach back past the pentagon's sloped edge, it must not
+      // touch the flat right edge, and it must not collide with the vertical edge
+      // that separates body from point.
+      final outline = AppBackspacePainter.outline.getBounds();
+      final cross = AppBackspacePainter.cross.getBounds();
+
+      expect(cross.left, greaterThan(9), reason: 'inside the body');
+      expect(cross.top, greaterThan(outline.top), reason: 'below the top edge');
+      expect(cross.bottom, lessThan(outline.bottom), reason: 'above the bottom');
+      expect(cross.right, lessThan(outline.right), reason: 'off the right edge');
+    });
+
+    test('the pen is one symmetric stroke, not a fill', () {
+      // `strokeWidth` is the number that decides whether this reads at 22 px, and
+      // the symmetric round cap and join are what stop the ×'s four arm-ends and
+      // the pentagon's point from rendering at a different weight from the rest of
+      // the outline. The filled variant of this glyph was the reason for drawing
+      // it at all, so `style` is asserted rather than assumed.
+      final pen = AppBackspacePainter.penOf(AppColors.textPrimary);
+
+      expect(pen.style, PaintingStyle.stroke);
+      expect(pen.strokeWidth, AppBackspacePainter.strokeWidth);
+      expect(pen.color, AppColors.textPrimary);
+      expect(pen.strokeCap, StrokeCap.round);
+      expect(pen.strokeJoin, StrokeJoin.round);
+    });
+  });
 }
+
+/// The painter the mounted [AppBackspaceIcon] draws with.
+AppBackspacePainter backspacePainter(WidgetTester tester) =>
+    tester
+            .widget<CustomPaint>(
+              find.descendant(
+                of: find.byType(AppBackspaceIcon),
+                matching: find.byType(CustomPaint),
+              ),
+            )
+            .painter!
+        as AppBackspacePainter;
 
 /// The painter the mounted [AppTrashIcon] draws with.
 AppTrashPainter trashPainter(WidgetTester tester) =>

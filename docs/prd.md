@@ -118,7 +118,7 @@ Many built-in or basic calculators lack history, customization of feedback, and 
 Supporting screens: **Privacy Policy** and **Terms of Service** (in-app text, D-07),
 reached from Settings and About.
 
-Hidden screens: **Secret Mode** — the PIN entry screen, the blank secret screen, its one-row
+Hidden screens: **Secret Mode** — the PIN entry screen, the blank secret screen, its two-row
 Settings, and the Change PIN flow (FR-007). These are not part of the four main screens, have no
 mockup, and are reachable only through a five-second hold on one specific button (D-82).
 
@@ -195,13 +195,16 @@ mockup, and are reachable only through a five-second hold on one specific button
   `'secretPin'` key in `shared_preferences` (D-83).
 - Entering the correct code reveals a **blank** secret screen carrying a single overflow button
   in the top-left — no title, no copy, no illustration (D-84).
-- That button opens a minimal settings page holding exactly one row, "Change PIN". The full
-  Settings page is **not** duplicated inside the secret area.
+- That button opens a minimal settings page holding exactly two rows, "Change PIN" and "Reset PIN"
+  (D-86). The full Settings page is **not** duplicated inside the secret area.
 - Changing the PIN requires the current PIN, then the new code, then a confirmation of the new
-  code. The new code persists across sessions.
-- A wrong code clears the entry and shakes the indicator; the user may retry immediately.
-  There is **no attempt limit and no lockout** (D-85), and a forgotten PIN has **no in-app
-  recovery** — both are recorded as known limitations.
+  code. The new code persists across sessions. A mismatched confirmation re-asks the confirmation
+  without discarding the code already chosen, and the change is confirmed on screen before the flow
+  returns (**D-113**).
+- A wrong code clears the entry, shakes the indicator, and says "Wrong PIN"; the user may retry
+  immediately, but the **third** wrong code in a row locks the pad for 30 seconds (D-88, reversing
+  D-85). A forgotten PIN has **no in-app recovery** — that limitation stands, because the reset row
+  is behind the code (D-85, D-86).
 
 **Source:** Inferred — no mockup covers this area (D-13), so it is specified from the app's own
 tokens rather than from source material.
@@ -255,7 +258,8 @@ tokens rather than from source material.
 1. User opens History and presses and holds the bottom “Clear History” for five seconds.
 2. Nothing appears to happen (D-82).
 3. A blank PIN screen opens; the user enters `0000`.
-4. A blank screen appears with a single top-left overflow button → Settings → “Change PIN” (D-84).
+4. A blank screen appears with a single top-left overflow button and a floating home button → Settings →
+   “Change PIN” (D-84, D-86).
 
 ---
 
@@ -280,13 +284,15 @@ App Launch
 
 Hidden (reachable only by holding History's bottom "Clear History" for five seconds — D-82):
     History ──5s hold──→ Secret PIN Entry (/secret/unlock)
-                            ├── wrong code → clear + shake, retry (no lockout, D-85)
+                            ├── wrong code → clear + shake + "Wrong PIN", retry
+                            │   └── 3rd wrong code in a row → 30s lockout (D-88)
                             └── correct code → Secret Screen (/secret)
                                                 └── top-left overflow → Secret Settings (/secret/settings)
-                                                        └── "Change PIN" → Change PIN (/secret/change-pin)
-                                                                ├── step 1: verify current PIN
-                                                                ├── step 2: enter new PIN
-                                                                └── step 3: confirm new PIN
+                                                        ├── "Change PIN" → Change PIN (/secret/change-pin)
+                                                        │   ├── step 1: verify current PIN
+                                                        │   ├── step 2: enter new PIN
+                                                        │   └── step 3: confirm new PIN
+                                                        └── "Reset PIN" → confirm → erase
 ```
 
 ---
@@ -335,9 +341,11 @@ Hidden (reachable only by holding History's bottom "Clear History" for five seco
 | Decimal places changed mid-calculation | Current result re-renders; in-flight expression untouched (D-14) | D-14 |
 | Clear History tapped        | Confirmation dialog shown; nothing deleted until confirmed (D-05) | D-05 |
 | Clear History held 5 seconds | Secret PIN screen opens; the tap path and its dialog are untouched (D-82) | D-82 |
-| Wrong secret code entered    | Dots clear and the indicator shakes; retry is immediate, nothing is locked (D-85) | D-85 |
+| Wrong secret code entered    | Dots clear, the indicator shakes, and "Wrong PIN" appears; retry is immediate (D-85, D-88) | D-85 |
+| Third wrong secret code in a row | The pad locks for 30 seconds and counts down; the deadline survives a restart (D-88) | D-88 |
 | Stored secret code corrupt   | Falls back to the default `0000` rather than raising (D-83)          | D-83 |
-| Change PIN with a wrong current code | The flow does not advance; retry is immediate (D-85)    | D-85 |
+| Change PIN with a wrong current code | The flow does not advance, the entry clears, and "Incorrect PIN" says why (D-85, D-113) | D-85 |
+| Change PIN confirmation mismatched | Only the confirmation clears; step 3 is re-asked with the new code kept (D-113) | D-113 |
 
 ---
 
@@ -389,10 +397,10 @@ precedence (D-17).
 | AC-016 | Calculated colors match the measured palette in `desing.md` §2 (D-03).   | Must     |
 | AC-017 | Holding History's bottom Clear History for five seconds opens the Secret PIN screen; releasing earlier does nothing, and a tap still clears history normally (D-82). | Must |
 | AC-018 | The secret code is exactly four digits and defaults to `0000` on a fresh install (D-83). | Must     |
-| AC-019 | A wrong secret code clears the entry, shakes the indicator, and permits an immediate retry — no lockout (D-85). | Must     |
+| AC-019 | A wrong secret code clears the entry, shakes the indicator, says "Wrong PIN", and permits an immediate retry; a third wrong code in a row locks the pad for 30 seconds, across a restart (D-85, **D-88**). | Must     |
 | AC-020 | A correct code reveals a blank screen whose controls are a top-left overflow button leading to a settings page holding "Change PIN" and "Reset PIN" rows, plus a floating white home button in the bottom-right that returns to the calculator (D-84, **D-86**). | Must |
-| AC-022 | Resetting the PIN, from the secret settings page or the PIN screen's "Forgot PIN?" link, asks for confirmation, then erases the stored code so the next unlock requires `0000` — across a restart. Anyone who reaches the screen can wipe the PIN, which is accepted in D-86 against the alternative of a reinstall (D-85, D-86). | Must |
-| AC-021 | A changed PIN is persisted, survives a restart, and is the code the next unlock requires; changing it requires the current PIN (D-83, D-85). | Must |
+| AC-022 | Resetting the PIN from the secret settings page asks for confirmation, then erases the stored code so the next unlock requires `0000` — across a restart. Anyone who reaches the settings page can wipe the PIN, which is accepted in D-86 against the alternative of a reinstall (D-85, D-86, **D-88**). | Must |
+| AC-021 | A changed PIN is persisted, survives a restart, and is the code the next unlock requires; changing it requires the current PIN (D-83, D-85). The flow names each step's prompt, refuses a mismatched confirmation without discarding the new code, and confirms the change before returning (**D-113**). | Must |
 
 ---
 

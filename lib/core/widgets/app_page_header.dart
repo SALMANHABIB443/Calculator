@@ -25,6 +25,7 @@ class AppPageHeader extends StatelessWidget {
     this.leading,
     this.actions = const <Widget>[],
     this.titleStyle,
+    this.horizontalPadding,
   });
 
   /// Page name, or `null` for a bar that is only actions.
@@ -41,6 +42,22 @@ class AppPageHeader extends StatelessWidget {
   /// A named token at the call site rather than a `copyWith`, so a reduction
   /// stays scoped to the screen that asked for it (D-71).
   final TextStyle? titleStyle;
+
+  /// Overrides [AppSpacing.screenHorizontal] as this bar's side inset, or
+  /// `null` for the app-wide 24 px (**D-110**).
+  ///
+  /// The calculator is the one screen whose header is *not* on the card margin:
+  /// its header, display, and keypad are one column, and D-110 gave that column
+  /// a 16 px side margin because the grid derives its key size from whatever
+  /// width it is given. Without this the bar would sit 8 px inboard of the
+  /// `AC` key below it, which is exactly the drift
+  /// `header_alignment_test.dart` exists to catch — the header would no longer
+  /// share an edge with the column it heads.
+  ///
+  /// **Optional rather than a second header widget.** History, Settings, About,
+  /// and the catalogue all keep the 24 px default, and a new screen gets the
+  /// app-wide margin by forgetting nothing.
+  final double? horizontalPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -80,9 +97,9 @@ class AppPageHeader extends StatelessWidget {
       // The `ConstrainedBox` below is unaffected: `minHeight` bounds the *row*,
       // and padding is applied outside it, so the bar is now
       // `headerTopGap + max(56, content)` tall rather than a fixed 56.
-      padding: const EdgeInsets.only(
-        left: AppSpacing.screenHorizontal,
-        right: AppSpacing.screenHorizontal,
+      padding: EdgeInsets.only(
+        left: horizontalPadding ?? AppSpacing.screenHorizontal,
+        right: horizontalPadding ?? AppSpacing.screenHorizontal,
         top: AppSpacing.headerTopGap,
       ),
       child: ConstrainedBox(

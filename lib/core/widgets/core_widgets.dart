@@ -6,6 +6,7 @@
 /// import instead of six.
 library;
 
+export 'app_backspace_icon.dart';
 export 'app_brand_icon.dart';
 export 'app_dialog.dart';
 export 'app_icon.dart';

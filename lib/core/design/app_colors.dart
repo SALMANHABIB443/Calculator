@@ -14,15 +14,15 @@ abstract final class AppColors {
   /// distinct layers on a black page.
   static const Color surface = Color(0xFF101011);
 
-  /// Fill of the History cards.
+  /// The one-step-lighter card fill, kept as a token for any surface that needs
+  /// to sit above [surface] **without** becoming the app's standard card.
   ///
-  /// **Chosen, not measured (D-72).** The History redesign specifies `#151517`,
-  /// one step lighter than [surface]. It is a separate token rather than an edit
-  /// to [surface] because [surface] is the shared fill of the Settings groups,
-  /// the About hero card, the confirmation dialog, and the decimal-places sheet:
-  /// moving it would restyle three other screens. Naming the lighter fill keeps
-  /// the redesign inside History while the rest of the app stays where D-60
-  /// measured it.
+  /// **No longer the History card's fill.** The History card read this value
+  /// from D-72 until the card was re-coloured to [surface], the same fill the
+  /// Settings groups use, so that the two screens' cards read as one object.
+  /// The token itself stays: [surfaceSelected] and any future raised surface
+  /// still need a value that means "one step above [surface]", and it is that
+  /// relationship — not this one card — that the name carries.
   static const Color surfaceRaised = Color(0xFF151517);
 
   /// Soft fill behind a settings row's leading icon — the **icon tile** (D-91).
@@ -32,9 +32,8 @@ abstract final class AppColors {
   /// `_SettingsIconTile` is a 44 px square filled with exactly that. This is the
   /// dark half of that pair; [AppPalette.light] carries the other.
   ///
-  /// A separate token from [surfaceRaised] rather than a reuse of it: the two
-  /// fills happen to be near each other here, but the tile belongs to a row and
-  /// `surfaceRaised` is the History card's, and one value serving both is the
+  /// A separate token from [surfaceRaised] rather than a reuse of it: a tile sits
+  /// inside a card rather than being one, and one value serving both is the
   /// drift the token file exists to prevent.
   static const Color surfaceSoft = Color(0xFF20232A);
 
@@ -52,14 +51,25 @@ abstract final class AppColors {
   static const Color accent = Color(0xFFF89508);
 
   /// Fill for the digit keys and the decimal point.
-  static const Color buttonDigit = Color(0xFF1E1E1E);
+  ///
+  /// **Retuned in D-111 from `#1E1E1E` to `#242428`.** The old value sat a
+  /// visible step above the page but a *small* one, and with no outline and no
+  /// usable shadow (see [keyShadow]) a `#1E1E1E` key on a `#000000` page had no
+  /// edge to point at. One step further up is what makes the key an object
+  /// rather than a slightly-less-black patch.
+  static const Color buttonDigit = Color(0xFF242428);
 
   /// Fill for the function keys (`AC`, `+/−`, `%`).
   ///
   /// Note the inverted contrast this implies: these keys are a light mid-gray
   /// carrying [textOnFunction] labels, not a medium gray with white labels.
   /// This was the largest correction in the Phase 1 measurement.
-  static const Color buttonFunction = Color(0xFF949494);
+  ///
+  /// **Retuned in D-111 from `#949494` to `#A2A2A8`** — a touch brighter and a
+  /// touch cooler, so the light key reads as clearly the lightest object on the
+  /// pad against the retuned [buttonDigit] and lands further above the
+  /// luminance floor the design-system test asserts.
+  static const Color buttonFunction = Color(0xFFA2A2A8);
 
   /// Main result, headings, active labels, and keys on dark fills.
   static const Color textPrimary = Color(0xFFFFFFFF);
@@ -81,6 +91,48 @@ abstract final class AppColors {
   /// and `#ECEDEF` in white), and this is that value; [cardBorder] is the same
   /// number under the name that says where it is drawn.
   static const Color divider = Color(0xFF292D35);
+
+  /// The 1 px rule between the calculator's display and its keypad.
+  ///
+  /// **Its own token rather than a reuse of [divider] or [textSecondary].**
+  /// [divider] is the hairline *inside* a grouped card and the border on every
+  /// header action box; moving it to suit this one line would restyle the
+  /// Settings groups, the History cards and the header buttons along with it.
+  /// [textSecondary] was what this line used to wear, but that is a *text*
+  /// colour — at `#949AA4` the rule was the second-brightest thing on the page
+  /// and read as part of the display rather than as the boundary under it. The
+  /// mockup draws a dim hairline there, well below the white glyphs around it,
+  /// which is what this is.
+  ///
+  /// Sized to sit just above [background] the way [divider] sits above
+  /// [surface]: enough to find, not enough to look like a filled bar.
+  ///
+  /// **Retuned in D-111 from `#3A3A3C` to `#45454A`** — same idea, one step
+  /// further up, because D-111's whole subject is that the dark theme's
+  /// boundaries were too faint to point at.
+  static const Color ruleOnPage = Color(0xFF45454A);
+
+  /// The one colour in the app that means **this input is wrong**.
+  ///
+  /// Added with the Secret PIN screen's wrong-PIN state. Every other colour in
+  /// this file was measured from a mockup or chosen for a surface; this one is
+  /// a **semantic** signal, and it is the first the palette has carried.
+  ///
+  /// **Chosen, not measured.** No mockup in the project contains an error state,
+  /// so there is no pixel to read. `#FF5A5F` is a desaturated red rather than a
+  /// pure `#FF0000`: on the near-black page a fully saturated red vibrates
+  /// against the black and reads as an alarm, whereas this sits in the same
+  /// register as the grays around it while still being unmistakably red. The
+  /// light theme's `#D92D20` is darker for the ordinary reason — a light red on
+  /// white has nowhere to go.
+  ///
+  /// **Used on the PIN indicator and its message only.** It is deliberately not
+  /// a page colour: a red *screen* would repaint the whole feature in the colour
+  /// of its error state, which says something about the screen rather than about
+  /// what the user just typed. It is also not a replacement for [accent] on
+  /// destructive *actions* — "Reset PIN" stays orange, because a destructive
+  /// confirm is a thing the app offers, and this is a thing the app rejects.
+  static const Color danger = Color(0xFFFF5A5F);
 
   /// Track fill of a toggle in the ON state (desing.md §5.2).
   static const Color toggleTrackOn = Color(0xFFF89508);
@@ -111,6 +163,44 @@ abstract final class AppColors {
   /// platform feedback the specification calls for.
   static const double pressedOpacity = 0.85;
 
+  /// The glow a calculator key casts on the page (D-111).
+  ///
+  /// **This replaces [keyElevation], and the reason is the whole of D-111.** A
+  /// `Material`'s elevation shadow is drawn in a colour the framework picks —
+  /// black in the dark theme — and [background] is `#000000`. A black shadow on
+  /// a black page is *structurally* invisible: not too subtle, but unable to
+  /// separate from the thing behind it at any elevation value. So the dark theme
+  /// asked for lift and got nothing, and the keypad read as flat stickers.
+  ///
+  /// What a dark key can cast is the opposite of a shadow: a faint **halo** of
+  /// its own light. Hence a low-alpha **white** at a tight blur — the key stops
+  /// being a black hole in a black page and becomes an object sitting on it.
+  /// The white theme keeps the ordinary convention and casts a dark shadow.
+  ///
+  /// Named per-theme rather than derived, because the two themes need genuinely
+  /// different colours here (a light glow and a dark shadow) and the difference
+  /// is the decision, not an accident.
+  static const Color keyShadow = Color(0x1AFFFFFF);
+
+  /// Blur radius of [keyShadow] (D-111).
+  static const double keyShadowBlur = 10;
+
+  /// Vertical offset of [keyShadow] (D-111).
+  static const double keyShadowOffsetY = 2;
+
+  /// The 1 px outline around every calculator key (D-111).
+  ///
+  /// The third leg of the same problem, and the one that does the most work. A
+  /// [keyShadow] halo is soft and a fill step is *implied*; the outline is the
+  /// only one of the three that states a hard boundary, so it is what actually
+  /// separates nineteen keys from one another at a glance. Sized a step above
+  /// [buttonDigit] — visible on the fill, still quieter than the label.
+  ///
+  /// Not a reuse of [cardBorder]: that outlines the History and Settings cards,
+  /// which sit on [surface]. This draws inside a key that sits on [background],
+  /// and one value serving both is the drift the token file exists to prevent.
+  static const Color keyBorder = Color(0xFF33333A);
+
   // --- Multi-select (D-76) ------------------------------------------------
   //
   // The History list's selection mode borrows the sibling app's pattern but
@@ -135,9 +225,9 @@ abstract final class AppColors {
   /// result text would be unreadable, and inverting the type to fix that would
   /// turn a list of selected rows into a block of slabs that outshouts the
   /// numbers they exist to act on. This is white carried at low opacity over the
-  /// black page — the same relationship [surfaceRaised] has to [background], one
-  /// step further along — so the card reads as *lifted* rather than *filled*, and
-  /// the accent on top of it stays the brightest thing in the row.
+  /// black page — the same relationship the app's card fill has to [background],
+  /// one step further along — so the card reads as *lifted* rather than
+  /// *filled*, and the accent on top of it stays the brightest thing in the row.
   static const Color surfaceSelected = Color(0xFF2E2E31);
 
   /// Tick inside a selected History card's checkbox.
