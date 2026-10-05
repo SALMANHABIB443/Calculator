@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+
 /// The app's toggle switch (desing.md §5.2).
 ///
 /// A thin, purpose-built wrapper rather than a raw [Switch] so that:
@@ -7,11 +8,11 @@ import 'package:flutter/material.dart';
 ///   show) instead of drifting with whatever theme is applied;
 /// - there is exactly one widget the Settings rows construct, which is where
 ///   the R-1 OFF-track colour is resolved — `AppTheme.switchTheme` maps
-///   [AppColors.toggleTrackOn] / [AppColors.toggleTrackOff] and clears the
+///   [context.appColors.toggleTrackOn] / [context.appColors.toggleTrackOff] and clears the
 ///   Material 3 track outline, which the mockups do not show.
 ///
 /// [R-1] the OFF track colour is unmeasured: no mockup shows a toggle in the
-/// OFF state, so `AppColors.toggleTrackOff` is a chosen stand-in until Phase 9.
+/// OFF state, so `context.appColors.toggleTrackOff` is a chosen stand-in until Phase 9.
 class AppToggle extends StatelessWidget {
   const AppToggle({
     required this.value,

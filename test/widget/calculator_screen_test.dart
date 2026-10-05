@@ -36,7 +36,15 @@ Future<void> tapSequence(WidgetTester tester, String session) async {
 
 /// The primary display line as rendered.
 String resultText(WidgetTester tester) =>
-    tester.widget<Text>(find.byKey(const Key('calculator-result'))).data!;
+    tester.widget<Text>(find.byKey(const Key('calculator-display-line'))).data!;
+
+/// The secondary display line — the expression as keyed — as rendered.
+///
+/// The upper half of the display (desing.md §3), read alongside [resultText]
+/// because the two have to agree: a backspace that changes one without the
+/// other is the bug this file guards against.
+String expressionText(WidgetTester tester) =>
+    tester.widget<Text>(find.byKey(const Key('calculator-expression'))).data!;
 
 Finder keyFor(CalculatorKey key) => find.byKey(ValueKey('key-${key.name}'));
 
@@ -73,7 +81,7 @@ void main() {
       final rows = <List<CalculatorKey>>[
         [
           CalculatorKey.ac,
-          CalculatorKey.plusMinus,
+          CalculatorKey.parentheses,
           CalculatorKey.percent,
           CalculatorKey.divide,
         ],
@@ -151,7 +159,7 @@ void main() {
       expect(fillOf(tester, CalculatorKey.dot), AppColors.buttonDigit);
       expect(fillOf(tester, CalculatorKey.ac), AppColors.buttonFunction);
       expect(fillOf(tester, CalculatorKey.percent), AppColors.buttonFunction);
-      expect(fillOf(tester, CalculatorKey.plusMinus), AppColors.buttonFunction);
+      expect(fillOf(tester, CalculatorKey.parentheses), AppColors.buttonFunction);
       expect(fillOf(tester, CalculatorKey.add), AppColors.accent);
       expect(fillOf(tester, CalculatorKey.equals), AppColors.accent);
     });
@@ -231,6 +239,70 @@ void main() {
 
       await tapSequence(tester, '125');
       expect(resultText(tester), '125');
+    });
+
+    testWidgets('previews the result while the operand is being typed (D-79)', (
+      tester,
+    ) async {
+      // The reported bug: typing `99 + 5` showed `99 +` above and `5` below, so
+      // the answer was invisible until `=` was pressed.
+      await pumpCalculator(tester);
+
+      await tapSequence(tester, '99');
+      await tapSequence(tester, '+');
+      expect(find.text('99 +'), findsOneWidget);
+      expect(resultText(tester), '99');
+
+      await tapSequence(tester, '5');
+      expect(find.text('99 + 5'), findsOneWidget);
+      expect(resultText(tester), '104');
+    });
+
+    testWidgets('equals does not move the number the preview already showed', (
+      tester,
+    ) async {
+      await pumpCalculator(tester);
+
+      await tapSequence(tester, '99+5');
+      final previewed = resultText(tester);
+      final expression = find.text('99 + 5');
+
+      await tapSequence(tester, '=');
+
+      expect(resultText(tester), previewed);
+      expect(expression, findsOneWidget);
+    });
+
+    testWidgets('never prints an operator in front of a number (D-80)', (
+      tester,
+    ) async {
+      await pumpCalculator(tester);
+
+      // `+` first is declined, so the `5` is not rendered as `+ 5`.
+      await tapSequence(tester, '+');
+      await tapSequence(tester, '5');
+      expect(resultText(tester), '5');
+      expect(find.textContaining('+ 5'), findsNothing);
+
+      await tapSequence(tester, 'AC');
+      await tapSequence(tester, '5÷0=');
+      await tapSequence(tester, '+');
+      await tapSequence(tester, '7');
+      expect(resultText(tester), '7');
+      expect(find.textContaining('+ 7'), findsNothing);
+    });
+
+    testWidgets('shows the running total, not an error, mid-calculation (D-79)', (
+      tester,
+    ) async {
+      await pumpCalculator(tester);
+
+      // The user is still typing the divisor; Error belongs to the finished `=`.
+      await tapSequence(tester, '5÷0');
+      expect(resultText(tester), '5');
+
+      await tapSequence(tester, '=');
+      expect(resultText(tester), 'Error');
     });
 
     testWidgets('computes left to right and groups the result (D-17, D-18)', (
@@ -316,7 +388,7 @@ void main() {
       // Short value: the large hero style.
       await tapSequence(tester, '123');
       final large = tester.widget<Text>(
-        find.byKey(const Key('calculator-result')),
+        find.byKey(const Key('calculator-display-line')),
       );
       expect(large.style?.fontSize, 60);
 
@@ -324,7 +396,7 @@ void main() {
       await tapSequence(tester, 'AC');
       await tapSequence(tester, '123456789012');
       final compact = tester.widget<Text>(
-        find.byKey(const Key('calculator-result')),
+        find.byKey(const Key('calculator-display-line')),
       );
       expect(compact.style?.fontSize, 44);
       expect(tester.takeException(), isNull);
@@ -338,6 +410,181 @@ void main() {
       await tapSequence(tester, '99999999999999');
       expect(resultText(tester), '99,999,999,999,999');
       expect(tester.takeException(), isNull);
+    });
+  });
+
+  group('backspace after a calculation (D-81)', () {
+    Finder backspace() => find.byKey(const Key('calculator-backspace'));
+
+    /// Whether the control is live, read from the action rather than the pixels:
+    /// a control that greyed itself out instead of acting is exactly the bug.
+    bool isEnabled(WidgetTester tester) =>
+        tester.widget<AppIconButton>(backspace()).onPressed != null;
+
+    Future<void> tapBackspace(WidgetTester tester) async {
+      await tester.tap(backspace());
+      await tester.pump();
+    }
+
+    testWidgets('it reopens the expression behind a result', (
+      tester,
+    ) async {
+      await pumpCalculator(tester);
+
+      await tapSequence(tester, '125×8=');
+      expect(resultText(tester), '1,000');
+      expect(expressionText(tester), '125 × 8');
+
+      // Before the fix the control cleared the expression here and shredded the
+      // result instead, so the `8` could never be corrected.
+      expect(isEnabled(tester), isTrue);
+
+      await tapBackspace(tester);
+      expect(expressionText(tester), '125 ×');
+      expect(resultText(tester), '125');
+
+      await tapBackspace(tester);
+      expect(expressionText(tester), '125');
+
+      await tapBackspace(tester);
+      expect(expressionText(tester), '');
+      expect(resultText(tester), '12');
+
+      await tapBackspace(tester);
+      expect(resultText(tester), '1');
+    });
+
+    testWidgets('the worked example: 900+100= then backspace', (
+      tester,
+    ) async {
+      await pumpCalculator(tester);
+
+      await tapSequence(tester, '900+100=');
+      expect(resultText(tester), '1,000');
+
+      // The expression comes back one character at a time, and the output line
+      // previews what `=` would now give.
+      await tapBackspace(tester);
+      expect(expressionText(tester), '900 + 10');
+      expect(resultText(tester), '910');
+
+      await tapBackspace(tester);
+      expect(expressionText(tester), '900 + 1');
+      expect(resultText(tester), '901');
+
+      await tapBackspace(tester);
+      expect(expressionText(tester), '900 +');
+
+      // The user is not trapped: the walk continues to `900` and into `90`.
+      await tapBackspace(tester);
+      expect(expressionText(tester), '900');
+      expect(resultText(tester), '900');
+      expect(isEnabled(tester), isTrue);
+
+      await tapBackspace(tester);
+      expect(resultText(tester), '90');
+    });
+
+    testWidgets('a digit after backspacing a result continues the operand', (
+      tester,
+    ) async {
+      await pumpCalculator(tester);
+
+      await tapSequence(tester, '125×8=');
+      await tapBackspace(tester);
+      expect(expressionText(tester), '125 ×');
+
+      // The reopened operand is typed into, not replaced: `125 × 7` = `875`.
+      await tapSequence(tester, '7');
+      expect(expressionText(tester), '125 × 7');
+      expect(resultText(tester), '875');
+    });
+
+    testWidgets('a digit after taking back an operator extends the number', (
+      tester,
+    ) async {
+      await pumpCalculator(tester);
+
+      await tapSequence(tester, '900+');
+      await tapBackspace(tester);
+      expect(expressionText(tester), '900');
+      // Before the fix the control was dead here, and the next digit printed
+      // itself beside the stale `900` (`900 5` over a result of `5`).
+      expect(isEnabled(tester), isTrue);
+
+      await tapSequence(tester, '5');
+      expect(expressionText(tester), '');
+      expect(resultText(tester), '9,005');
+    });
+
+    testWidgets('it still deletes a typed entry, a digit at a time', (
+      tester,
+    ) async {
+      await pumpCalculator(tester);
+
+      await tapSequence(tester, '123');
+      await tapBackspace(tester);
+      expect(resultText(tester), '12');
+
+      await tapBackspace(tester);
+      expect(resultText(tester), '1');
+
+      // One more press empties the calculator and the control greys out,
+      // rather than behaving like AC on a populated display.
+      await tapBackspace(tester);
+      expect(resultText(tester), '0');
+      expect(isEnabled(tester), isFalse);
+    });
+
+    testWidgets('repeated backspace never crashes and ends empty', (
+      tester,
+    ) async {
+      await pumpCalculator(tester);
+
+      await tapSequence(tester, '900+10.5=');
+      expect(isEnabled(tester), isTrue);
+
+      // Pressing well past the end of the expression is harmless.
+      for (var i = 0; i < 25; i++) {
+        await tapBackspace(tester);
+      }
+      expect(tester.takeException(), isNull);
+      expect(resultText(tester), '0');
+      expect(expressionText(tester), '');
+      expect(isEnabled(tester), isFalse);
+    });
+
+    testWidgets('backspace declines after division by zero', (
+      tester,
+    ) async {
+      await pumpCalculator(tester);
+
+      await tapSequence(tester, '5÷0=');
+      expect(resultText(tester), 'Error');
+      // `AC` is the documented way out of an error, so the control greys out
+      // rather than pressing a key that would do nothing.
+      expect(isEnabled(tester), isFalse);
+
+      await tapSequence(tester, 'AC');
+      expect(resultText(tester), '0');
+      expect(expressionText(tester), '');
+    });
+
+    testWidgets('AC resets the calculator completely', (
+      tester,
+    ) async {
+      await pumpCalculator(tester);
+
+      await tapSequence(tester, '900+100=');
+      await tapSequence(tester, 'AC');
+
+      expect(expressionText(tester), '');
+      expect(resultText(tester), '0');
+      expect(isEnabled(tester), isFalse);
+
+      // And it is a fresh calculator, not a display that kept the old value.
+      await tapSequence(tester, '7=');
+      expect(resultText(tester), '7');
     });
   });
 }

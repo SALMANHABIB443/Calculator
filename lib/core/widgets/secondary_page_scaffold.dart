@@ -1,6 +1,6 @@
+import '../../../core/design/app_palette.dart';
 import 'package:flutter/material.dart';
 
-import '../design/app_colors.dart';
 
 /// The shared chrome for a screen that is pushed on top of another one (D-74).
 ///
@@ -35,7 +35,7 @@ class SecondaryPageScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.appColors.background,
       body: SafeArea(
         child: Column(
           children: <Widget>[

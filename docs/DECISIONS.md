@@ -1195,6 +1195,11 @@ Neither item was a blocker, and no phase was delayed waiting on them.
 | D-72 | The History screen is rebuilt around large, inset cards | The History redesign: a compact list and a spacious one share none of their values |
 | D-74 | Every header is a `Row`, and its actions are bordered squares | `AppBar`'s leading slot and action inset, which `AppHeader` had to derive around (D-70) |
 | D-75 | No header carries a subtitle; every one is the title alone at the shared size | D-71's About subtitle — the last screen still passing one |
+| D-76 | Every header sits 24 px below the safe area | The `AppBar`'s own inset, which left the gap to be guessed |
+| D-77 | The History card takes Ethar's 14 px corner | D-72's 30 px "its own thing" corner, which the 88 pt card could not justify |
+| D-78 | The display is two screens: the calculation above the output | The single bottom-aligned block §6.1 drew, with an 8 px gap between its lines |
+| D-79 | The output line previews the calculation live, so `=` never moves the number | The output line showing the entry being typed, so `99 + 5` read `5` and the answer only appeared on `=` |
+| D-80 | An operator with no left operand is ignored; `±` and `%` act on the operand, never the running total | `+` on a fresh calculator leaving a pending operator, so the next number rendered as `+ 5`; `2 + ±` negating the accumulator |
 
 ---
 
@@ -1283,6 +1288,531 @@ Screenshots of every screen in `store/play/screenshots/` are stale and need
 
 **Supersedes:** nothing. **Amends:** D-74 (the header components now carry a top
 padding) and D-69 (the keypad reserve names the bar's full height).
+
+---
+
+### D-77 — The History Card Takes Ethar's 14 px Corner
+
+**Decision:** `AppRadius.historyCard` goes from 20 to **14**, the radius the Ethar
+app gives its Create Task option cards (`Ethar/lib/src/features/tasks/task_editor.dart:490-556`
+— `_TaskOption` draws `_appCard(radius: 14)` behind every Due date, Repeat, Time,
+Priority, Category, and Reminder row, and gives the `InkWell` the same 14). The
+token keeps its own name and its own doc comment; only the number moves. Nothing
+else in the app changes: `AppRadius.card` is already 14, `AppRadius.tile` and
+`AppRadius.iconButton` stay 12, and `AppRadius.dialog` stays 20.
+
+**Rationale:** D-72 wanted History to read as "its own thing" and spent 30 px of
+corner saying so; D-73 rescaled the card from 150 pt to 88 pt and correctly pulled
+the radius back to 20, but it kept 20 on the *reasoning* that a single large
+surface should be softer than the container its rows sit in. That reasoning was
+never a design requirement — it was a description of how the value had been chosen,
+re-read as an argument for keeping it. Nothing in desing.md asks for a History card
+to be softer than a Settings group, and the two are the same object: a rounded
+surface holding rows the user taps. So the number was carrying an argument it
+could not make.
+
+The real constraint was never in this app. These two are sibling apps a user moves
+between, and the card is recognisable across both — Ethar's task option and this
+app's history entry are the same gesture, the same row, the same surface. Twenty
+against Ethar's fourteen is a difference no user can name but every eye registers
+as "these are not quite the same app", which is the one thing a shared design
+language exists to prevent. Fourteen also sits at the midpoint of desing.md §5.3's
+12–16 range rather than at its top edge, so the change is toward the documented
+specification, not away from it.
+
+**Consequence:** `design_system_test.dart`'s History-geometry test asserted
+`AppRadius.historyCard` > `AppRadius.card` — D-73's "softer than its group" written
+as code. That assertion is now `equalTo` plus an explicit `14`, so the parity is
+pinned in both directions: a future edit that moves one token and not the other
+fails, and one that moves both is a deliberate edit rather than a silent one. The
+token is *not* deleted and folded into `AppRadius.card`, though the two now hold the
+same number: they are different objects at different sizes, and the day a 150 pt
+card and a 68 pt row need different corners, a single shared value would make that
+a breaking change instead of a one-line adjustment. `history_responsive_test.dart`
+and `design_system_test.dart`'s rendered-widget assertions were already token-based
+and needed no change beyond a stale "20 px" in a doc comment.
+
+No layout, height, or spacing moved, so the row counts in the responsive tests are
+untouched. `store/screenshots/02-history.png` is stale and needs
+`tool/generate_assets.ps1` to re-render.
+
+**Supersedes:** nothing. **Amends:** D-73 (the History card radius is 14, equal to
+the grouped cards', rather than 20) and D-72 (the 30 px "its own thing" corner).
+D-72's and D-73's *sizing* work — the 88 pt floor, the 24 px margin, the type
+bands — is untouched and remains in force.
+
+---
+
+### D-78 — The Display Is Two Screens: the Calculation Above the Output
+
+**Decision:** `CalculatorDisplay` splits the space it is given into two equal halves. The
+**upper half** is the calculation screen — `AppTypography.expression`, right-aligned and
+ellipsised, unchanged — and the **lower half** is the output screen — `AppTypography.resultLarge`,
+stepping down to `resultMedium` past `compactResultLength`, right-aligned, scaled down by a
+`FittedBox` only when it cannot fit. Each line centres in its own half, so the display no
+longer aligns its block against the keypad: `mainAxisAlignment: end`, the `Flexible` expression,
+and the 8 px `AppSpacing.sm` between the two lines are all gone, and the widget now carries a
+`calculator-display` key so the split can be measured rather than inferred. `CalculatorDisplay.minimumHeight`
+becomes **two result line boxes** — `2 × 66 = 132` at 1×, against 104 before — because the two
+halves are equal and each must hold the taller line. `AppSpacing.calculatorDisplayGap` and the
+1 px rule inside it are untouched, and the keypad's geometry at the 442×890 reference (88 px
+cells, 496 px grid, 266 px display) is unchanged.
+
+**Rationale:** the display was carrying two different things in one bottom-aligned block — the
+sum the user is *writing* and the number it *produced* — with an 8 px gap as the only thing
+separating them. Both change on the same keypress, and the vertical space §6.1 asks for sat
+entirely above the pair, doing nothing. Giving the space to the two lines gives each of them
+one job: the expression grows down from the top half, the result settles in the bottom half,
+and the boundary between them is the display's own midline rather than a value someone has to
+choose and then defend. The result also rises clear of the keys instead of resting on them —
+at the reference canvas it moves 33 px up — while the ruled gap that separates the display from
+the keypad stays exactly where it was (the request that produced this decision).
+
+**Consequence:** the reservation grows from 104 to 132 at 1×, and that 28 px comes out of the
+keypad wherever the screen is short enough for the keypad's height to be the binding axis. At
+320×568 the cell falls from 56 to 50.4 px — still above `minTouchTarget`'s 44 px floor — and
+the display lands on its 132 px minimum exactly. Below that the keypad wins and the display
+compresses, as D-69 says it must. `calculator_layout_test.dart` bounded the display-to-keypad
+gap by `calculatorDisplayGap × 2`; that bound is now *half the display*, because the result sits
+in a half rather than against the keys, and the group is renamed to state the split. The two
+`CalculatorDisplay.minimumHeight` assertions in `text_scaling_test.dart` moved with the formula,
+and the second lost its `- AppSpacing.sm` term: the reservation is now two line boxes with no
+layout constant between them, so it scales cleanly. `AppSpacing.sm` no longer has a caller in
+the display and its desing.md §4 row no longer claims one.
+
+**Supersedes:** desing.md §6.1's "the display is bottom-aligned" and the 8 px gap between its
+two lines. **Amends:** D-69's display/keypad composition, whose ruled gap, capped column, and
+measured cell are all unchanged.
+
+---
+
+### D-79 — The Output Line Previews the Calculation Live, so `=` Never Moves the Number
+
+**Decision:** the lower half of the display shows what `=` *would* produce, updated on every
+keystroke. It is derived in `display_resolver.dart` by the new pure `previewValue(state)`, which
+folds `pending.apply(value, operand)` when an operand is in progress and otherwise falls back to
+the entry or the running total. Nothing about the engine changes: the accumulator, the expression
+terms, and history are untouched until an operator or `=` commits the fold, so D-17's left-to-right
+evaluation and D-30's ownership of numbers by the engine both stand. The expression line carries
+the operand being typed alongside the pending operator, so `99 + 5` reads in full above the `104`.
+The preview is rounded to `decimalPlaces` (D-14) so it shows exactly what `=` will show, and the
+digits still being typed are grouped but never rounded on the line above (D-30). A fold that is not
+finite — `5 ÷ 0` — keeps showing the running total rather than flashing `Error` at a user who is
+still typing the divisor; `Error` remains `=`'s answer for the finished calculation (desing.md §9).
+As a consequence, `=` is a visual no-op: the number on screen is already the answer.
+
+**Rationale:** the output line was showing the *entry* while a second operand was being typed, so
+the calculation in progress had no visible answer. `99 + 5` displayed `99 +` above and `5` below,
+and the user could not see the result of their own arithmetic until they committed it — the one
+thing the large half of the display exists to show. The iOS, Android, and Windows calculators all
+preview, and the preview is a projection of state rather than a second calculation: deriving it in
+the resolver keeps the engine's contract ("nothing folds until it is committed") intact, and
+`decimalPlaces` stays a formatting-only concern, so changing the setting re-renders the preview
+without the engine ever being told about it.
+
+**Consequence:** `resolveExpressionLine` appends the in-progress entry, so a state that used to
+render as `100 +` now renders as `100 + 7` — the widget-test expectation in `cold_start_test.dart`
+moves with it. `resolveDisplay` now routes through `previewValue`, and a lone number being typed
+with no pending operator is still shown exactly as entered. Because the operator glyph is only
+appended behind a committed term, a state the engine does not produce can no longer print a lone
+`+` either.
+
+---
+
+### D-80 — An Operator Needs a Left Operand; `±` and `%` Act on the Operand, Never the Total
+
+**Decision:** `_inputOperator` returns early when there is no entry and no value, so an operator
+pressed on a fresh calculator — or right after an error, which leaves the same empty state — is
+**ignored** rather than remembered, and the next digit starts the calculation. A number can
+therefore never be printed behind an operator. Because the press changes nothing,
+`CalculatorController.press` compares the new state against the previous one and returns early, so
+a declined press produces no key feedback and no history write: a key that did nothing must not
+look or sound like one that did. This also fixes a duplicate history entry, since a second `=` on
+an unchanged result is now recognised as the no-op it is.
+
+The same rule governs the two unary keys, both of which used to reach past a pending operator and
+rewrite the running total. With an operator waiting and no operand typed, `%` does nothing and `±`
+stages a sign for the operand to come, so `2 + ± 5` is `2 + (-5)` rather than `-2 + 5`. The staged
+sign is held as a boolean flag rather than a lone `-` in the entry text, because a sign is not a
+number and storing it as one would mean filtering it back out of every reader of `entry`,
+`resolveExpressionLine` included; the first digit then rides on it (`-5`, and `-5` rather than
+`-05` from `± 0 5`). On a fresh calculator `±` stages the sign too, so `± 5` is a way to type
+`-5`, and a second press cancels it. A lone computed total with no operator waiting is still
+negated in place, and `%` still divides the operand by 100 (D-06), never reinterpreting it against
+the accumulator.
+
+**Rationale:** `+ 5` on a fresh calculator is meaningless — the operator was being remembered with
+nothing behind it, so the expression line printed `+` and the display read `+ 5`. Ignoring the key
+is the honest response and matches every phone calculator. The unary fixes follow from the same
+principle: `±` and `%` describe the *number the user is looking at*, and while an operator is
+waiting that number is the operand still to be typed, not the accumulated total. Negating or
+scaling the total instead silently changed a calculation the user had not finished, which is the
+same class of defect as an operator with no left operand.
+
+**Consequence:** the engine tests for "an operator after an error dismisses it" and "`±` does
+nothing when there is no number to act on" now assert the new behaviour — the pending operator
+stays `null`, and `±` signs the next number. `apply('+')` is now `CalculatorState.initial`, and
+`resolveExpressionLine` has no lone-operator case left to render. D-31 (a trailing operator
+repeats the running value) and D-19 (no backspace) are unaffected, and `2 + =` is still `4` —
+that path has a left operand, so the operator is accepted.
+
+---
+
+### D-81 — Backspace Deletes One Character of the Editable Expression, Before or After `=`
+
+**Decision:** the ⌫ control above the display rule keeps D-19's place *outside* the keypad
+(it is not a twentieth `CalculatorKey`), and its single rule is: **each press deletes exactly
+one character of the currently editable expression.** Tried in order, the press acts on the
+entry being typed, then the pending operator, then the **last committed term**, then a `±`
+sign staged for a number not yet typed, and finally a finished result that has no expression
+behind it (a value loaded from history), which is shortened a digit at a time.
+
+The load-bearing part is the third branch. The last committed term is **reopened as a typed
+entry** — its text becomes the entry, its operator becomes pending again, and the running
+total is re-folded left-to-right (D-17) over the terms that remain — before one character comes
+off it. So `900 + 100 =` is `1000`, and ⌫ gives an editable `900 + 10` previewing `910`; `⌫`
+again gives `900 + 1`, then `900 +`, then `900`, then `90`. The same mechanism makes a digit
+typed after an operator is taken back extend the number on screen (`900 +` ⌫ `5` is `9005`).
+
+`CalculatorState.canBackspace` mirrors those branches exactly — including the plain-decimal
+guard, so a value in scientific notation greys the control out rather than looking live while
+doing nothing — and the error state still declines: `AC` is the documented way out of an error.
+
+**Rationale:** the previous implementation cascaded *entry → pending operator → shred the
+result's digits* and could never reach back into the committed terms, which produced three
+defects the specification table calls out. (1) After `900 +` ⌫, the `900` was stranded: the
+control greyed out, and the next digit started a fresh entry *beside* the stale term, so the
+line read `900 5` over a result of `5` and `=` silently discarded the 900. (2) `2 + 3 +` ⌫ ⌫ left
+a dead control with an expression still on screen, so the user had to reach for `AC`. (3) After
+`=`, the press *cleared the expression* and shredded the result instead (`125 × 8 =` ⌫ read
+`100`), so the `8` the user wanted to correct could never be recovered. Reopening the last
+committed term is the single mechanism that fixes all three, and routing the digit keys through
+it too closes the same stranded state reached without a backspace — `%` or `±` on a total
+collapses the expression to that number (D-82), and the next digit used to print beside it
+(`2 + 5 =` then `±` then `3` gave `-73`).
+
+Re-folding rather than decrementing is what D-17 requires: the engine has no precedence table,
+so removing the last term of `2 + 3 × 4` leaves `5`, not the `16` a subtraction would suggest.
+
+**Consequence:** a backspace is always an *edit of the expression*, never a calculation — no key
+it can act on leaves `justEvaluated` set, so history never records one (the existing guard in
+`CalculatorController._justCompletedACalculation` is unchanged). `CalculatorState` gains
+`negativePending` purely so `canBackspace` can see a staged `±` sign, and `formatValue` /
+`isPlainDecimal` are public so the snapshot and the press that acts on it share one answer. The
+keypad, its nineteen keys, and every pixel of the display are untouched; only the engine's
+state transitions changed.
+
+**Known limits, stated rather than hidden:** parentheses do not exist in this calculator
+(D-19 fixes the keypad at the nineteen keys of desing.md §6.1), so there is no paren case to
+delete; a repeated `=` does not repeat the last operation (`2 + 2 = =` is `4`), which is
+pre-existing behaviour and out of scope here; and a value already collapsed into scientific
+notation has no digits to take back one at a time, so that single press is declined rather than
+producing a different number that still looks like an exponent.
+
+---
+
+### D-82 — A Five-Second Hold on Clear History Opens the Secret Screen
+
+**Decision:** the History screen's **bottom** Clear History action carries a second gesture
+alongside its tap. A hold of **five seconds** opens the secret PIN entry screen; **a tap is
+unchanged** and still opens the confirmation gate (D-05). The header trash is deliberately left
+alone: it is the always-present, screen-level delete (D-10), and hiding a second gesture there
+would make the secret reachable from two places a user cannot tell apart. The bottom action is
+the one reached for at the end of the list, which is where a deliberate gesture belongs.
+
+The hold is a `GestureDetector` (`onLongPressStart`, `onLongPressEnd`, `onLongPressCancel`) with a
+`Timer` of `SecretUnlock.holdDuration`, not Flutter's `onLongPress` alone — the framework's long
+press fires at ~500 ms, and 500 ms is a tap that ran long, not a gesture that was held. The timer
+starts on `onLongPressStart` and is cancelled on both end callbacks, so releasing early does
+nothing and cannot leave a timer that fires against a disposed `State`.
+
+**There is no progress indicator, no haptic, no sound, and no visible change while the button is
+held.** This is the decision the feature rests on, and it is made *against* the obvious choice: a
+filling ring or a tick would tell any user who happened to rest a thumb there that something is
+happening, which turns a gesture nobody discovers by accident into one everybody does. The secret
+screen is *meant* to be unreachable unless the user already knows. Five seconds is long enough
+that no one reaches it by accident and short enough that the user who does know it never waits in
+frustration.
+
+**Rationale:** a visible entry point would not be a secret at all. Keeping the tap path unchanged
+means the gesture is purely additive — D-05's gate is untouched, FEAT-HIST-003's contract is
+untouched, and every existing test of that button still passes. Anchoring it to the bottom action
+rather than the header keeps one delete affordance and one hidden one, so the screen never shows
+two controls whose behaviour differs in an undiscoverable way.
+
+**Consequence:** `history_screen.dart` gains an `onSecretRequested` callback and the widget that
+detects the hold. Because the gesture is invisible there is **no affordance to test for at the
+call site** — FEAT-SEC-001's tests pump the hold directly (`tester.startGesture` held for
+`holdDuration`) rather than looking for a control. The button's existing key
+(`history-clear-button`) is unchanged so current finders keep working. FEAT-HIST-003 and D-10 are
+**amended**, not superseded.
+
+---
+
+### D-83 — The Secret PIN Is a Plain Key in `shared_preferences`, Defaulting to `0000`
+
+**Decision:** the PIN is a **four-digit decimal string** stored under the single key `'secretPin'`
+in `shared_preferences`, exactly as D-02 requires of every other preference, and it defaults to
+**`'0000'`** when the key is absent. The feature lives in its own `features/secret/` module with its
+own repository interface rather than joining `AppSettings`, because a PIN is not a user preference:
+it is a credential, and that difference is what a reviewer is looking for when they open the file.
+
+`SecretCode` is a value type that validates on construction — exactly four characters, each `0`–`9`
+— and throws `FormatException` otherwise. Validation lives in the type rather than in an
+`_isValid` check at the call site, so a malformed PIN cannot exist as a value: the repository cannot
+load one and the setter cannot store one. The stored value is read back through the same
+`_readOrNull` guard the settings repository uses, so a corrupt or hand-edited key degrades to the
+default `0000` rather than bricking the screen (D-42's contract, reused verbatim).
+
+**Rationale:** the plaintext store is the deliberate cost, stated plainly rather than buried.
+`shared_preferences` is not encrypted, so on a rooted device the PIN is readable — a strictly
+smaller claim than "the history is readable", and the same claim every other value in this app
+already makes. The alternatives were rejected for concrete reasons: `flutter_secure_storage` would
+add the app's **first new dependency** since Phase 1 (D-01, struction.md §15), breaking the
+lockdown that has held through ten phases; a hash would gain nothing, because the threat here is
+*reading* the store, not *brute-forcing* it — four digits is 10⁴ guesses, and a hash with no rate
+limit (D-85) is no stronger than the plaintext it replaces.
+
+**Consequence:** recorded as a known limitation in `phases.md` rather than presented as a security
+guarantee. **No new package** is added. `SecretCode` needs unit tests for its validation and for
+the corrupt-value fallback; the repository needs the same load/save round-trip test the settings
+repository has (`settings_repository_test.dart` is the model).
+
+---
+
+### D-84 — The Secret Screen Is Blank, With One Overflow Dot in the Top-Left
+
+**Decision:** once unlocked, the secret screen is an **empty black page** whose only content is a
+single `AppIconButton(icon: Icons.more_vert)` in the **top-left**, sitting exactly where the
+calculator's own header actions sit. No title, no subtitle, no logo, no empty-state illustration, no
+"you found it" copy, and no back arrow of its own — the system back gesture is the only way out, so
+the screen gives no hint that it is reachable or that it is anywhere at all.
+
+The button is the **shared** `AppIconButton` (D-74), not a bespoke glyph, so it is the same 48 px
+bordered square as every other header action in the app. That is the whole trick: the affordance
+looks completely ordinary, because a control that looked special would announce the screen it lives
+on. Its `tooltip` is `'Settings'` and it opens the secret Settings screen — a single
+`SettingsGroup`-wrapped page holding **exactly one row, "Change PIN"** (the full Settings page is
+deliberately *not* duplicated here).
+
+**Rationale:** the blankness is the feature. A secret screen that congratulates the user for finding
+it is a secret screen a screenshot spoils, and a screen that names itself in its title bar is one
+every shoulder-surfer can read. Reusing the app's own button, in the app's own place, means the
+whole discovery cost of the feature is carried by the five-second hold (D-82) alone. Shipping only
+the PIN row rather than the full Settings page is the same instinct applied to scope: this screen's
+job is to change the PIN, and duplicating the other four preferences inside a hidden page would
+create a second place to maintain a setting with no user to reach it.
+
+**Consequence:** the blank page is genuinely hard to test *by looking* — there is one control, so
+the tests find it by key, not by text. `desing.md` gains §6.8 and §6.9 for the two screens, and
+§12.2 records that **neither exists in any mockup** (D-13 maps all four mockups to real screens and
+this is not one of them), so there is no pixel to match. **No new design token is added**: the page
+uses `AppColors.background`, the button uses `AppIconButton`, the PIN row uses the existing
+`SettingsGroup` / `SettingsRow` — if a new colour or size were needed for a blank page, the page
+would not be blank.
+
+---
+
+### D-85 — A Wrong PIN Clears and Shakes; Nothing Is Locked
+
+**Decision:** four wrong attempts are treated as four wrong attempts. The entered dots clear, the
+indicator shakes, and the user may try again immediately. There is **no** attempt counter, **no**
+lockout, **no** delay, and **no** self-destruct. On a correct code the entry screen pops and the
+secret screen is revealed. Changing the PIN requires the **current** PIN to be entered first.
+
+**Rationale:** a lockout is the kind of feature that looks like security and is actually a
+denial-of-service tool aimed at the owner. The threat model has no attacker holding the device —
+anyone standing at an unlocked phone clears the history from the same screen. Someone who mistypes
+their own PIN and is locked out of the only page that can reset it has been punished for forgetting
+a four-digit number they chose, and the recovery path would be a reinstall, which loses the history.
+Rate limiting also costs a `DateTime` comparison and a persisted counter to protect something four
+digits never made safe: 10⁴ combinations brute-forced in under a minute on any device, and D-83's
+plaintext store means the code is readable without any guessing at all.
+
+**Consequence:** the shake is the *only* wrong-PIN feedback, which is exactly why it is worth having
+— it distinguishes "wrong" from "nothing happened" without a message that would confirm the screen
+is real. Because reset requires the current PIN, a forgotten PIN has **no in-app recovery** and a
+reinstall is the only route; this is recorded in `phases.md` as a known limitation rather than left
+for a user to discover. The entry screen's test asserts the dots clear on a wrong code and that a
+subsequent correct code still works.
+
+### D-86 — A Floating White Home Button, a Reset PIN Route, and a Prompt That Explains Itself
+
+**Decision:** three reversals of D-84 and §6.8, taken together because they answer one complaint: a user who
+reached Secret Mode could not tell what they were looking at and could not get out.
+
+1. **A floating white home button on both secret screens.** A **56 px white circle** in the
+   **bottom-right**, black `home_outlined` glyph, carrying the tooltip and semantics label *"Back to
+   calculator"*, navigating to `/` with `go`. It is the second control on the blank secret screen and the
+   only exit from the PIN screen.
+2. **"Reset PIN" as a second row in the secret settings page**, after "Change PIN", behind
+   `AppConfirmationDialog`. It erases the stored code so the next unlock requires `0000`.
+   A **"Forgot PIN?"** link on the PIN screen opens the same dialog.
+3. **The PIN screen gains two strings of guidance**: "Enter your PIN" above the dots, and "Forgot PIN?"
+   below them. Neither names the feature; neither names the code.
+
+**Rationale:**
+
+*The home button* reverses a decision that argued well — "the blankness is the feature", and a page that
+shows nothing is a page a screenshot spoils. But the same decision that made the page blank also made it
+**inescapable by the obvious route**, and that is the part that does not survive contact with a user. On the
+PIN screen the system back gesture is not an exit from Secret Mode at all: it pops to History, leaving a user
+who held the button by accident inside a hidden area with four dots, a keypad, and no way to reach the
+calculator. A screen a user cannot leave teaches the wrong lesson — that the app has trapped them — and that
+is a worse way to reveal a hidden feature than an extra button is. The button does **not** spoil the
+*feature*: the five-second hold (D-82) still has to be known to reach either screen. What it spends is
+deniability about a page's contents, and reachability is worth more when the alternative is a trapped user.
+
+*Placement and palette* are the FAB position and the app's own inverted pair — `AppColors.textPrimary`
+(white) behind `AppColors.textOnFunction` (black) — because that is a shape and contrast every phone user
+already reads as "return to the main thing". **No new colour token is added.** D-84 warned that a blank page
+needing a token would be the signal it had stopped being blank; it has stopped being blank, and recording
+that it did so *without* opening the palette keeps the token files honest about what is product identity and
+what is furniture.
+
+*The reset route* completes D-85 rather than contradicting it. D-85 declined a lockout on the reasoning that
+"the only recovery would be a reinstall, which loses the history" — this **is** that recovery, made
+reachable. **The cost is stated plainly: anyone who reaches the screen can now wipe the PIN in one tap.** That
+is a real reduction in the feature's only protection, and it is accepted because the threat model D-85 already
+describes has no attacker holding the device, and because the alternative is a user locked out of the one
+page that can change their code, with a reinstall as the answer.
+
+*Why the dialog names `0000`* — the one place the feature ever speaks the code. §6.8 withholds it so a
+bystander's screenshot cannot spoil it, but a user who has *forgotten* their PIN cannot act on the
+withholding: the information is precisely what they need, and by the time the dialog is on screen they have
+already committed to being here. The prompt above the dots says nothing about the code, and a test asserts
+that.
+
+**Consequence:** `SecretRepository` gains `clear()` (a `remove`, not a `save` of the default — nothing that
+looks like a stored credential is left behind), and `SecretCodeNotifier` gains `reset()`. AC-020's "only
+control" wording and "exactly one row" are amended; **AC-022** is added for the reset. D-84's clauses on
+*content* — no title, no logo, no copy, no illustration, no back arrow — all still hold; only the control
+count and the exit policy changed. The reset is deliberately **not** reachable from the Change PIN flow,
+where offering a way to destroy the code being chosen would be a trap.
+
+---
+
+### D-91 — The Settings Card Takes Ethar's Recipe Whole: Outline, Shadow, and a 44 px Icon Tile
+
+**Decision:** `SettingsGroup` paints `surface`, a 1 px `cardBorder` outline, radius `AppRadius.card`, and — **in the white theme only** — a `cardShadow` at blur 24 offset (0, 8). `SettingsRow`'s leading glyph becomes a 44 px `AppIconTile` (radius 13, `surfaceSoft` fill, 21 px glyph). `rowMinHeight` goes **56 → 64**, the group hairline moves from indent 16 to **72** with a new `endIndent` of 16, and `AppColors.divider` moves `#1A1A1B` → `#292D35`.
+
+Source, verbatim: `Ethar/lib/src/features/settings/settings_components.dart`'s `_settingsCardDecoration`, `_SettingsIconTile`, `_SettingsRow`, and `_SettingsGroup`.
+
+**Three tokens added, all copied rather than chosen.** `AppColors.surfaceSoft` (`#20232A` dark / `#FAFAFB` light) is the tile fill, `AppColors.cardBorder` (`#292D35` / `#ECEDEF`) is the outline, and `AppPalette.cardShadow` is a **nullable** `Color` — `null` in dark, `0x0D0F172A` in light. The null is the point: a `BoxShadow` list cannot say "no shadow", and a transparent black would make "absent" indistinguishable from "present and invisible" to anything reading the token. `lerp` therefore fades from whichever side has one rather than mixing a null.
+
+**The outline is not decoration on a black page.** `#101011` on `#000000` is a difference a user can see and cannot point at; the 1 px edge is what makes a card an object rather than a slightly lighter patch. This is also why `divider` was retuned *upward* to meet it — a hairline darker than the outline around the card reads as a crease in the card, not as a boundary between rows. Ethar uses one value for both (`_SettingsColors.divider` **is** `border`), and so does this app now, under two names that say where each is drawn.
+
+**The row height was forced, not chosen.** 44 px of tile plus the row's existing 20 px of vertical padding is 64 — at 56 the tile was either clipped or the padding squeezed. Ethar's `_SettingsRow` carries `minHeight: 64` for the same reason. The divider's 72 is the same arithmetic seen from the other side: it now starts where the **titles** start rather than under the leading icon, which was what made an icon look like it belonged to the row above.
+
+**`ColoredBox` → `DecoratedBox`, and one public `decoration` helper.** A fill-only widget cannot draw an outline or a shadow, and a test should assert the *recipe* rather than the widget arrangement implementing it. `SettingsGroup.decoration(context)` is that seam; the internal `ClipRRect` stays, because the border has to sit on the same corner the rows are clipped to.
+
+**One thing this cost, recorded because it was not obvious:** the trailing control is now `Flexible`. The 44 px tile took 22 px out of each row's fixed budget, and on the 320 px screen `about_screen_test` guards, an unbounded `Text` value (App Name, Version, Developer) pushed the row past its card. Ethar avoids this by bounding its value at `maxWidth: 105`; bounding rather than truncating blind is what stops the *title* from losing the space it needs to stay legible. **(Superseded on this point by D-92 — `Flexible` was the wrong tool for the bound, and the arrow and the switches floated mid-row as a result.)**
+
+**Scope.** The change is in the shared component, so **Settings, About, both Secret pages, the decimal-places sheet, and the debug catalogue all take it at once**. That is the intent — the argument for a shared design language is that a user moving between two sibling apps meets the same object — but it means this was not a Settings-only edit, and any screen using `SettingsGroup` inherits the new height.
+
+---
+
+### D-92 — The Trailing Control Is Not a Flex Child: Theme's Arrow and the Three Switches Were Floating Mid-Row
+
+**Decision:** `SettingsRow`'s trailing slot drops `Flexible` for a plain `ConstrainedBox(maxWidth: 105)` after an 8 px gap — Ethar's `_SettingsRow` arrangement, verbatim. The bound becomes the named `SettingsRow.trailingMaxWidth`. The Settings screen stops passing an explicit `chevron_right` as the Theme row's `trailing` and lets the row draw its own.
+
+**What was actually wrong.** D-91 recorded that it made the trailing control `Flexible` "so the value is bounded". That solved the 320 px overflow and created a bug nobody could see in a token diff. `RenderFlex` divides the width left over between **flex children by flex factor**, and a loose `Flexible` never hands its unused share back — so the title's `Expanded` (flex 1) and the trailing's `Flexible` (flex 1) split the row's spare width **50/50**, and the trailing widget was drawn at the *start* of its own half. At the 442 px reference canvas that parked Theme's chevron **129 px** and each switch **91 px** short of the card's right edge, leaving the card's right padding visually bare on four of the eleven rows. A `Flexible` was never a bounding box; it is a *claim on half the remaining width*, and this row already had a claimant.
+
+**The half nobody sees.** The title column was getting the same half. `"Keep calculation history"` wrapped onto two lines, so the History row rendered taller than its neighbours — a difference that reads as "this row is different" rather than as a bug.
+
+**Why Ethar never had it.** Its `_SettingsRow` puts the value in a `ConstrainedBox`, which is **not** a flex child: `RenderFlex` lays out non-flex children first, at their own width, and only then measures the `Expanded`. The control lands at the row's end and the title takes everything left. Copying the *bound* without the *placement* is what D-91 did; D-92 copies both.
+
+**Why the Theme row's explicit chevron went.** The row is tappable, so `SettingsRow` already draws a chevron — in the same 8 px gap and the same `ExcludeSemantics` as every navigational row. Passing one explicitly bought nothing visually and skipped the gap, which put Theme's arrow **8 px** right of App Version's, Privacy Policy's, and Terms of Service's. The affordance is unchanged; the alignment is now the same object as every other arrow on the screen.
+
+**A bound, not a width.** 105 is a ceiling, not a size — a switch is 60 and a chevron 22, and neither should be stretched to fill it. Named rather than inlined so the test asserts the recipe against the same fact the widget reads, instead of restating `105` in two places and hoping they stay equal.
+
+**Scope.** Same shared component as D-91, so Settings, About, the Secret pages, the decimal-places sheet, and the debug catalogue are all affected. The About screen's trailing values (App Name, Version, Developer) were the rows that motivated the original bound, so they are the ones the restored `ConstrainedBox` is really there for.
+
+**Recorded but not changed.** Material 3's `Switch` with `MaterialTapTargetSize.padded` reserves **60 × 48** (`switchWidth 52 + 8` of horizontal padding, `switchHeight 48`), while the icon tile is 44. A toggle row therefore renders 72 px against 68 px for every other row. `MaterialTapTargetSize.shrinkWrap` would reserve 60 × 40, leave the painted 52 × 32 track and its centring untouched, and make every row 68 px — the whole row is the tap target either way, so no touch target is lost. Left alone here because it is a different defect with a different trade-off, not a consequence of the flex bug.
+
+---
+
+### D-93 — The History Card Takes Ethar's Task Card Whole: Outline, Shadow, Radius 12, and the Result as the Title
+
+**Decision:** `HistoryCard` becomes a port of Ethar's `_TaskCard`
+(`Ethar/lib/src/features/tasks/task_list.dart:363-550`) rather than a card that
+converges on it. Four values change, and one of them is not a number:
+
+1. **Outlined at rest.** The card gains a 1 px `AppPalette.cardBorder` outline.
+2. **Shadowed.** It paints `AppPalette.cardShadow` at blur 22 / offset (0, 6) —
+   Ethar's `_appCard` values — in whichever theme has one.
+3. **Radius 12.** `AppRadius.historyCard` goes 14 → **12**.
+4. **The lines swap rank.** The **result** is now the title — 17/w700 — and the
+   **expression** is the meta row at 13/w400, preceded by a 17 px
+   `schedule_rounded` glyph and a 5 px gap.
+
+Plus the supporting measurements, all Ethar's: `AnimatedContainer` at 150 ms,
+padding `EdgeInsets.symmetric(horizontal: 18, vertical: 17)` (new
+`AppSpacing.historyCardHorizontal` / `historyCardVertical`), a 7 px title-to-meta
+gap, and a selected border of 1.5 px (down from 2). The fill moves off the
+`Material` onto the `AnimatedContainer`'s decoration so one widget owns the fill,
+the outline, and the shadow together; the `Material` is now transparent.
+
+**Rationale: the hierarchy flip is the substance; the rest is consistency.**
+Ethar prints a task's title at 17/w700 over a 13 muted meta line
+(`task_list.dart:496, 519`). Here the result takes the title's rank and the
+expression takes the meta's, because the result is what the user came back to
+read — `125 × 8` is how the row was made, `1,000` is what it is worth. D-73 led
+with the expression at 16 over a 22 result, which put the setup above the answer,
+and D-72 had pushed the result to 44 to fight for attention. Ethar does not make
+a number bigger to win a card; it makes the number the *title*. So the result
+drops from 22 to 17 and still reads first, because rank and scale are different
+instruments and only one of them was being played too loudly.
+
+The chrome is the same argument at the level of the surface. Three separate
+decisions had each reasoned about this card in isolation: D-72 made it
+borderless and shadowless because "on a black page the fill is the only edge",
+D-77 matched its radius to Ethar's Create Task *option* rows, D-73 rescaled it
+against desing.md's bands. Each was locally reasonable and the three together
+produced a card that resembles its sibling only in the vaguest sense. Ethar
+outlines every card in both themes; the outline, not the fill, is what makes a
+`#151517` card an object on black. So the port takes the recipe whole, and the
+three decisions' shared premise — that this card should be argued about
+separately — goes with it.
+
+**D-77's radius was tracking the wrong Ethar card.** It matched
+`task_editor.dart`'s `_TaskOption` at 14; the *task card* is 12
+(`task_list.dart:405`). Those are two different components that happen to share a
+number, and a History entry is the same kind of object as the task card — a row
+among peers, long-pressable, multi-selectable — not as an editor field row. Twelve
+is also where desing.md §5.3's 12–16 band starts. `AppRadius.historyCard` keeps
+its own name and is now asserted `isNot(AppRadius.card)` rather than equal to it:
+the two must not drift back together.
+
+**What was deliberately *not* ported.** Ethar's 34 px leading completion circle
+has no meaning here — a calculation has no completed state, and inventing one
+would put a checkbox on every row that does nothing. The trailing slot is
+untouched: D-76's chevron/selection-circle pair stays, and the selection circle
+stays at 28 rather than Ethar's 32, because it hangs on a card that is now
+narrower and shorter than Ethar's row. Selection stays **white, not orange**
+(D-76): selection is a mode, not a primary action, and nothing in a colour port
+disturbs that reasoning. The dark theme draws no shadow, because `cardShadow` is
+`null` there and a shadow on black is invisible — the same rule D-91's
+`SettingsGroup` already follows.
+
+**One consequence worth naming.** `Container` subtracts a border's width from its
+child, so the `Material` inside the card now starts 1 px inboard of the 24 px app
+margin (and 1.5 px when selected). The card's *outer edge* still sits exactly on
+that margin — which is what D-73's alignment with the header's back arrow is
+actually about — so the geometry contract holds, but it is now asserted on the
+`AnimatedContainer` rather than the `Material`. Recording it because it is the
+kind of one-pixel change that is invisible in review and obvious in a screenshot.
+
+**Height is unchanged.** 17·1.25 + 7 + 13·1.3 is ~45 of content inside 34 of
+padding, still under `AppSizes.historyCardMinHeight`'s 88, so the floor governs
+and a 360 dp phone still fits four entries — the assertion `history_responsive_test`
+has made since D-73.
+
+**Supersedes:** D-72's borderless/shadowless rule and its 28/44 type scale; D-73's
+expression-above-result order and its `cardPadding`-based padding; D-77's radius
+14. **Unchanged by it:** the 24 px margin (D-73), the 88 px floor (D-72/D-73),
+the day grouping, persistence, tap-to-load, the long-press gesture, the trailing
+slot, and the selection palette (all D-76).
 
 ---
 

@@ -71,6 +71,9 @@ class _FlakyReadRepository implements HistoryRepository {
   );
 
   @override
+  Future<void> deleteByIds(Set<String> ids) => inner.deleteByIds(ids);
+
+  @override
   Future<void> clearAll() => inner.clearAll();
 
   @override

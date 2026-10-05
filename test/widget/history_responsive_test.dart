@@ -2,7 +2,7 @@
 /// rescaled in D-73).
 ///
 /// `design_system_test.dart` proves the card's *tokens*; this proves the card's
-/// *geometry* — that the app margin, the 20 px radius, and the 88 pt floor
+/// *geometry* — that the app margin, the 14 px radius, and the 88 pt floor
 /// survive the three widths `desing.md` §9 supports, and that the one line that
 /// must never truncate does not.
 ///
@@ -21,13 +21,20 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../support/pump_app.dart';
 
-/// The cards' visible surface — the `Material` the fill and the ink are on.
+/// The cards' visible surface — the box the card's fill and outline are painted
+/// on.
 ///
-/// Measured on the `Material` rather than on the `HistoryCard` itself because
-/// the widget's outer `Padding` spans the full width; the inset the design
-/// states belongs to the fill inside it.
+/// Measured on the `AnimatedContainer` rather than on the `HistoryCard` itself
+/// because the widget's outer `Padding` spans the full width; the inset the
+/// design states belongs to the surface inside it.
+///
+/// D-93: this was the `Material`, when the fill was the `Material`'s own colour
+/// and the card carried no outline. The fill now belongs to the decoration
+/// wrapping it, so the `Material` is transparent and inset by the outline's
+/// width — reading it would assert Ethar's border width rather than this app's
+/// margin.
 Finder surfaceOf(Finder card) =>
-    find.descendant(of: card, matching: find.byType(Material)).first;
+    find.descendant(of: card, matching: find.byType(AnimatedContainer)).first;
 
 Finder firstCard() => find.byType(HistoryCard).first;
 
@@ -95,12 +102,14 @@ void main() {
         // exact 88 so a future padding tweak does not fail on rounding.
         expect(surface.height, inInclusiveRange(86, 92));
 
-        final material = tester.widget<Material>(firstSurface());
+        final decoration =
+            (tester.widget<AnimatedContainer>(firstSurface()).decoration!
+                as BoxDecoration);
         expect(
-          material.borderRadius,
+          decoration.borderRadius,
           BorderRadius.circular(AppRadius.historyCard),
         );
-        expect(material.color, AppColors.surfaceRaised);
+        expect(decoration.color, AppColors.surfaceRaised);
       });
     }
   });

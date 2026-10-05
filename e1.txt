@@ -1,0 +1,545 @@
+Resolving dependencies...
+Downloading packages...
+  cli_util 0.4.2 (0.6.0 available)
+  code_assets 1.2.1 (2.1.0 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  cupertino_icons 1.0.9 (2.0.0 available)
+  flutter_riverpod 2.6.1 (3.4.3 available)
+  go_router 14.8.1 (18.0.2 available)
+  hooks 2.0.2 (2.2.0 available)
+  jni 1.0.3 (1.1.0 available)
+  jni_flutter 1.0.3 (1.0.4 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  meta 1.18.3 (1.19.0 available)
+  objective_c 9.5.0 (9.6.2 available)
+  record_use 0.6.0 (1.1.1 available)
+  riverpod 2.6.1 (3.4.3 available)
+  shared_preferences 2.5.3 (2.5.5 available)
+  test_api 0.7.12 (0.7.14 available)
+  vector_math 2.4.0 (2.4.3 available)
+Got dependencies!
+17 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart                                                                                   00:01 +0: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart                                                                                   00:02 +0: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart                                                                                   00:03 +0: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart                                                                                   00:04 +0: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart                                                                                   00:05 +0: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart                                                                                   00:06 +0: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart                                                                                   00:06 +0: the () key decides open or close (D-85) `` then () is `(`                                                                                                                                    00:06 +1: the () key decides open or close (D-85) `` then () is `(`                                                                                                                                    00:06 +1: the () key decides open or close (D-85) `5` then () is `5×(`                                                                                                                                 00:06 +2: the () key decides open or close (D-85) `5` then () is `5×(`                                                                                                                                 00:06 +2: the () key decides open or close (D-85) `5+` then () is `5+(`                                                                                                                                00:06 +2 -1: the () key decides open or close (D-85) `5+` then () is `5+(` [E]                                                                                                                         
+  Expected: '5+('
+    Actual: '5+×('
+     Which: is different.
+            Expected: 5+(
+              Actual: 5+×(
+                        ^
+             Differ at offset 2
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 32:9          main.<fn>.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "the () key decides open or close (D-85) `5+` then () is `5+(`"
+00:07 +2 -1: the () key decides open or close (D-85) `5×` then () is `5×(`                                                                                                                             00:07 +2 -2: the () key decides open or close (D-85) `5×` then () is `5×(` [E]                                                                                                                         
+  Expected: '5×('
+    Actual: '5××('
+     Which: is different.
+            Expected: 5×(
+              Actual: 5××(
+                        ^
+             Differ at offset 2
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 32:9          main.<fn>.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "the () key decides open or close (D-85) `5×` then () is `5×(`"
+00:07 +2 -2: the () key decides open or close (D-85) `()` then () is `((`                                                                                                                              00:07 +3 -2: the () key decides open or close (D-85) `()` then () is `((`                                                                                                                              00:07 +3 -2: the () key decides open or close (D-85) `()5` then () is `(5)`                                                                                                                            00:07 +3 -3: the () key decides open or close (D-85) `()5` then () is `(5)` [E]                                                                                                                        
+  Expected: '(5)'
+    Actual: '5×('
+     Which: is different.
+            Expected: (5)
+              Actual: 5×(
+                      ^
+             Differ at offset 0
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 32:9          main.<fn>.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "the () key decides open or close (D-85) `()5` then () is `(5)`"
+00:08 +3 -3: the () key decides open or close (D-85) `()5+` then () is `(5+(`                                                                                                                          00:08 +3 -4: the () key decides open or close (D-85) `()5+` then () is `(5+(` [E]                                                                                                                      
+  Expected: '(5+('
+    Actual: '5+×('
+     Which: is different.
+            Expected: (5+(
+              Actual: 5+×(
+                      ^
+             Differ at offset 0
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 32:9          main.<fn>.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "the () key decides open or close (D-85) `()5+` then () is `(5+(`"
+00:08 +3 -4: the () key decides open or close (D-85) `()5+2` then () is `(5+2)`                                                                                                                        00:08 +3 -5: the () key decides open or close (D-85) `()5+2` then () is `(5+2)` [E]                                                                                                                    
+  Expected: '(5+2)'
+    Actual: '2×('
+     Which: is different.
+            Expected: (5+2)
+              Actual: 2×(
+                      ^
+             Differ at offset 0
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 32:9          main.<fn>.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "the () key decides open or close (D-85) `()5+2` then () is `(5+2)`"
+00:08 +3 -5: the () key decides open or close (D-85) `()5+2()` then () is `(5+2)×(`                                                                                                                    00:08 +3 -6: the () key decides open or close (D-85) `()5+2()` then () is `(5+2)×(` [E]                                                                                                                
+  Expected: '(5+2)×('
+    Actual: '2×(('
+     Which: is different.
+            Expected: (5+2)×(
+              Actual: 2×((
+                      ^
+             Differ at offset 0
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 32:9          main.<fn>.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "the () key decides open or close (D-85) `()5+2()` then () is `(5+2)×(`"
+00:08 +3 -6: the () key decides open or close (D-85) `5+2` then () is `5+2×(`                                                                                                                          00:08 +3 -7: the () key decides open or close (D-85) `5+2` then () is `5+2×(` [E]                                                                                                                      
+  Expected: '5+2×('
+    Actual: '2×('
+     Which: is different.
+            Expected: 5+2×(
+              Actual: 2×(
+                      ^
+             Differ at offset 0
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 32:9          main.<fn>.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "the () key decides open or close (D-85) `5+2` then () is `5+2×(`"
+00:08 +3 -7: the () key decides open or close (D-85) nests rather than closing early                                                                                                                   00:08 +4 -7: the () key decides open or close (D-85) nests rather than closing early                                                                                                                   00:08 +4 -7: the () key decides open or close (D-85) closes as soon as the open group has an operand                                                                                                   00:08 +4 -8: the () key decides open or close (D-85) closes as soon as the open group has an operand [E]                                                                                               
+  Expected: '(5)'
+    Actual: '5×('
+     Which: is different.
+            Expected: (5)
+              Actual: 5×(
+                      ^
+             Differ at offset 0
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 41:7          main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "the () key decides open or close (D-85) closes as soon as the open group has an operand"
+00:08 +4 -8: the () key decides open or close (D-85) a % is a value, so the next () multiplies into a group                                                                                            00:08 +5 -8: the () key decides open or close (D-85) a % is a value, so the next () multiplies into a group                                                                                            00:08 +5 -8: the () key decides open or close (D-85) never emits two closing parentheses in a row                                                                                                      00:08 +6 -8: the () key decides open or close (D-85) never emits two closing parentheses in a row                                                                                                      00:08 +6 -8: backspace removes exactly one character (D-81) takes an operator off                                                                                                                      00:08 +7 -8: backspace removes exactly one character (D-81) takes an operator off                                                                                                                      00:08 +7 -8: backspace removes exactly one character (D-81) takes one digit at a time                                                                                                                  00:08 +7 -9: backspace removes exactly one character (D-81) takes one digit at a time [E]                                                                                                              
+  Expected: '900+10'
+    Actual: '10'
+     Which: is different.
+            Expected: 900+10
+              Actual: 10
+                      ^
+             Differ at offset 0
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 66:7          main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "backspace removes exactly one character (D-81) takes one digit at a time"
+00:08 +7 -9: backspace removes exactly one character (D-81) walks the whole expression back to empty, never past it                                                                                    00:08 +8 -9: backspace removes exactly one character (D-81) walks the whole expression back to empty, never past it                                                                                    00:08 +8 -9: backspace removes exactly one character (D-81) works with decimals                                                                                                                        00:08 +9 -9: backspace removes exactly one character (D-81) works with decimals                                                                                                                        00:08 +9 -9: backspace removes exactly one character (D-81) works with parentheses                                                                                                                     00:08 +9 -10: backspace removes exactly one character (D-81) works with parentheses [E]                                                                                                                
+  Expected: '(5+5'
+    Actual: '5×'
+     Which: is different.
+            Expected: (5+5
+              Actual: 5×
+                      ^
+             Differ at offset 0
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 90:7          main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "backspace removes exactly one character (D-81) works with parentheses"
+00:08 +9 -10: backspace removes exactly one character (D-81) on an empty expression it costs nothing                                                                                                   00:08 +10 -10: backspace removes exactly one character (D-81) on an empty expression it costs nothing                                                                                                  00:08 +10 -10: backspace removes exactly one character (D-81) updates the preview                                                                                                                      00:08 +10 -11: backspace removes exactly one character (D-81) updates the preview [E]                                                                                                                  
+  Expected: <910>
+    Actual: <10.0>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 102:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "backspace removes exactly one character (D-81) updates the preview"
+00:08 +10 -11: backspace after equals restores the calculation (D-83) the first press hands back the whole expression                                                                                  00:08 +10 -12: backspace after equals restores the calculation (D-83) the first press hands back the whole expression [E]                                                                              
+  Expected: '900+100'
+    Actual: '100'
+     Which: is different.
+            Expected: 900+100
+              Actual: 100
+                      ^
+             Differ at offset 0
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 108:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "backspace after equals restores the calculation (D-83) the first press hands back the whole expression"
+00:08 +10 -12: backspace after equals restores the calculation (D-83) and leaves the calculator editable, not locked                                                                                   00:08 +11 -12: backspace after equals restores the calculation (D-83) and leaves the calculator editable, not locked                                                                                   00:08 +11 -12: backspace after equals restores the calculation (D-83) repeated backspace keeps working                                                                                                 00:08 +11 -13: backspace after equals restores the calculation (D-83) repeated backspace keeps working [E]                                                                                             
+  Expected: '900+10'
+    Actual: '10'
+     Which: is different.
+            Expected: 900+10
+              Actual: 10
+                      ^
+             Differ at offset 0
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 119:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "backspace after equals restores the calculation (D-83) repeated backspace keeps working"
+00:08 +11 -13: backspace after equals restores the calculation (D-83) a digit after restoring extends the expression again                                                                             00:08 +11 -14: backspace after equals restores the calculation (D-83) a digit after restoring extends the expression again [E]                                                                         
+  Expected: '900+1005'
+    Actual: '1005'
+     Which: is different.
+            Expected: 900+1005
+              Actual: 1005
+                      ^
+             Differ at offset 0
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 131:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "backspace after equals restores the calculation (D-83) a digit after restoring extends the expression again"
+00:08 +11 -14: backspace after equals restores the calculation (D-83) the answer is still shown after the restore                                                                                      00:08 +11 -15: backspace after equals restores the calculation (D-83) the answer is still shown after the restore [E]                                                                                  
+  Expected: <1000>
+    Actual: <100.0>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 135:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "backspace after equals restores the calculation (D-83) the answer is still shown after the restore"
+00:08 +11 -15: AC resets everything (D-83) from a completed calculation                                                                                                                                00:08 +12 -15: AC resets everything (D-83) from a completed calculation                                                                                                                                00:08 +12 -15: AC resets everything (D-83) from an error                                                                                                                                               00:08 +13 -15: AC resets everything (D-83) from an error                                                                                                                                               00:08 +13 -15: AC resets everything (D-83) from an open parenthesis                                                                                                                                    00:08 +14 -15: AC resets everything (D-83) from an open parenthesis                                                                                                                                    00:08 +14 -15: digits a leading zero is replaced rather than accumulated                                                                                                                               00:08 +15 -15: digits a leading zero is replaced rather than accumulated                                                                                                                               00:08 +15 -15: digits type after an operator                                                                                                                                                           00:08 +15 -16: digits type after an operator [E]                                                                                                                                                       
+  Expected: '5+2'
+    Actual: '2'
+     Which: is different.
+            Expected: 5+2
+              Actual: 2
+                      ^
+             Differ at offset 0
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 168:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "digits type after an operator"
+00:08 +15 -16: digits type after a closing parenthesis is refused                                                                                                                                      00:08 +15 -17: digits type after a closing parenthesis is refused [E]                                                                                                                                  
+  Expected: '(5+5)'
+    Actual: '2'
+     Which: is different.
+            Expected: (5+5)
+              Actual: 2
+                      ^
+             Differ at offset 0
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 172:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "digits type after a closing parenthesis is refused"
+00:08 +15 -17: digits after equals a digit starts a new calculation                                                                                                                                    00:08 +16 -17: digits after equals a digit starts a new calculation                                                                                                                                    00:08 +16 -17: digits a lone zero is preserved                                                                                                                                                         00:08 +17 -17: digits a lone zero is preserved                                                                                                                                                         00:08 +17 -17: the decimal point completes a number                                                                                                                                                    00:08 +18 -17: the decimal point completes a number                                                                                                                                                    00:08 +18 -17: the decimal point is refused when the number already has one                                                                                                                            00:09 +18 -17: the decimal point is refused when the number already has one                                                                                                                            00:09 +19 -17: the decimal point is refused when the number already has one                                                                                                                            00:09 +19 -17: the decimal point starts 0. after an operator                                                                                                                                           00:09 +19 -18: the decimal point starts 0. after an operator [E]                                                                                                                                       
+  Expected: '5+0.'
+    Actual: '0.'
+     Which: is different.
+            Expected: 5+0.
+              Actual: 0.
+                      ^
+             Differ at offset 0
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 194:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "the decimal point starts 0. after an operator"
+00:09 +19 -18: the decimal point starts 0. after a multiply                                                                                                                                            00:09 +19 -19: the decimal point starts 0. after a multiply [E]                                                                                                                                        
+  Expected: '5×0.'
+    Actual: '0.'
+     Which: is different.
+            Expected: 5×0.
+              Actual: 0.
+                      ^
+             Differ at offset 0
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 198:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "the decimal point starts 0. after a multiply"
+00:09 +19 -19: the decimal point works inside parentheses                                                                                                                                              00:09 +19 -20: the decimal point works inside parentheses [E]                                                                                                                                          
+  Expected: '(5+0.'
+    Actual: '0.'
+     Which: is different.
+            Expected: (5+0.
+              Actual: 0.
+                      ^
+             Differ at offset 0
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 202:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "the decimal point works inside parentheses"
+00:09 +19 -20: the decimal point a lone decimal point starts a number                                                                                                                                  00:09 +20 -20: the decimal point a lone decimal point starts a number                                                                                                                                  00:09 +20 -20: operators a pending operator is replaced, keeping the number                                                                                                                            00:09 +20 -21: operators a pending operator is replaced, keeping the number [E]                                                                                                                        
+  Expected: '900×'
+    Actual: '900+×'
+     Which: is different.
+            Expected: 900×
+              Actual: 900+×
+                         ^
+             Differ at offset 3
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 212:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "operators a pending operator is replaced, keeping the number"
+00:09 +20 -21: operators one with nothing to its left is ignored                                                                                                                                       00:09 +21 -21: operators one with nothing to its left is ignored                                                                                                                                       00:09 +21 -21: operators one after a closing parenthesis is allowed, so a group can be used                                                                                                            00:09 +21 -22: operators one after a closing parenthesis is allowed, so a group can be used [E]                                                                                                        
+  Expected: '(5+5)×'
+    Actual: '5×(×'
+     Which: is different.
+            Expected: (5+5)×
+              Actual: 5×(×
+                      ^
+             Differ at offset 0
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 221:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "operators one after a closing parenthesis is allowed, so a group can be used"
+00:09 +21 -22: operators after equals it continues from the result                                                                                                                                     00:09 +21 -23: operators after equals it continues from the result [E]                                                                                                                                 
+  Expected: '1000+'
+    Actual: '100+'
+     Which: is different.
+            Expected: 1000+
+              Actual: 100+
+                         ^
+             Differ at offset 3
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 226:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "operators after equals it continues from the result"
+00:09 +21 -23: percent (D-86) divides by 100 under multiply                                                                                                                                            00:09 +21 -24: percent (D-86) divides by 100 under multiply [E]                                                                                                                                        
+  Expected: <10>
+    Actual: <0.1>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 232:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "percent (D-86) divides by 100 under multiply"
+00:09 +21 -24: percent (D-86) divides by 100 on its own                                                                                                                                                00:09 +22 -24: percent (D-86) divides by 100 on its own                                                                                                                                                00:09 +22 -24: percent (D-86) is a share of the left operand under add                                                                                                                                 00:09 +22 -25: percent (D-86) is a share of the left operand under add [E]                                                                                                                             
+  Expected: <220>
+    Actual: <0.1>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 240:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "percent (D-86) is a share of the left operand under add"
+00:09 +22 -25: percent (D-86) is a share of the left operand under subtract                                                                                                                            00:09 +22 -26: percent (D-86) is a share of the left operand under subtract [E]                                                                                                                        
+  Expected: <180>
+    Actual: <0.1>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 244:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "percent (D-86) is a share of the left operand under subtract"
+00:09 +22 -26: percent (D-86) works inside parentheses                                                                                                                                                 00:09 +22 -27: percent (D-86) works inside parentheses [E]                                                                                                                                             
+  Expected: <220>
+    Actual: <0.1>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 248:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "percent (D-86) works inside parentheses"
+00:09 +22 -27: percent (D-86) refuses to lead an expression                                                                                                                                            00:09 +23 -27: percent (D-86) refuses to lead an expression                                                                                                                                            00:09 +23 -27: percent (D-86) attaches to a group                                                                                                                                                      00:09 +23 -28: percent (D-86) attaches to a group [E]                                                                                                                                                  
+  Expected: '(5+5)%'
+    Actual: '5×('
+     Which: is different.
+            Expected: (5+5)%
+              Actual: 5×(
+                      ^
+             Differ at offset 0
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 257:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "percent (D-86) attaches to a group"
+00:09 +23 -28: parentheses calculate (D-84) the specification examples                                                                                                                                 00:09 +23 -29: parentheses calculate (D-84) the specification examples [E]                                                                                                                             
+  Expected: <10>
+    Actual: <5.0>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 263:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "parentheses calculate (D-84) the specification examples"
+00:09 +23 -29: parentheses calculate (D-84) precedence applies across the whole expression                                                                                                             00:09 +23 -30: parentheses calculate (D-84) precedence applies across the whole expression [E]                                                                                                         
+  Expected: <14>
+    Actual: <4.0>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 272:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "parentheses calculate (D-84) precedence applies across the whole expression"
+00:09 +23 -30: parentheses calculate (D-84) an unclosed group is completed by =                                                                                                                        00:09 +23 -31: parentheses calculate (D-84) an unclosed group is completed by = [E]                                                                                                                    
+  Expected: <10>
+    Actual: <5.0>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 276:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "parentheses calculate (D-84) an unclosed group is completed by ="
+00:09 +23 -31: equals and the result state keeps the expression and the result apart                                                                                                                   00:09 +23 -32: equals and the result state keeps the expression and the result apart [E]                                                                                                               
+  Expected: '900+100'
+    Actual: '100'
+     Which: is different.
+            Expected: 900+100
+              Actual: 100
+                      ^
+             Differ at offset 0
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 284:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "equals and the result state keeps the expression and the result apart"
+00:09 +23 -32: equals and the result state a repeated equals changes nothing                                                                                                                           00:09 +23 -33: equals and the result state a repeated equals changes nothing [E]                                                                                                                       
+  Expected: <4>
+    Actual: <2.0>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 292:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "equals and the result state a repeated equals changes nothing"
+00:09 +23 -33: equals and the result state division by zero reports the error state                                                                                                                    00:09 +23 -34: equals and the result state division by zero reports the error state [E]                                                                                                                
+  Expected: true
+    Actual: <false>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 297:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "equals and the result state division by zero reports the error state"
+00:09 +23 -34: equals and the result state an operator after a result continues from it                                                                                                                00:09 +23 -35: equals and the result state an operator after a result continues from it [E]                                                                                                            
+  Expected: '1000+'
+    Actual: '100+'
+     Which: is different.
+            Expected: 1000+
+              Actual: 100+
+                         ^
+             Differ at offset 3
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 303:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "equals and the result state an operator after a result continues from it"
+00:09 +23 -35: equals and the result state a digit after a result starts over                                                                                                                          00:09 +24 -35: equals and the result state a digit after a result starts over                                                                                                                          00:09 +24 -35: equals and the result state = on an untouched calculator does nothing                                                                                                                   00:09 +25 -35: equals and the result state = on an untouched calculator does nothing                                                                                                                   00:09 +25 -35: equals and the result state an error clears on the next key                                                                                                                             00:09 +26 -35: equals and the result state an error clears on the next key                                                                                                                             00:09 +26 -35: error handling division by zero never throws                                                                                                                                            00:09 +27 -35: error handling division by zero never throws                                                                                                                                            00:09 +27 -35: error handling an empty group errors rather than crashing                                                                                                                               00:09 +28 -35: error handling an empty group errors rather than crashing                                                                                                                               00:09 +28 -35: error handling backspace is refused in the error state                                                                                                                                  00:09 +28 -36: error handling backspace is refused in the error state [E]                                                                                                                              
+  Expected: true
+    Actual: <false>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 331:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "error handling backspace is refused in the error state"
+00:09 +28 -36: error handling a huge number is handled without throwing                                                                                                                                00:09 +29 -36: error handling a huge number is handled without throwing                                                                                                                                00:09 +29 -36: loadValue (D-37) puts the value on screen as a result                                                                                                                                   00:09 +30 -36: loadValue (D-37) puts the value on screen as a result                                                                                                                                   00:09 +30 -36: loadValue (D-37) an operator continues from it                                                                                                                                          00:09 +30 -37: loadValue (D-37) an operator continues from it [E]                                                                                                                                      
+  Expected: '1000+'
+    Actual: ''
+     Which: is different. Both strings start the same, but the actual value is missing the following trailing characters: 1000+
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 350:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "loadValue (D-37) an operator continues from it"
+00:09 +30 -37: loadValue (D-37) a digit starts a fresh calculation                                                                                                                                     00:09 +31 -37: loadValue (D-37) a digit starts a fresh calculation                                                                                                                                     00:09 +31 -37: loadValue (D-37) it discards whatever was on the keypad                                                                                                                                 00:09 +32 -37: loadValue (D-37) it discards whatever was on the keypad                                                                                                                                 00:09 +32 -37: loadValue (D-37) a non-finite value is ignored                                                                                                                                          00:09 +33 -37: loadValue (D-37) a non-finite value is ignored                                                                                                                                          00:09 +33 -37: the state snapshot compares by content                                                                                                                                                  00:09 +34 -37: the state snapshot compares by content                                                                                                                                                  00:09 +34 -37: the state snapshot an old reference cannot observe later presses                                                                                                                        00:09 +35 -37: the state snapshot an old reference cannot observe later presses                                                                                                                        00:09 +35 -37: the state snapshot copyWith replaces only what it names                                                                                                                                 00:09 +35 -38: the state snapshot copyWith replaces only what it names [E]                                                                                                                             
+  Expected: '5+5'
+    Actual: '5'
+     Which: is different. Both strings start the same, but the actual value is missing the following trailing characters: +5
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 389:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "the state snapshot copyWith replaces only what it names"
+00:09 +35 -38: the state snapshot canBackspace mirrors the expression                                                                                                                                  00:09 +35 -39: the state snapshot canBackspace mirrors the expression [E]                                                                                                                              
+  Expected: false
+    Actual: <true>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 396:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "the state snapshot canBackspace mirrors the expression"
+00:09 +35 -39: justEvaluated (D-35) is set only by =                                                                                                                                                   00:09 +36 -39: justEvaluated (D-35) is set only by =                                                                                                                                                   00:09 +36 -39: justEvaluated (D-35) is cleared by the next key                                                                                                                                         00:09 +37 -39: justEvaluated (D-35) is cleared by the next key                                                                                                                                         00:09 +37 -39: justEvaluated (D-35) an error never sets it, so nothing is recorded                                                                                                                     00:09 +37 -40: justEvaluated (D-35) an error never sets it, so nothing is recorded [E]                                                                                                                 
+  Expected: false
+    Actual: <true>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\calculator_engine_test.dart 411:7         main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart -p vm --plain-name "justEvaluated (D-35) an error never sets it, so nothing is recorded"
+00:09 +37 -40: the keypad has no backspace key                                                                                                                                                         00:09 +38 -40: the keypad has no backspace key                                                                                                                                                         00:09 +38 -40: the keypad covers the 5x4 keypad, with () where the sign toggle used to be                                                                                                              00:09 +39 -40: the keypad covers the 5x4 keypad, with () where the sign toggle used to be                                                                                                              00:09 +39 -40: the keypad the parentheses key has an accessible name                                                                                                                                   00:09 +40 -40: the keypad the parentheses key has an accessible name                                                                                                                                   00:09 +40 -40: the keypad maps the four operator keys to operators                                                                                                                                     00:09 +41 -40: the keypad maps the four operator keys to operators                                                                                                                                     00:09 +41 -40: formatNumber renders integers without a decimal point                                                                                                                                   00:09 +42 -40: formatNumber renders integers without a decimal point                                                                                                                                   00:09 +42 -40: formatNumber trims trailing zeros rather than padding                                                                                                                                   00:09 +43 -40: formatNumber trims trailing zeros rather than padding                                                                                                                                   00:09 +43 -40: formatNumber returns Error for non-finite values                                                                                                                                        00:09 +44 -40: formatNumber returns Error for non-finite values                                                                                                                                        00:10 +44 -40: Some tests failed.                                                                                                                                                                      

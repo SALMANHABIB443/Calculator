@@ -41,7 +41,7 @@ class SectionHeader extends StatelessWidget {
               header: true,
               child: Text(
                 label.toUpperCase(),
-                style: AppTypography.sectionHeader,
+                style: context.type.sectionHeader,
               ),
             ),
           ),

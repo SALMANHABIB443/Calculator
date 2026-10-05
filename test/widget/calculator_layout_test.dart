@@ -20,11 +20,13 @@
 library;
 
 import 'package:calculator/core/design/app_spacing.dart';
+import 'package:calculator/core/widgets/app_icon_button.dart';
 import 'package:calculator/features/calculator/domain/calculator_engine.dart';
 import 'package:calculator/features/calculator/presentation/calculator_keypad.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support/keypad_session.dart';
 import '../support/pump_app.dart';
 
 /// Reference canvas of mockup `02_22_43` (D-13), and the only size the
@@ -61,14 +63,27 @@ double columnGap(
   CalculatorKey below,
 ) => rectOf(tester, below).top - rectOf(tester, above).bottom;
 
-/// The rect of the hero result line, which is what has to line up with the
-/// operator column.
-Rect resultRect(WidgetTester tester) =>
-    tester.getRect(find.byKey(const Key('calculator-result')));
+/// The rect of the display's **output line**, which is what has to line up with
+/// the operator column (D-69). It sits in the display's lower half.
+Rect lineRect(WidgetTester tester) =>
+    tester.getRect(find.byKey(const Key('calculator-display-line')));
 
-/// The expression line, for the same reason: it shares the display's right edge.
+/// The rect of the display's **calculation line**, in the upper half (D-78).
+///
+/// It has to be measured with *something* in it: the line is blank while a lone
+/// number is being typed, and a blank `Text` inside the `FittedBox` has no box
+/// of its own — it renders zero-sized at an undefined offset, so every
+/// arithmetic on its rect would be `NaN`. Use [pumpWithCalculation].
 Rect expressionRect(WidgetTester tester) =>
     tester.getRect(find.byKey(const Key('calculator-expression')));
+
+/// The whole display block, which holds the two lines.
+Rect displayRect(WidgetTester tester) =>
+    tester.getRect(find.byKey(const Key('calculator-display')));
+
+/// The backspace control on its own row (D-81).
+Rect backspaceRect(WidgetTester tester) =>
+    tester.getRect(find.byKey(const Key('calculator-backspace')));
 
 /// Loads the app at [size], restoring the view afterwards.
 Future<void> pumpAt(WidgetTester tester, Size size) async {
@@ -76,6 +91,26 @@ Future<void> pumpAt(WidgetTester tester, Size size) async {
   tester.view.devicePixelRatio = 1.0;
   addTearDown(tester.view.reset);
   await pumpApp(tester);
+}
+
+/// Loads the app at [size] with [session] keyed on it, so **both** display lines
+/// have content to measure.
+///
+/// The two halves of the display are only observable when the calculation line
+/// has something on it — an empty expression renders as no box at all. Keying a
+/// real `9 × 9 =` gives the layout both lines: the expression `9 × 9` above and
+/// the output `81` below.
+Future<void> pumpWithCalculation(
+  WidgetTester tester,
+  Size size, {
+  String session = '9×9=',
+}) async {
+  await pumpAt(tester, size);
+  for (final key in keysFor(session)) {
+    await tester.tap(keyFor(key));
+    await tester.pump();
+  }
+  await tester.pumpAndSettle();
 }
 
 void main() {
@@ -86,8 +121,8 @@ void main() {
       await pumpAt(tester, reference);
 
       for (final (left, right) in <(CalculatorKey, CalculatorKey)>[
-        (CalculatorKey.ac, CalculatorKey.plusMinus),
-        (CalculatorKey.plusMinus, CalculatorKey.percent),
+        (CalculatorKey.ac, CalculatorKey.parentheses),
+        (CalculatorKey.parentheses, CalculatorKey.percent),
         (CalculatorKey.percent, CalculatorKey.divide),
         (CalculatorKey.digit7, CalculatorKey.digit8),
         (CalculatorKey.digit8, CalculatorKey.digit9),
@@ -119,7 +154,7 @@ void main() {
       // to come up short.
       for (final (above, below) in <(CalculatorKey, CalculatorKey)>[
         (CalculatorKey.ac, CalculatorKey.digit7),
-        (CalculatorKey.plusMinus, CalculatorKey.digit8),
+        (CalculatorKey.parentheses, CalculatorKey.digit8),
         (CalculatorKey.percent, CalculatorKey.digit9),
         (CalculatorKey.divide, CalculatorKey.multiply),
         (CalculatorKey.digit7, CalculatorKey.digit4),
@@ -267,57 +302,186 @@ void main() {
       );
     });
 
-    testWidgets('the result lands on the operator column', (tester) async {
-      await pumpAt(tester, reference);
-
-      // The display used to be sized against the full content width while the
-      // keypad was centred at its natural size, so the two edges disagreed and
-      // the disagreement grew with the window. Both lines share it now.
-      expect(resultRect(tester).right, closeTo(rightEdge(tester), slack));
-      expect(expressionRect(tester).right, closeTo(rightEdge(tester), slack));
-    });
-  });
-
-  group('the display and the keypad are one interface (D-69)', () {
-    testWidgets('the result sits a deliberate gap above the keys', (
+    testWidgets('the display line lands on the operator column', (
       tester,
     ) async {
       await pumpAt(tester, reference);
 
-      // Measured between the *painted* lines rather than their boxes: the
-      // result's box is 66 px tall for a 60 px glyph, so a box-to-box
-      // assertion would be measuring the type's own line height.
-      final gap =
-          rectOf(tester, CalculatorKey.ac).top - resultRect(tester).bottom;
+      // The display used to be sized against the full content width while the
+      // keypad was centred at its natural size, so the two edges disagreed and
+      // the disagreement grew with the window. The line shares the column now.
+      expect(lineRect(tester).right, closeTo(rightEdge(tester), slack));
+    });
+  });
+
+  group('the display is two screens, calculation above output (D-78)', () {
+    testWidgets('the calculation is above the output, inside the block', (
+      tester,
+    ) async {
+      await pumpWithCalculation(tester, reference);
+
+      // The split is the whole point: the expression the user is building sits in
+      // the upper half and the answer in the lower one, so both are readable at
+      // once and `=` never has to move a number to reveal the result.
+      final display = displayRect(tester);
+      final expression = expressionRect(tester);
+      final line = lineRect(tester);
 
       expect(
-        gap,
-        greaterThan(0),
-        reason: 'the number is not clear of the keys',
+        expression.top,
+        greaterThanOrEqualTo(display.top - slack),
+        reason: 'the calculation has drifted out of the display block',
       );
       expect(
-        gap,
-        lessThan(AppSpacing.calculatorDisplayGap * 2),
-        reason: 'the display has drifted away from the keypad again',
+        expression.bottom,
+        lessThanOrEqualTo(line.top + slack),
+        reason: 'the output has risen above the calculation',
+      );
+      expect(line.bottom, lessThanOrEqualTo(display.bottom + slack));
+    });
+
+    testWidgets('the output sits clear of the keys, not against them', (
+      tester,
+    ) async {
+      await pumpWithCalculation(tester, reference);
+
+      // The result rises into the lower half of the display rather than resting
+      // on the keypad, so there is space under it that is neither line.
+      final firstRow = rectOf(tester, CalculatorKey.ac).top;
+      expect(
+        lineRect(tester).bottom,
+        lessThan(firstRow),
+        reason: 'the output has drifted out of the display and onto the keys',
       );
     });
 
-    testWidgets(
-      'the number sits directly above the keypad, not above the grid',
-      (tester) async {
-        await pumpAt(tester, reference);
+    testWidgets('each line centres in its own half', (tester) async {
+      await pumpWithCalculation(tester, reference);
 
-        // The composition reads as one object only if the distance from the
-        // number to the *first* key row is the same as to the last one plus the
-        // whole grid — i.e. nothing is hiding between the display and the keys.
-        final firstRow = rectOf(tester, CalculatorKey.ac).top;
-        final lastRow = rectOf(tester, CalculatorKey.equals).bottom;
+      // Two equal halves: the boundary between them is the display's own
+      // midline, so each line's centre is a quarter of the way down or up from
+      // it. This is the relationship the split claims, measured rather than
+      // assumed — a layout that merely stacked the two lines would still put
+      // both in the right places but not at these centres.
+      final display = displayRect(tester);
+      final half = display.height / 2;
 
-        expect(resultRect(tester).bottom, lessThan(firstRow));
-        expect(lastRow, greaterThan(firstRow));
-      },
-    );
+      expect(
+        expressionRect(tester).center.dy,
+        closeTo(display.top + half / 2, slack),
+      );
+      expect(
+        lineRect(tester).center.dy,
+        closeTo(display.top + half + half / 2, slack),
+      );
+    });
+
+    testWidgets('nothing of the display reaches the keys', (tester) async {
+      await pumpWithCalculation(tester, reference);
+
+      // The whole composition, not just the number: both lines and the block that
+      // holds them sit above the first key row, so there is nothing hidden
+      // between the display and the keys.
+      final firstRow = rectOf(tester, CalculatorKey.ac).top;
+      final lastRow = rectOf(tester, CalculatorKey.equals).bottom;
+
+      expect(expressionRect(tester).bottom, lessThan(firstRow));
+      expect(lineRect(tester).bottom, lessThan(firstRow));
+      expect(displayRect(tester).bottom, lessThan(firstRow));
+      expect(lastRow, greaterThan(firstRow));
+    });
   });
+
+  group('the backspace sits on the column, above the rule (D-81)', () {
+    testWidgets('it shares the display and keypad left edge', (tester) async {
+      await pumpAt(tester, reference);
+
+      // The column is the screen's own left margin (D-69): the header's leading
+      // box, the display, and the keypad's first key all ride it, and so does
+      // this — a control on a different edge would be the one thing on the
+      // screen that does not.
+      expect(
+        backspaceRect(tester).left,
+        closeTo(rectOf(tester, CalculatorKey.ac).left, slack),
+      );
+    });
+
+    testWidgets('it is between the display and the first key row', (
+      tester,
+    ) async {
+      await pumpAt(tester, reference);
+
+      final backspace = backspaceRect(tester);
+
+      // Below the display block and above the keypad, which is the gap the rule
+      // draws in — not overlapping either, which is why it is a slot in the
+      // column rather than a corner of the display's box.
+      expect(
+        backspace.top,
+        greaterThanOrEqualTo(displayRect(tester).bottom - slack),
+      );
+      expect(backspace.bottom, lessThan(rectOf(tester, CalculatorKey.ac).top));
+    });
+
+    testWidgets('it keeps the 44pt touch floor', (tester) async {
+      await pumpAt(tester, reference);
+
+      // It is not a keypad key, but it is a target the user has to hit while
+      // reading a number, so it is held to the same floor (prd.md §12). Dropping
+      // the border must not shrink the target along with the ink.
+      expect(backspaceRect(tester).shortestSide, greaterThanOrEqualTo(touchFloor));
+    });
+
+    testWidgets('it paints no border, unlike the header actions above it', (
+      tester,
+    ) async {
+      await pumpAt(tester, reference);
+
+      // The reason the border went: a bordered box on the display's own row read as a
+      // fifth screen-level action, competing with the output directly above it.
+      // The Settings and History boxes in the header keep theirs, so the
+      // assertion is a *difference* — if the backspace simply stopped rendering
+      // as an action at all, this would pass while the control had broken, which
+      // is why it reads the flag rather than the pixels.
+      expect(
+        tester.widget<AppIconButton>(
+          find.byKey(const Key('calculator-backspace')),
+        ).bordered,
+        isFalse,
+      );
+      for (final icon in <IconData>[Icons.menu, Icons.history]) {
+        expect(
+          tester
+              .widget<AppIconButton>(
+                find.ancestor(
+                  of: find.byIcon(icon),
+                  matching: find.byType(AppIconButton),
+                ),
+              )
+              .bordered,
+          isTrue,
+          reason: 'the header actions keep the box D-74 put them in',
+        );
+      }
+    });
+
+    testWidgets('the keypad still holds its floor with the row in the budget', (
+      tester,
+    ) async {
+      await pumpAt(tester, reference);
+
+      // The row costs 48 px of a fixed canvas. Reserving it in the screen's
+      // budget is what keeps it from being paid for out of the keypad, so the
+      // keys are still the measured 88 px rather than a shorter cell.
+      final key = rectOf(tester, CalculatorKey.digit5);
+      expect(key.width, inInclusiveRange(86, 88.5));
+      expect(
+        reference.height - rectOf(tester, CalculatorKey.equals).bottom,
+        closeTo(AppSpacing.bottomSafe, slack),
+      );
+    });
+  });
+
 
   group('the geometry holds across viewport sizes (D-69, D-09)', () {
     // The four shapes a phone, a foldable, a tablet, and a desktop window
@@ -379,7 +543,7 @@ void main() {
         (tester) async {
           await pumpAt(tester, size);
 
-          expect(resultRect(tester).right, closeTo(rightEdge(tester), slack));
+          expect(lineRect(tester).right, closeTo(rightEdge(tester), slack));
         },
       );
     }

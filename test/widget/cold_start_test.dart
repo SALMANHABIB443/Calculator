@@ -133,15 +133,17 @@ void main() {
         await tester.tap(find.byKey(ValueKey('key-${_keyName(key)}')));
         await tester.pump();
       }
-      expect(find.text('9 +'), findsOneWidget);
+      // D-79: the operand being typed now rides on the expression line too, so
+      // the half-typed calculation reads in full.
+      expect(find.text('9 + 4'), findsOneWidget);
 
       await restart(tester, store: await snapshotStore());
 
       // The in-flight expression is deliberately not persisted, so the display
       // comes back at the initial value rather than the interrupted one.
-      expect(find.text('9 +'), findsNothing);
+      expect(find.text('9 + 4'), findsNothing);
       expect(
-        tester.widget<Text>(find.byKey(const Key('calculator-result'))).data,
+        tester.widget<Text>(find.byKey(const Key('calculator-display-line'))).data,
         '0',
       );
     });
@@ -155,7 +157,7 @@ void main() {
 
       await restart(tester, store: await snapshotStore());
 
-      expect(find.byKey(const Key('calculator-result')), findsOneWidget);
+      expect(find.byKey(const Key('calculator-display-line')), findsOneWidget);
       expect(find.text('Settings'), findsNothing);
     });
   });

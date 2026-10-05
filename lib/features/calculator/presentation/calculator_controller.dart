@@ -35,8 +35,17 @@ class CalculatorController extends Notifier<CalculatorState> {
   /// None of the side effects are awaited, so a slow or missing platform channel
   /// — sound, vibration, or a disk write — can never delay the display. The user
   /// sees their result immediately and history catches up.
+  ///
+  /// A press the engine declined — an operator with nothing to act on (D-80), a
+  /// second decimal point, a digit past the 15-digit cap — leaves the state
+  /// untouched, and [CalculatorState] compares by value, so the press is
+  /// recognised here and returns without feedback or a history write. A key that
+  /// did nothing must not look or sound like one that did.
   void press(CalculatorKey key) {
-    state = _engine.apply(key);
+    final previous = state;
+    final next = _engine.apply(key);
+    if (next == previous) return;
+    state = next;
 
     final settings = ref.read(settingsProvider);
     unawaited(
@@ -55,6 +64,43 @@ class CalculatorController extends Notifier<CalculatorState> {
   void clear() {
     _engine.reset();
     state = _engine.state;
+  }
+
+  /// One digit back, for the backspace control above the rule (**D-81**).
+  ///
+  /// [press] without the key: the same "no change means nothing happened"
+  /// contract, so a press with nothing left to delete costs no sound and no
+  /// vibration, and the same settings decide what that sound is.
+  ///
+  /// What it takes back, in the order the states are reachable: the last
+  /// character of the entry being typed, then the operator the user changed
+  /// their mind about, then the **last committed number** — reopened as a typed
+  /// entry so a calculation stays editable after `=` — then a `±` sign staged
+  /// for a number not yet typed, and finally a result with no expression behind
+  /// it (`1234` → `123` → `12`, for a value loaded from history). The engine
+  /// decides which applies; this method only decides whether the press
+  /// *counted*.
+  ///
+  /// Nothing is ever recorded here. A backspace is an edit of what the user is
+  /// in the middle of, not a calculation — and [CalculatorState.justEvaluated]
+  /// is cleared by every key the backspace can act on, including the one that
+  /// reopens a committed term, so there is nothing to record even if the press
+  /// follows a completed one.
+  void backspace() {
+    final previous = state;
+    final next = _engine.backspace();
+    if (next == previous) return;
+    state = next;
+
+    final settings = ref.read(settingsProvider);
+    unawaited(
+      ref
+          .read(feedbackServiceProvider)
+          .keyPress(
+            soundEnabled: settings.soundEnabled,
+            vibrationEnabled: settings.vibrationEnabled,
+          ),
+    );
   }
 
   /// Puts a stored result on screen, replacing whatever was there (D-37,
@@ -78,7 +124,7 @@ class CalculatorController extends Notifier<CalculatorState> {
   static bool _justCompletedACalculation(CalculatorState state) =>
       state.justEvaluated &&
       !state.isError &&
-      state.entry == null &&
+      state.expression.isNotEmpty &&
       state.value != null;
 
   /// Saves the completed calculation (AC-002).

@@ -22,7 +22,7 @@ Future<void> tapKeys(WidgetTester tester, String session) async {
 
 /// The primary display line as rendered.
 String resultText(WidgetTester tester) =>
-    tester.widget<Text>(find.byKey(const Key('calculator-result'))).data!;
+    tester.widget<Text>(find.byKey(const Key('calculator-display-line'))).data!;
 
 void main() {
   testWidgets('a completed calculation shows up in History (AC-002)', (
@@ -49,6 +49,18 @@ void main() {
 
     expect(find.byType(HistoryCard), findsOneWidget);
     expect(find.text('4'), findsOneWidget);
+  });
+
+  testWidgets('pressing = twice records one card, not two', (tester) async {
+    await pumpApp(tester);
+    // The second `=` re-runs `_equals` and the flag is still set, so the press
+    // used to look like a freshly completed calculation and write a duplicate
+    // of a result that never changed.
+    await tapKeys(tester, '2+2==');
+
+    await openHistory(tester);
+
+    expect(find.byType(HistoryCard), findsOneWidget);
   });
 
   testWidgets('a failed calculation is not recorded', (tester) async {

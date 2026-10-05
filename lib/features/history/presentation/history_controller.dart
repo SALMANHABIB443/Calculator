@@ -105,6 +105,23 @@ class HistoryNotifier extends AsyncNotifier<List<HistoryDayGroup>> {
     await future;
   }
 
+  /// Deletes the entries in [ids] and no others. The caller is responsible for
+  /// the confirmation dialog, exactly as for [clearAll] (D-05, AC-008).
+  ///
+  /// Kept beside [clearAll] rather than folded into it so the destructive
+  /// actions stay two named operations at the notifier: a bulk delete of a
+  /// known set and a wipe are different intents, and a caller reaching for the
+  /// wrong one is a bug this separation makes visible in review.
+  Future<void> deleteSelected(Set<String> ids) async {
+    if (ids.isEmpty) return;
+
+    final repository = await _repository;
+
+    await repository.deleteByIds(ids);
+    ref.invalidateSelf();
+    await future;
+  }
+
   /// Empties the history. The caller is responsible for the confirmation dialog
   /// (D-05, AC-008).
   Future<void> clearAll() async {
@@ -173,6 +190,10 @@ class InMemoryHistoryRepository implements HistoryRepository {
     await add(entry);
     return entry;
   }
+
+  @override
+  Future<void> deleteByIds(Set<String> ids) async =>
+      _entries.removeWhere((entry) => ids.contains(entry.id));
 
   @override
   Future<void> clearAll() async => _entries.clear();

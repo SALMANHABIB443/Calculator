@@ -201,6 +201,8 @@ lib/
 │   ├── calculator/            # domain/ engine, presentation/ screen + widgets
 │   ├── history/               # data/ repository, domain/ entry, presentation/
 │   ├── settings/              # domain/ AppSettings, data/ repository
+│   ├── secret/                 # Hidden Secret Mode — SPECIFIED, not implemented
+│   │                           # (D-82, D-83, D-84, D-85)
 │   ├── about/                 # presentation/
 │   └── legal/                 # data/ policy text (D-68), presentation/ screens (D-07)
 └── routing/
@@ -268,6 +270,71 @@ dependency of `share_plus` (`D-23`).
 ---
 
 ## Changelog
+
+### History card redesign — Ethar's task card, ported whole (`D-93`)
+
+**Presentation only.** Grouping, persistence, tap-to-load, the long-press gesture,
+and the selection palette are untouched.
+
+The History card is now a port of the sibling app's `_TaskCard`
+(`Ethar/lib/src/features/tasks/task_list.dart`) rather than a card that
+converged on it by degrees:
+
+- **Outlined at rest** — a 1 px `cardBorder` outline, the thing D-72 removed on the
+  reasoning that a black page has no edges to add.
+- **Shadowed** — `cardShadow` at blur 22 / (0, 6) in whichever theme has one. The
+  dark theme draws none, exactly as `SettingsGroup` already did.
+- **Radius 12**, the *task card's* corner. D-77 had matched Ethar's Create Task
+  **option** rows instead — a different component that shares a number.
+- **The lines swap rank** — the **result** is the title (17/w700) and the
+  **expression** is the meta row (13/w400, behind a 17 px clock glyph). This is
+  the substantive change: the result is what the user came back to read.
+- Ethar's supporting measurements: `AnimatedContainer` at 150 ms, padding h18/v17,
+  a 7 px title gap, and a 1.5 px selected border (down from 2).
+
+**Height is unchanged** — the 88 px floor still governs and a 360 dp phone still
+fits four entries. The 24 px margin, grouping, and the 200-entry cap are all as
+they were.
+
+**Not ported, deliberately:** Ethar's 34 px leading completion circle (a
+calculation has no completed state), its 32 px selection circle (this card's
+trailing slot holds D-76's 28 px chevron/checkbox pair), and its orange selection
+accent (D-76 established that selection is a mode, not a primary action).
+
+### Secret Mode — specified, not implemented (`D-82` … `D-85`)
+
+**Documentation only.** No `lib/` or `test/` code was added or changed. This entry records
+what has been *decided and specified*, so nothing here should be read as shipping.
+
+Secret Mode is a hidden area: hold the History screen's bottom **Clear History** button for
+five seconds and enter a four-digit PIN (`0000` by default). Behind it sits a blank screen
+with one overflow button in the top-left, leading to a settings page holding a single
+**Change PIN** row.
+
+**Decided** — in [`docs/DECISIONS.md`](docs/DECISIONS.md)
+
+- `D-82` — the five-second hold, on the **bottom** action only. Its **tap** path is
+  unchanged and still clears history behind the D-05 confirmation. The hold carries **no
+  feedback at all** — no ring, sound, or haptic — because feedback would make it
+  discoverable by accident.
+- `D-83` — the PIN is a four-digit string under the `'secretPin'` key in
+  `shared_preferences`, default `'0000'`. **Plaintext**; the store is not encrypted.
+  `flutter_secure_storage` was rejected as the first new dependency since Phase 1, and
+  hashing as useless without a rate limit.
+- `D-84` — the secret screen is **blank**: one shared `AppIconButton` (`more_vert`) in
+  the top-left, no title, no copy, no illustration, no back arrow, and **no new design
+  token**.
+- `D-85` — a wrong code clears and shakes; there is **no lockout** and no attempt counter.
+
+**Specified** — `feature.md` §G (FEAT-SEC-001…005), `prd.md` FR-007 and AC-017…021,
+`desing.md` §6.8–§6.10, `struction.md` §7/§10/§14/§16, `phases.md` Phase 11.
+
+**Still to do:** the gesture detector, `SecretCode`, the repository, the four screens, and
+the tests — none of which exist yet. Phase 11's known limitations say so plainly.
+
+**What it is not:** authentication. It is a privacy affordance against casual browsing. The
+PIN is readable on a rooted device, four wrong guesses cost nothing, and a forgotten PIN
+has no in-app recovery.
 
 ### Header port (`D-74`)
 

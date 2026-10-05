@@ -1,10 +1,27 @@
 import 'package:calculator/core/design/app_colors.dart';
+import 'package:calculator/core/design/app_palette.dart';
 import 'package:calculator/core/design/app_spacing.dart';
 import 'package:calculator/core/design/app_theme.dart';
 import 'package:calculator/core/design/app_typography.dart';
 import 'package:calculator/core/widgets/core_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+/// The decoration a rendered `HistoryCard` is painted with (D-93).
+///
+/// D-93 moved the card's fill, outline, and shadow onto the `AnimatedContainer`
+/// that wraps the `Material` — it is Ethar's `_TaskCard` shape — so the `Material`
+/// can no longer answer any of those questions. Reading the decoration is what
+/// lets a test assert the card's whole surface recipe from one widget.
+BoxDecoration decorationOf(WidgetTester tester, {required bool selected}) {
+  final container = tester.widget<AnimatedContainer>(
+    find.descendant(
+      of: find.byType(HistoryCard),
+      matching: find.byType(AnimatedContainer),
+    ),
+  );
+  return container.decoration! as BoxDecoration;
+}
 
 /// Phase 3 acceptance criteria: every shared component resolves to the values
 /// measured from the mockup pixels (D-03) and to the token names the design
@@ -44,6 +61,26 @@ void main() {
         AppColors.surfaceRaised.computeLuminance(),
         greaterThan(AppColors.surface.computeLuminance()),
         reason: 'the card has to read as a layer above the page, not below it',
+      );
+    });
+
+    test('the card edge is Ethar\'s outline, not a chosen one (D-91)', () {
+      // D-91 took the outline and the icon tile's fill from the sibling app, so
+      // the two apps' settings screens are the same object. Asserting the
+      // relationship as well as the literals: the border has to be *lighter*
+      // than the card on a black page or the card loses its edge, and the tile
+      // has to be lighter too or it disappears into the card it sits on.
+      expect(AppColors.cardBorder, const Color(0xFF292D35));
+      expect(AppColors.surfaceSoft, const Color(0xFF20232A));
+      expect(
+        AppColors.cardBorder.computeLuminance(),
+        greaterThan(AppColors.surface.computeLuminance()),
+        reason: 'the outline is the only edge a card on a black page has',
+      );
+      expect(
+        AppColors.surfaceSoft.computeLuminance(),
+        greaterThan(AppColors.surface.computeLuminance()),
+        reason: 'the tile has to separate from the card it sits on',
       );
     });
 
@@ -113,11 +150,26 @@ void main() {
         greaterThan(AppSpacing.historyCardGap),
         reason: 'a day boundary has to read as a change of subject',
       );
+      // D-93: History's radius is Ethar's *task card* corner, 12 — no longer
+      // equal to the grouped cards' 14, which D-77 had pinned. The D-77 parity
+      // argument was about Ethar's Create Task *option* rows, which are a
+      // different component that happens to share a number; a History entry is
+      // the same kind of object as the task card (a row among peers,
+      // long-pressable, multi-selectable), so it follows that one.
+      //
+      // Distinct from `AppRadius.card` is now the *assertion*, not a hope: the two
+      // must not drift back together, which is why this is an inequality rather
+      // than the equality D-77 wrote.
       expect(
         AppRadius.historyCard,
-        greaterThan(AppRadius.card),
-        reason: 'a single card is softer than the group it sits in',
+        isNot(AppRadius.card),
+        reason:
+            'a History card and a Settings group are different objects '
+            '(D-93)',
       );
+      // The number itself is stated rather than left implicit, so a change is a
+      // deliberate edit here and not a silent one.
+      expect(AppRadius.historyCard, 12);
       // Below half the card's own height, or the corner eats it: D-72's 30 was
       // sized for a 150 pt card and would be a stadium at 88.
       expect(
@@ -146,23 +198,34 @@ void main() {
         lessThan(AppTypography.screenTitle.fontSize!),
       );
       expect(AppTypography.rowTitle.fontSize, 17);
-      // D-72 replaced the History type scale with figures of its own and D-73 put
-      // it back on `desing.md` §3's bands, so these assert the design doc again
-      // rather than the redesign's. The relationship between the two card lines
-      // is asserted too: the result has to stay visibly the larger of them.
+      // D-93 replaced the History type scale with Ethar's card scale: the result is
+      // the 17/w700 title line and the expression is the 13 muted meta line, so
+      // these are no longer desing.md §3's bands — they are `task_list.dart`'s
+      // 496 and 519. The relationship is asserted too, because it is the whole
+      // point of D-93: the result stays the visibly larger of the two, and it
+      // stays the *first* line rather than merely the bigger one.
+      expect(AppTypography.historyExpression.fontSize, 13);
+      expect(AppTypography.historyResult.fontSize, 17);
       expect(
-        AppTypography.historyExpression.fontSize,
-        inInclusiveRange(15, 16),
+        AppTypography.historyResult.fontSize!,
+        greaterThan(AppTypography.historyExpression.fontSize!),
       );
-      expect(AppTypography.historyResult.fontSize, inInclusiveRange(20, 22));
       expect(
         AppTypography.historyDayLabel.fontSize,
         AppTypography.rowTitle.fontSize,
         reason: 'a day heading is the same kind of thing as a row label',
       );
+      // D-93: the title carries Ethar's w700; the meta line is plain w400. The
+      // weights matter as much as the sizes — a 17 px meta line would read as a
+      // second title rather than as supporting text.
+      expect(AppTypography.historyResult.fontWeight, FontWeight.w700);
+      expect(AppTypography.historyExpression.fontWeight, FontWeight.w400);
+      // And it is Ethar's own task title size, which is what keeps a History
+      // entry the same object as a task in the sibling app.
       expect(
-        AppTypography.historyResult.fontSize!,
-        greaterThan(AppTypography.historyExpression.fontSize!),
+        AppTypography.historyResult.fontSize,
+        AppTypography.rowTitle.fontSize,
+        reason: 'a History entry and an Ethar task are the same row (D-93)',
       );
       expect(AppTypography.buttonLabel.fontSize, inInclusiveRange(22, 28));
     });
@@ -211,20 +274,43 @@ void main() {
     test('pairs each fill with a contrasting label', () {
       // desing.md §5.1. Getting the label colour wrong on the function keys is
       // the failure mode this table exists to prevent.
-      expect(CalculatorButtonVariant.digit.background, AppColors.buttonDigit);
-      expect(CalculatorButtonVariant.digit.foreground, AppColors.textPrimary);
-      expect(CalculatorButtonVariant.operator.background, AppColors.accent);
+      //
+      // Read through `colors(palette)` rather than off the enum directly: D-90
+      // made the pairing a *function of the palette*, because the white theme
+      // wants `textOnAccent` on `=` where the dark theme wanted `textPrimary`.
+      // An assertion against a fixed palette can therefore only ever check one
+      // theme, and checking both is the point — a `=` with ink on orange would
+      // pass a dark-only test and be the one unreadable key on the pad.
       expect(
-        CalculatorButtonVariant.operator.foreground,
+        CalculatorButtonVariant.digit.colors(AppPalette.dark).background,
+        AppColors.buttonDigit,
+      );
+      expect(
+        CalculatorButtonVariant.digit.colors(AppPalette.dark).foreground,
         AppColors.textPrimary,
       );
       expect(
-        CalculatorButtonVariant.function.background,
+        CalculatorButtonVariant.operator.colors(AppPalette.dark).background,
+        AppColors.accent,
+      );
+      expect(
+        CalculatorButtonVariant.operator.colors(AppPalette.dark).foreground,
+        AppColors.textPrimary,
+      );
+      expect(
+        CalculatorButtonVariant.function.colors(AppPalette.dark).background,
         AppColors.buttonFunction,
       );
       expect(
-        CalculatorButtonVariant.function.foreground,
+        CalculatorButtonVariant.function.colors(AppPalette.dark).foreground,
         AppColors.textOnFunction,
+      );
+
+      // The white theme's one disagreement, asserted so the two cannot drift
+      // into agreeing by accident.
+      expect(
+        CalculatorButtonVariant.operator.colors(AppPalette.light).foreground,
+        AppPalette.light.textOnAccent,
       );
     });
   });
@@ -439,6 +525,168 @@ void main() {
       expect(find.byIcon(Icons.chevron_right), findsNothing);
       expect(find.text('2'), findsOneWidget);
     });
+
+    // D-92. The trailing control used to be a `Flexible`, which made it a flex
+    // child competing with the title's `Expanded` — `RenderFlex` split the
+    // row's spare width 50/50 and drew the control at the *start* of its own
+    // half, leaving the card's right edge bare. Asserting the geometry rather
+    // than the widget arrangement, because "flush right" is the property every
+    // row on the screen has to agree on, not the way this one spells it.
+    testWidgets('its trailing control sits flush against the right padding', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        const SettingsGroup(
+          children: [
+            SettingsRow(
+              icon: Icons.numbers,
+              title: 'Decimal Places',
+              trailing: Text('2'),
+              onTap: _noop,
+            ),
+          ],
+        ),
+      );
+
+      final contentRight =
+          tester.getRect(find.byType(SettingsRow)).right -
+          AppSpacing.cardPadding;
+      expect(
+        tester.getRect(find.text('2')).right,
+        moreOrLessEquals(contentRight, epsilon: 0.5),
+        reason: 'a control parked mid-row is the D-91 regression, not a style',
+      );
+    });
+
+    // The same assertion for the chevron a row draws for itself, so the two
+    // trailing paths cannot drift apart again.
+    testWidgets('its drawn chevron shares that right edge', (tester) async {
+      await pump(
+        tester,
+        const SettingsGroup(
+          children: [
+            SettingsRow(icon: Icons.info_outline, title: 'About', onTap: _noop),
+          ],
+        ),
+      );
+
+      final contentRight =
+          tester.getRect(find.byType(SettingsRow)).right -
+          AppSpacing.cardPadding;
+      expect(
+        tester.getRect(find.byIcon(Icons.chevron_right)).right,
+        moreOrLessEquals(contentRight, epsilon: 0.5),
+      );
+    });
+
+    // D-92, the half of the bug nobody sees: the title column was getting half
+    // the row, so a subtitle that fits on one line wrapped onto two. If the
+    // trailing control is non-flex, the `Expanded` takes everything left over.
+    testWidgets('the title keeps the width the trailing does not use', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        const SettingsGroup(
+          children: [
+            SettingsRow(
+              icon: Icons.history,
+              title: 'History',
+              subtitle: 'Keep calculation history',
+              trailing: Text('On'),
+            ),
+          ],
+        ),
+      );
+
+      expect(
+        tester.getSize(find.text('Keep calculation history')).height,
+        lessThan(30),
+        reason: 'a wrapped subtitle is a squeezed title column',
+      );
+    });
+
+    // The bound D-92 inherited from Ethar, kept as a named fact so the widget
+    // and the test cannot disagree about it.
+    testWidgets('the trailing slot is bounded, not free (Ethar: 105)', (
+      tester,
+    ) async {
+      expect(SettingsRow.trailingMaxWidth, 105);
+
+      await pump(
+        tester,
+        SettingsGroup(
+          children: [
+            SettingsRow(
+              icon: Icons.person_outline,
+              title: 'Developer',
+              trailing: const Text('a very long value indeed'),
+            ),
+          ],
+        ),
+      );
+
+      expect(
+        tester.getSize(find.text('a very long value indeed')).width,
+        lessThanOrEqualTo(SettingsRow.trailingMaxWidth),
+      );
+    });
+
+    // D-91. The leading glyph is a 44 px soft tile — Ethar's
+    // `_SettingsIconTile` — rather than a bare mark floating on the card.
+    testWidgets('puts its icon in a soft tile, not bare on the card', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        const SettingsGroup(
+          children: [
+            SettingsRow(icon: Icons.volume_up_outlined, title: 'Sound'),
+          ],
+        ),
+      );
+
+      final tile = find.byType(AppIconTile);
+      expect(tile, findsOneWidget);
+      expect(tester.getSize(tile), const Size.square(AppIconTile.size));
+
+      // The tile paints its own fill, so the `Container` carrying the fill and
+      // the corner is a *descendant* of the tile widget, not the tile itself.
+      final box = tester.widget<Container>(
+        find.descendant(of: tile, matching: find.byType(Container)),
+      );
+      final decoration = box.decoration! as BoxDecoration;
+      expect(
+        decoration.color,
+        AppColors.surfaceSoft,
+        reason: 'the tile is Ethar surfaceSoft, so the two apps share the row',
+      );
+      expect(
+        decoration.borderRadius,
+        BorderRadius.circular(AppIconTile.radius),
+      );
+    });
+
+    // A bare glyph has no edge on a near-black card and no size for the row's
+    // height to be measured against, so the row went from 56 to Ethar's 64.
+    testWidgets('a row is tall enough to hold its tile (D-91)', (tester) async {
+      await pump(
+        tester,
+        const SettingsGroup(
+          children: [
+            SettingsRow(icon: Icons.volume_up_outlined, title: 'Sound'),
+          ],
+        ),
+      );
+
+      expect(AppSizes.rowMinHeight, greaterThanOrEqualTo(AppIconTile.size));
+      expect(
+        tester.getSize(find.byType(SettingsRow)).height,
+        greaterThanOrEqualTo(AppIconTile.size),
+        reason: 'a 44 px tile in a shorter row is a clipped tile',
+      );
+    });
   });
 
   group('SettingsGroup', () {
@@ -456,13 +704,14 @@ void main() {
         ),
       );
 
-      final surface = tester.widget<ColoredBox>(
-        find.descendant(
-          of: find.byType(SettingsGroup),
-          matching: find.byType(ColoredBox),
-        ),
+      // D-91: the fill moved off a `ColoredBox` and onto the card's own
+      // `BoxDecoration`, because the card now also draws an outline and a
+      // shadow — three things a fill-only widget cannot express.
+      expect(
+        SettingsGroup.decoration(tester.element(find.byType(SettingsGroup)))
+            .color,
+        AppColors.surface,
       );
-      expect(surface.color, AppColors.surface);
 
       final clip = tester.widget<ClipRRect>(
         find.descendant(
@@ -475,6 +724,64 @@ void main() {
       // Three rows means two internal boundaries, never a leading or trailing
       // line (desing.md §5.3).
       expect(find.byType(Divider), findsNWidgets(2));
+    });
+
+    // D-91. The card is a `DecoratedBox` now rather than a `ColoredBox`,
+    // because a fill alone cannot draw an outline or a shadow — and on a black
+    // page the outline is the only thing saying where the card ends. Asserted
+    // through the public `decoration` helper rather than by digging a
+    // `DecoratedBox` out of the tree, so the test states the recipe instead of
+    // the widget arrangement that happens to implement it.
+    testWidgets(
+      'is the sibling app card: filled, outlined, no shadow in dark',
+      (tester) async {
+        await pump(
+          tester,
+          const SettingsGroup(
+            children: [SettingsRow(icon: Icons.history, title: 'One')],
+          ),
+        );
+
+        final decoration = SettingsGroup.decoration(
+          tester.element(find.byType(SettingsGroup)),
+        );
+
+        expect(decoration.color, AppColors.surface);
+        expect(decoration.borderRadius, BorderRadius.circular(AppRadius.card));
+        expect(decoration.border, Border.all(color: AppColors.cardBorder));
+        expect(
+          decoration.boxShadow,
+          isEmpty,
+          reason: 'Ethar drops its card shadow in dark and so does this app',
+        );
+      },
+    );
+
+    testWidgets('the hairline starts past the icon tile, not under it', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        const SettingsGroup(
+          children: [
+            SettingsRow(icon: Icons.history, title: 'One'),
+            SettingsRow(icon: Icons.history, title: 'Two'),
+          ],
+        ),
+      );
+
+      // D-91: the divider used to start at 16, drawing a line under the leading
+      // icon as well as the text — the icon read as belonging to the row above.
+      // It now starts where the titles do.
+      final divider = tester.widget<Divider>(find.byType(Divider));
+      expect(divider.indent, AppSpacing.dividerIndent);
+      expect(divider.endIndent, AppSpacing.dividerEndIndent);
+      expect(divider.color, AppColors.divider);
+      expect(
+        AppSpacing.dividerIndent,
+        greaterThan(AppIconTile.size),
+        reason: 'the line must clear the tile, or the tile belongs to two rows',
+      );
     });
   });
 
@@ -522,15 +829,52 @@ void main() {
       await tester.pumpAndSettle();
       expect(toggled, isTrue);
     });
+
+    // D-92. The switch is the trailing slot of a `ToggleRow`, so it carried the
+    // same mid-row float as the Theme chevron — all three preferences showed
+    // their switch floating short of the card's right edge.
+    testWidgets('its switch sits flush against the right padding', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        SettingsGroup(
+          children: [
+            ToggleRow(
+              icon: Icons.phone_iphone,
+              title: 'Vibration',
+              value: true,
+              onChanged: (_) {},
+            ),
+          ],
+        ),
+      );
+
+      final contentRight =
+          tester.getRect(find.byType(SettingsRow)).right -
+          AppSpacing.cardPadding;
+      expect(
+        tester.getRect(find.byType(Switch)).right,
+        moreOrLessEquals(contentRight, epsilon: 0.5),
+      );
+    });
   });
 
   group('HistoryCard', () {
-    testWidgets('shows the expression above the larger result', (tester) async {
+    testWidgets('leads with the result and follows with the expression (D-93)', (
+      tester,
+    ) async {
       await pump(
         tester,
         const HistoryCard(expression: '125 × 8', result: '1,000'),
       );
 
+      // D-93 flips the two lines onto Ethar's hierarchy: the result is the
+      // 17/w700 *title* and the expression is the 13 muted *meta* row. The
+      // styles themselves are asserted in the `AppTypography` group above —
+      // what matters here is that the card prints them in that order, because
+      // swapping them back is the single easiest regression to reintroduce and
+      // neither style says on its own which line it is.
       expect(
         tester.widget<Text>(find.text('125 × 8')).style,
         AppTypography.historyExpression,
@@ -539,22 +883,42 @@ void main() {
         tester.widget<Text>(find.text('1,000')).style,
         AppTypography.historyResult,
       );
+
+      final resultY = tester.getRect(find.text('1,000')).center.dy;
+      final expressionY = tester.getRect(find.text('125 × 8')).center.dy;
+      expect(
+        resultY,
+        lessThan(expressionY),
+        reason: 'the result is the title line, so it comes first',
+      );
+
+      // The meta row carries Ethar's leading clock glyph at 17 px — the one
+      // thing on the card that says *when* this happened.
+      final glyph = tester.widget<Icon>(
+        find.descendant(
+          of: find.byType(HistoryCard),
+          matching: find.byIcon(Icons.schedule_rounded),
+        ),
+      );
+      expect(glyph.size, AppSizes.historyMetaGlyph);
       expect(find.byIcon(Icons.chevron_right), findsOneWidget);
     });
 
     testWidgets('sits on the card surface', (tester) async {
       await pump(tester, const HistoryCard(expression: '1 + 1', result: '2'));
 
-      final material = tester.widget<Material>(
-        find.descendant(
-          of: find.byType(HistoryCard),
-          matching: find.byType(Material),
-        ),
+      // D-93 moved the fill off the [Material] and onto the decoration that
+      // wraps it, because that decoration now also carries the outline and the
+      // shadow and a second opaque `Material` on top would hide both. So the
+      // fill is read off the `AnimatedContainer`, which is the widget that owns
+      // the card's surface.
+      expect(
+        decorationOf(tester, selected: false).color,
+        AppColors.surfaceRaised,
       );
-      expect(material.color, AppColors.surfaceRaised);
     });
 
-    testWidgets('is a rounded, borderless, shadowless card (D-72)', (
+    testWidgets('is a rounded, outlined card with no elevation (D-93)', (
       tester,
     ) async {
       await pump(
@@ -572,21 +936,37 @@ void main() {
       expect(
         material.elevation,
         0,
-        reason: 'a card on a black page casts nothing',
+        reason:
+            'the shadow is Ethar\'s, painted by the decoration, not '
+            'Material elevation',
       );
       expect(
-        material.shape,
-        isNull,
-        reason: 'no border: the fill is the only edge',
+        material.color,
+        Colors.transparent,
+        reason:
+            'the decoration owns the fill; a second opaque layer would '
+            'hide the shadow',
       );
 
-      // The fill is painted by a `Material`/`InkWell` pair, so the radius has to
-      // be read off the Material's type rather than off a `ClipRRect` the way
-      // `SettingsGroup` publishes its own.
+      // D-93 reverses D-72's "borderless, shadowless" rule: Ethar outlines every
+      // card in both themes, and the outline is what makes a `#151517` card an
+      // object on a black page. This is the assertion D-72 deliberately inverted.
+      final resting = decorationOf(tester, selected: false);
+      final border = resting.border! as Border;
+      expect(border.top.color, AppColors.cardBorder);
+      expect(border.top.width, HistoryCard.restingBorderWidth);
       expect(
-        material.borderRadius,
+        resting.borderRadius,
         BorderRadius.circular(AppRadius.historyCard),
       );
+      // The dark palette has no `cardShadow`, so it draws an empty list rather
+      // than a zero-alpha one — which is what makes "no shadow" readable here.
+      expect(
+        AppPalette.dark.cardShadow,
+        isNull,
+        reason: 'a shadow on a black page is invisible',
+      );
+      expect(resting.boxShadow, isEmpty);
     });
 
     testWidgets('reserves at least the design height, not a fixed one', (
@@ -597,6 +977,9 @@ void main() {
       // A minimum rather than a `SizedBox(height: 88)`: at the 1.3x text-scale
       // ceiling (D-54) the content outgrows it and the card has to grow with
       // it. `history_responsive_test.dart` covers that half.
+      //
+      // D-93 does not move the floor: 17·1.25 + 7 + 13·1.3 is ~45 of content
+      // inside 34 of padding, which is still under 88.
       expect(
         tester.getSize(find.byType(HistoryCard)).height,
         greaterThanOrEqualTo(AppSizes.historyCardMinHeight),
@@ -608,14 +991,21 @@ void main() {
     ) async {
       await pump(tester, const HistoryCard(expression: '1 + 1', result: '2'));
 
-      // D-73 removed `historyHorizontal`. The card's *fill* starts on the shared
-      // 24 px line, which is the line the header's back arrow glyph lands on
-      // (D-70) — so the whole page now shares one left edge.
-      final material = find.descendant(
+      // D-73 removed `historyHorizontal`. The card's *outer edge* starts on the
+      // shared 24 px line, which is the line the header's back arrow glyph lands
+      // on (D-70) — so the whole page now shares one left edge.
+      //
+      // D-93: the outer edge is the `AnimatedContainer`, not the `Material`.
+      // `Container` subtracts a border's width from its child's box, so the
+      // `Material` inside now starts one pixel in — at 24 + the 1 px resting
+      // outline. Asserting the Material would be asserting the outline's width,
+      // which is a value this card borrows from a sibling app and could change;
+      // asserting the decoration means asserting the card.
+      final card = find.descendant(
         of: find.byType(HistoryCard),
-        matching: find.byType(Material),
+        matching: find.byType(AnimatedContainer),
       );
-      expect(tester.getRect(material).left, AppSpacing.screenHorizontal);
+      expect(tester.getRect(card).left, AppSpacing.screenHorizontal);
     });
 
     testWidgets('keeps the chevron in proportion to the card', (tester) async {

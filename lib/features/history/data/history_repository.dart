@@ -40,6 +40,23 @@ abstract class HistoryRepository {
     required double resultValue,
   });
 
+  /// Removes every entry whose [HistoryEntry.id] is in [ids].
+  ///
+  /// Takes identifiers rather than entries because the ids are what the
+  /// presentation layer holds: a multi-select keeps a set of strings across
+  /// rebuilds, and having it resolve them back to entries before calling would
+  /// push the join into the screen.
+  ///
+  /// **Not** a partial [clearAll]. The surviving entries keep their relative
+  /// order, so the newest-first storage invariant (D-02) is untouched and the
+  /// day grouping below is unaffected — the screen re-groups from the same
+  /// source it always did, and no caller has to know which groups lost rows.
+  ///
+  /// Unknown ids are ignored rather than an error: the list can change between a
+  /// selection being made and the delete landing, and a stale id in the set
+  /// should cost the user nothing.
+  Future<void> deleteByIds(Set<String> ids);
+
   /// Removes every entry.
   Future<void> clearAll();
 

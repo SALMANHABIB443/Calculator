@@ -1,0 +1,303 @@
+Resolving dependencies...
+Downloading packages...
+  cli_util 0.4.2 (0.6.0 available)
+  code_assets 1.2.1 (2.1.0 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  cupertino_icons 1.0.9 (2.0.0 available)
+  flutter_riverpod 2.6.1 (3.4.3 available)
+  go_router 14.8.1 (18.0.2 available)
+  hooks 2.0.2 (2.2.0 available)
+  jni 1.0.3 (1.1.0 available)
+  jni_flutter 1.0.3 (1.0.4 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  meta 1.18.3 (1.19.0 available)
+  objective_c 9.5.0 (9.6.2 available)
+  record_use 0.6.0 (1.1.1 available)
+  riverpod 2.6.1 (3.4.3 available)
+  shared_preferences 2.5.3 (2.5.5 available)
+  test_api 0.7.12 (0.7.14 available)
+  vector_math 2.4.0 (2.4.3 available)
+Got dependencies!
+17 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart
+00:00 +0 -1: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart [E]
+  Failed to load "C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart":
+  Compilation failed for testPath=C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart: test/widget/design_system_test.dart:243:44: Error: The getter 'background' isn't defined for the type 'CalculatorButtonVariant'.
+   - 'CalculatorButtonVariant' is from 'package:calculator/core/widgets/calculator_button.dart' ('lib/core/widgets/calculator_button.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'background'.
+        expect(CalculatorButtonVariant.digit.background, AppColors.buttonDigit);
+                                             ^^^^^^^^^^
+  test/widget/design_system_test.dart:244:44: Error: The getter 'foreground' isn't defined for the type 'CalculatorButtonVariant'.
+   - 'CalculatorButtonVariant' is from 'package:calculator/core/widgets/calculator_button.dart' ('lib/core/widgets/calculator_button.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'foreground'.
+        expect(CalculatorButtonVariant.digit.foreground, AppColors.textPrimary);
+                                             ^^^^^^^^^^
+  test/widget/design_system_test.dart:245:47: Error: The getter 'background' isn't defined for the type 'CalculatorButtonVariant'.
+   - 'CalculatorButtonVariant' is from 'package:calculator/core/widgets/calculator_button.dart' ('lib/core/widgets/calculator_button.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'background'.
+        expect(CalculatorButtonVariant.operator.background, AppColors.accent);
+                                                ^^^^^^^^^^
+  test/widget/design_system_test.dart:247:42: Error: The getter 'foreground' isn't defined for the type 'CalculatorButtonVariant'.
+   - 'CalculatorButtonVariant' is from 'package:calculator/core/widgets/calculator_button.dart' ('lib/core/widgets/calculator_button.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'foreground'.
+          CalculatorButtonVariant.operator.foreground,
+                                           ^^^^^^^^^^
+  test/widget/design_system_test.dart:251:42: Error: The getter 'background' isn't defined for the type 'CalculatorButtonVariant'.
+   - 'CalculatorButtonVariant' is from 'package:calculator/core/widgets/calculator_button.dart' ('lib/core/widgets/calculator_button.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'background'.
+          CalculatorButtonVariant.function.background,
+                                           ^^^^^^^^^^
+  test/widget/design_system_test.dart:255:42: Error: The getter 'foreground' isn't defined for the type 'CalculatorButtonVariant'.
+   - 'CalculatorButtonVariant' is from 'package:calculator/core/widgets/calculator_button.dart' ('lib/core/widgets/calculator_button.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'foreground'.
+          CalculatorButtonVariant.function.foreground,
+                                           ^^^^^^^^^^
+  .
+00:00 +0 -2: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1024:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 816:35                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 810:35                      _CustomZone.run
+  dart:async/zone.dart 702:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 743:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+00:00 +0 -2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) shows the three sections in order
+00:02 +1 -2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) shows the two sections in order
+00:02 +2 -2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) shows the two sections in order
+00:02 +3 -2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) every specified row is present, with its subtitle
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "Dark mode": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/settings_screen_test.dart:62:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/settings_screen_test.dart line 62
+The test description was:
+  every specified row is present, with its subtitle
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:03 +3 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) carries the title alone, with no subtitle
+00:03 +3 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) every specified row is present, with its subtitle [E]
+  Test failed. See exception logs above.
+  The test description was: every specified row is present, with its subtitle
+  
+00:03 +4 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) the three preferences are toggles, not static text
+00:03 +5 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) hero shows the icon, name, version, and description
+00:03 +6 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) every toggle starts on by default (D-16, AC-005)
+00:03 +7 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) APP INFORMATION lists name, version, and developer
+00:03 +8 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) rows sit on the surface colour inside a group card (D-03)
+00:03 +9 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) MORE lists rate, share, and terms with their subtitles
+00:04 +10 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) the group card carries the 1 px outline (D-91)
+00:04 +11 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) each MORE row carries a chevron
+00:04 +12 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) no shadow in the dark theme, one in the white theme (D-91)
+00:04 +13 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) no shadow in the dark theme, one in the white theme (D-91)
+00:05 +14 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) scrolls on a short screen without overflowing
+00:05 +15 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) scrolls on a short screen without overflowing
+00:05 +16 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) scrolls on a short screen without overflowing
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: null
+  Actual: FlutterError:<A RenderFlex overflowed by 15 pixels on the right.>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/about_screen_test.dart:152:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/about_screen_test.dart line 152
+The test description was:
+  scrolls on a short screen without overflowing
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:05 +16 -4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) shows a chevron but is not a tap target
+00:05 +16 -4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) scrolls on a short screen without overflowing [E]
+  Test failed. See exception logs above.
+  The test description was: scrolls on a short screen without overflowing
+  
+00:05 +17 -4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) shows a chevron but is not a tap target
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: no matching candidates
+  Actual: _DescendantWidgetFinder:<Found 1 widget with type "InkWell" descending from widget with
+type "SettingsRow" that are ancestors of widget with text "Theme": [
+            InkWell,
+          ]>
+   Which: means one was found but none were expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/settings_screen_test.dart:215:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/settings_screen_test.dart line 215
+The test description was:
+  shows a chevron but is not a tap target
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:06 +17 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) shows a chevron but is not a tap target [E]
+  Test failed. See exception logs above.
+  The test description was: shows a chevron but is not a tap target
+  
+00:06 +17 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+00:06 +18 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+00:06 +19 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Vibration turns off and back on
+00:07 +20 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Rate App asks the prompt; successes show no snack bar
+00:07 +21 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Rate App asks the prompt; successes show no snack bar
+00:07 +22 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Rate App asks the prompt; successes show no snack bar
+00:08 +23 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Rate App asks the prompt; successes show no snack bar
+00:08 +24 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) opens a picker offering 0 through 6
+00:08 +25 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Rate App surfaces a snack bar when nothing could run
+00:08 +26 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Rate App surfaces a snack bar when nothing could run
+00:08 +27 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) choosing a value updates the row subtitle
+00:09 +28 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Share App summons the sheet; successes show no snack bar
+00:09 +29 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+00:09 +30 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Share App surfaces a snack bar when the sheet cannot open
+00:09 +31 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) zero is selectable, so whole-number arithmetic is possible
+00:09 +32 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Terms of Service opens the in-app Terms screen and back returns
+00:09 +33 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Terms of Service opens the in-app Terms screen and back returns
+00:09 +34 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: About links (D-07, D-20) App Version, Privacy Policy, and Terms all navigate
+00:10 +35 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: About links (D-07, D-20) each carries a chevron
+00:10 +36 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: resilience scrolls on a short screen without overflowing
+00:10 +37 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: resilience the whole screen fits a 480x1000 phone without overflow
+00:11 +38 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_layout_test.dart: the pad is a smaller echo of the calculator, not a second instrument the reference canvas renders 88 px keys, not 123
+00:12 +39 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the hidden gesture (FEAT-SEC-001, AC-017) a five-second hold opens the PIN screen
+00:12 +40 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the hidden gesture (FEAT-SEC-001, AC-017) a five-second hold opens the PIN screen
+00:13 +41 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the hidden gesture (FEAT-SEC-001, AC-017) a five-second hold opens the PIN screen
+00:13 +42 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_layout_test.dart: the painted geometry (D-69: a reserved gap is not a gap) the horizontal gap between two keys is the stated 12
+00:13 +43 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the hidden gesture (FEAT-SEC-001, AC-017) releasing early does nothing at all
+00:13 +44 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_layout_test.dart: the painted geometry (D-69: a reserved gap is not a gap) the vertical gap between two rows is the stated 12
+00:13 +45 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the hidden gesture (FEAT-SEC-001, AC-017) two short holds do not add up to five seconds
+00:13 +46 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_layout_test.dart: the painted geometry (D-69: a reserved gap is not a gap) the pad is centred in the column
+00:13 +47 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the hidden gesture (FEAT-SEC-001, AC-017) a tap still opens the Clear History confirmation
+00:14 +48 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_layout_test.dart: the painted geometry (D-69: a reserved gap is not a gap) the last row keeps 0 in the middle column
+00:14 +49 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the hidden gesture (FEAT-SEC-001, AC-017) the hold is invisible (D-82)
+00:14 +50 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_layout_test.dart: the dots sit in the upper half (desing.md §6.8) the dots are not pinned to the top of the screen
+00:14 +51 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the unlock screen (FEAT-SEC-002, AC-018, AC-019) shows four dots and still names neither the feature nor the code
+00:14 +52 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the unlock screen (FEAT-SEC-002, AC-018, AC-019) shows four dots and still names neither the feature nor the code
+00:14 +53 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_layout_test.dart: the dots sit in the upper half (desing.md §6.8) the dots are horizontally centred
+00:14 +54 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the unlock screen (FEAT-SEC-002, AC-018, AC-019) never displays the entered digits as characters
+00:14 +55 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_layout_test.dart: the dots sit in the upper half (desing.md §6.8) the label sits immediately above the dots, not at the top
+00:15 +56 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the unlock screen (FEAT-SEC-002, AC-018, AC-019) backspace removes the last digit and checks nothing
+00:15 +57 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_layout_test.dart: the dots sit in the upper half (desing.md §6.8) the pad sits just below the dots, not adrift below them
+00:15 +58 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the unlock screen (FEAT-SEC-002, AC-018, AC-019) the default 0000 opens the secret screen (AC-018)
+00:15 +59 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the unlock screen (FEAT-SEC-002, AC-018, AC-019) the default 0000 opens the secret screen (AC-018)
+00:15 +60 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_layout_test.dart: the pad still shrinks rather than clipping (prd.md AC-015) a wide window does not inflate the pad into a tablet grid
+00:15 +61 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the unlock screen (FEAT-SEC-002, AC-018, AC-019) a wrong code clears the dots and permits an immediate retry
+00:16 +62 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the unlock screen (FEAT-SEC-002, AC-018, AC-019) a rejected code shakes the dots
+00:16 +63 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the unlock screen (FEAT-SEC-002, AC-018, AC-019) wrong codes never lock out (D-85)
+00:17 +64 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the secret screen (FEAT-SEC-003, AC-020, D-84) is blank apart from two controls, one of them a way out
+00:17 +65 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the secret screen (FEAT-SEC-003, AC-020, D-84) the overflow button is the shared bordered AppIconButton
+00:17 +66 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the way home (D-86) the PIN screen has a back arrow, not a home button
+00:18 +67 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the way home (D-86) the back arrow is the shared bordered AppIconButton
+00:18 +68 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the way home (D-86) it sits in the top-left corner, on the header margin
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+The finder "Found 0 widgets with type "IconButton" that are ancestors of widgets with key
+[<'secret-back'>]: []" (used in a call to "getTopLeft()") could not find any matching widgets.
+
+When the exception was thrown, this was the stack:
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2095:7)
+#1      WidgetController.getTopLeft (package:flutter_test/src/controller.dart:1963:12)
+#2      WidgetController.getRect (package:flutter_test/src/controller.dart:2347:23)
+#3      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/secret_flow_test.dart:415:26)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  it sits in the top-left corner, on the header margin
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:18 +68 -6: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the way home (D-86) it sits in the top-left corner, on the header margin [E]
+  Test failed. See exception logs above.
+  The test description was: it sits in the top-left corner, on the header margin
+  
+00:18 +68 -6: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the way home (D-86) it clears the touch floor
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: No element
+
+When the exception was thrown, this was the stack:
+#0      Iterable.single (dart:core/iterable.dart:694:25)
+#1      WidgetController.getSize (package:flutter_test/src/controller.dart:2178:47)
+#2      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/secret_flow_test.dart:439:27)
+<asynchronous suspension>
+#3      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#4      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  it clears the touch floor
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:19 +68 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the way home (D-86) it clears the touch floor [E]
+  Test failed. See exception logs above.
+  The test description was: it clears the touch floor
+  
+00:19 +68 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the way home (D-86) the unlocked secret screen keeps its floating home button
+00:19 +69 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the way home (D-86) it is white on black, from the app palette (D-86)
+00:20 +70 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the way home (D-86) it sits in the bottom-right corner
+00:20 +71 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the way home (D-86) it clears the system inset and the touch floor
+00:20 +72 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the way home (D-86) from the secret screen it lands on the calculator
+00:20 +73 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the way home (D-86) from the PIN screen it lands on the calculator too
+00:21 +74 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the secret settings page (FEAT-SEC-004, AC-020, D-84) holds two rows: "Change PIN" first, "Reset PIN" second
+00:21 +75 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the secret settings page (FEAT-SEC-004, AC-020, D-84) back returns to the blank secret screen
+00:21 +76 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: changing the PIN (FEAT-SEC-005, AC-021) an incorrect current PIN does not advance
+00:22 +77 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: changing the PIN (FEAT-SEC-005, AC-021) the correct current PIN advances to entering a new one
+00:22 +78 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: changing the PIN (FEAT-SEC-005, AC-021) a mismatched confirmation returns to step two
+00:23 +79 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: changing the PIN (FEAT-SEC-005, AC-021) a matching confirmation persists the code and ends the flow
+00:23 +80 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: changing the PIN (FEAT-SEC-005, AC-021) a PIN with leading zeroes survives as four digits
+00:24 +81 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the controller (D-83, D-85) verify accepts the stored code and rejects any other
+00:24 +82 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the controller (D-83, D-85) change updates the code the notifier publishes
+00:24 +83 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the controller (D-83, D-85) reset returns the published code to the default (AC-022)
+00:24 +84 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: forgetting the PIN (FEAT-SEC-006, AC-022) the link opens a confirmation that names the default
+00:24 +85 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: forgetting the PIN (FEAT-SEC-006, AC-022) cancelling changes nothing
+00:24 +86 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: forgetting the PIN (FEAT-SEC-006, AC-022) confirming makes 0000 the code that opens the screen
+00:25 +87 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: forgetting the PIN (FEAT-SEC-006, AC-022) the reset survives a restart
+00:25 +88 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: forgetting the PIN (FEAT-SEC-006, AC-022) from the settings page, the reset also lands somewhere useful
+00:25 +89 -7: Some tests failed.
+
+Failing tests:
+  C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) scrolls on a short screen without overflowing
+  C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart
+  C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the way home (D-86) it clears the touch floor
+  C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the way home (D-86) it sits in the top-left corner, on the header margin
+  ... and 3 more

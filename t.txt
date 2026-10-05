@@ -1,0 +1,128 @@
+Resolving dependencies...
+Downloading packages...
+  cli_util 0.4.2 (0.6.0 available)
+  code_assets 1.2.1 (2.1.0 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  cupertino_icons 1.0.9 (2.0.0 available)
+  flutter_riverpod 2.6.1 (3.4.3 available)
+  go_router 14.8.1 (18.0.2 available)
+  hooks 2.0.2 (2.2.0 available)
+  jni 1.0.3 (1.1.0 available)
+  jni_flutter 1.0.3 (1.0.4 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  meta 1.18.3 (1.19.0 available)
+  objective_c 9.5.0 (9.6.2 available)
+  record_use 0.6.0 (1.1.1 available)
+  riverpod 2.6.1 (3.4.3 available)
+  shared_preferences 2.5.3 (2.5.5 available)
+  test_api 0.7.12 (0.7.14 available)
+  vector_math 2.4.0 (2.4.3 available)
+Got dependencies!
+17 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart
+00:00 +0: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `` then () is `(`
+00:00 +1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `5` then () is `5×(`
+00:00 +2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `5+` then () is `5+(`
+00:00 +3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `5×` then () is `5×(`
+00:00 +4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `()` then () is `((`
+00:00 +5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `()5` then () is `(5)`
+00:00 +6: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `()5+` then () is `(5+(`
+00:00 +7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `()5+2` then () is `(5+2)`
+00:00 +8: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `()5+2()` then () is `(5+2)×(`
+00:00 +9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `5+2` then () is `5+2×(`
+00:00 +10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) nests rather than closing early
+00:00 +11: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) closes as soon as the open group has an operand
+00:00 +12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) a % is a value, so the next () multiplies into a group
+00:00 +13: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) never emits two closing parentheses in a row
+00:00 +14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: backspace removes exactly one character (D-81) takes an operator off
+00:00 +15: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: backspace removes exactly one character (D-81) takes one digit at a time
+00:00 +16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: backspace removes exactly one character (D-81) walks the whole expression back to empty, never past it
+00:00 +17: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: backspace removes exactly one character (D-81) works with decimals
+00:00 +18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: backspace removes exactly one character (D-81) works with parentheses
+00:00 +19: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: backspace removes exactly one character (D-81) on an empty expression it costs nothing
+00:00 +20: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: backspace removes exactly one character (D-81) updates the preview
+00:00 +21: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: backspace after equals restores the calculation (D-83) the first press hands back the whole expression
+00:00 +22: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: backspace after equals restores the calculation (D-83) and leaves the calculator editable, not locked
+00:00 +23: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: backspace after equals restores the calculation (D-83) repeated backspace keeps working
+00:00 +24: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: backspace after equals restores the calculation (D-83) a digit after restoring extends the expression again
+00:00 +25: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: backspace after equals restores the calculation (D-83) the answer is still shown after the restore
+00:00 +26: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: AC resets everything (D-83) from a completed calculation
+00:00 +27: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: AC resets everything (D-83) from an error
+00:00 +28: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: precedence (D-84, supersedes D-17) × and ÷ bind tighter than + and −
+00:00 +29: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: precedence (D-84, supersedes D-17) × and ÷ bind tighter than + and −
+00:00 +30: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: precedence (D-84, supersedes D-17) × and ÷ bind tighter than + and −
+00:00 +31: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: precedence (D-84, supersedes D-17) × and ÷ bind tighter than + and −
+00:00 +32: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: precedence (D-84, supersedes D-17) × and ÷ bind tighter than + and −
+00:00 +33: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: precedence (D-84, supersedes D-17) × and ÷ bind tighter than + and −
+00:00 +34: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: precedence (D-84, supersedes D-17) × and ÷ bind tighter than + and −
+00:00 +35: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: precedence (D-84, supersedes D-17) × and ÷ bind tighter than + and −
+00:00 +36: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: precedence (D-84, supersedes D-17) × and ÷ bind tighter than + and −
+00:00 +37: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the decimal point starts 0. after an operator
+00:00 +38: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: precedence (D-84, supersedes D-17) chains of one kind stay left to right
+00:00 +39: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the decimal point starts 0. after a multiply
+00:00 +40: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: precedence (D-84, supersedes D-17) the mockup chain from desing.md still comes out right
+00:00 +41: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the decimal point works inside parentheses
+00:00 +42: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: parentheses groups a simple sum
+00:00 +43: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the decimal point a lone decimal point starts a number
+00:00 +44: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: parentheses groups two sums
+00:00 +45: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: operators a pending operator is replaced, keeping the number
+00:00 +46: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: parentheses nests
+00:00 +47: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: operators one with nothing to its left is ignored
+00:00 +48: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: parentheses multiplies implicitly against a group
+00:00 +49: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: operators one after a closing parenthesis is allowed, so a group can be used
+00:00 +50: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: parentheses respects precedence across a group boundary
+00:00 +51: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: operators after equals it continues from the result
+00:00 +52: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: operators after equals it continues from the result
+00:00 +53: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: percent is contextual (D-86, supersedes D-06) divides by 100 under ×
+00:00 +54: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: percent (D-86) divides by 100 under multiply
+00:00 +55: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: percent is contextual (D-86, supersedes D-06) divides by 100 when it stands alone
+00:00 +56: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: percent (D-86) divides by 100 on its own
+00:00 +57: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: percent is contextual (D-86, supersedes D-06) is a share of the left operand under +
+00:00 +58: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: percent (D-86) is a share of the left operand under add
+00:00 +59: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: percent is contextual (D-86, supersedes D-06) is a share of the left operand under −
+00:00 +60: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: percent (D-86) is a share of the left operand under subtract
+00:00 +61: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: percent is contextual (D-86, supersedes D-06) uses the accumulated total as the base of a chain
+00:00 +62: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: percent (D-86) works inside parentheses
+00:00 +63: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: percent (D-86) refuses to lead an expression
+00:00 +64: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: percent is contextual (D-86, supersedes D-06) divides by 100 under ÷
+00:00 +65: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: percent (D-86) attaches to a group
+00:00 +66: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: percent is contextual (D-86, supersedes D-06) is not contextual when it is part of a product
+00:00 +67: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: parentheses calculate (D-84) the specification examples
+00:00 +68: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: negatives a result may be negative
+00:00 +69: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: parentheses calculate (D-84) precedence applies across the whole expression
+00:00 +70: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: negatives a unary minus is parsed
+00:00 +71: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: parentheses calculate (D-84) an unclosed group is completed by =
+00:00 +72: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: decimals parses a decimal literal
+00:00 +73: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: equals and the result state keeps the expression and the result apart
+00:00 +74: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: decimals parses a trailing dot as the number being typed
+00:00 +75: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: equals and the result state a repeated equals changes nothing
+00:00 +76: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: equals and the result state division by zero reports the error state
+00:00 +77: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: equals and the result state an operator after a result continues from it
+00:00 +78: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: equals and the result state a digit after a result starts over
+00:00 +79: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: equals and the result state = on an untouched calculator does nothing
+00:00 +80: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: equals and the result state an error clears on the next key
+00:00 +81: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: error handling division by zero never throws
+00:00 +82: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: error handling an empty group errors rather than crashing
+00:00 +83: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: error handling backspace is refused in the error state
+00:00 +84: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: error handling a huge number is handled without throwing
+00:00 +85: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: loadValue (D-37) puts the value on screen as a result
+00:00 +86: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: loadValue (D-37) an operator continues from it
+00:00 +87: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: loadValue (D-37) a digit starts a fresh calculation
+00:00 +88: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: loadValue (D-37) it discards whatever was on the keypad
+00:00 +89: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: loadValue (D-37) a non-finite value is ignored
+00:00 +90: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the state snapshot compares by content
+00:00 +91: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the state snapshot an old reference cannot observe later presses
+00:00 +92: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the state snapshot copyWith replaces only what it names
+00:00 +93: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the state snapshot canBackspace mirrors the expression
+00:00 +94: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: justEvaluated (D-35) is set only by =
+00:00 +95: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: justEvaluated (D-35) is cleared by the next key
+00:00 +96: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: justEvaluated (D-35) an error never sets it, so nothing is recorded
+00:00 +97: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the keypad has no backspace key
+00:00 +98: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the keypad covers the 5x4 keypad, with () where the sign toggle used to be
+00:00 +99: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the keypad the parentheses key has an accessible name
+00:00 +100: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the keypad maps the four operator keys to operators
+00:00 +101: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: formatNumber renders integers without a decimal point
+00:00 +102: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: formatNumber trims trailing zeros rather than padding
+00:00 +103: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: formatNumber returns Error for non-finite values
+00:00 +104: All tests passed!

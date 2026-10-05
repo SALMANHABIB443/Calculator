@@ -1,6 +1,6 @@
+import '../../../core/design/app_palette.dart';
 import 'package:flutter/material.dart';
 
-import '../design/app_colors.dart';
 import '../design/app_spacing.dart';
 import '../design/app_typography.dart';
 import 'app_icon.dart';
@@ -71,14 +71,14 @@ class EmptyState extends StatelessWidget {
                   AppIcon(
                     icon,
                     size: iconSize,
-                    color: AppColors.textSecondary,
+                    color: context.appColors.textSecondary,
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   Text(
                     title,
                     textAlign: TextAlign.center,
-                    style: AppTypography.subtitle.copyWith(
-                      color: AppColors.textPrimary,
+                    style: context.type.subtitle.copyWith(
+                      color: context.appColors.textPrimary,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -87,7 +87,7 @@ class EmptyState extends StatelessWidget {
                     Text(
                       message!,
                       textAlign: TextAlign.center,
-                      style: AppTypography.rowSubtitle,
+                      style: context.type.rowSubtitle,
                     ),
                   ],
                   if (action != null) ...[

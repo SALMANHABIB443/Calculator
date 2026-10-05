@@ -27,6 +27,30 @@ abstract final class AppSpacing {
   /// Inner padding of a card or list row (desing.md §4, ~16).
   static const double cardPadding = 16;
 
+  /// Where a hairline inside a grouped card starts, measured from the card's
+  /// left edge (D-91).
+  ///
+  /// **72, and it is not a rounding of [cardPadding].** The old value was 16,
+  /// which drew the line under the leading icon as well as under the text — the
+  /// icon looked like it belonged to the row above it. The line now starts where
+  /// the titles start: `cardPadding` (16) + the 44 px tile + [lg] (16) + a
+  /// half-pixel of the glyph's own bearing. Ethar draws the same 72 in
+  /// `_SettingsGroup`'s `Divider(indent: 72)`.
+  ///
+  /// Kept as its own token rather than recomputed at the call site because the
+  /// standalone [SettingsRow] divider and the group's internal one have to agree
+  /// exactly, and two literals drifting apart is the failure this file exists
+  /// to prevent.
+  static const double dividerIndent = 72;
+
+  /// Where a hairline inside a grouped card ends, from the card's right edge
+  /// (D-91).
+  ///
+  /// Ethar's `_SettingsGroup` passes `endIndent: 16`, so the line stops short of
+  /// the corner by the same [cardPadding] the rows pad their content by, and the
+  /// two read as one inset rather than as a line that happens to stop.
+  static const double dividerEndIndent = 16;
+
   /// Vertical gap between major page sections (desing.md §4, "generous").
   static const double sectionGap = 32;
 
@@ -72,6 +96,29 @@ abstract final class AppSpacing {
   /// states is the distance a user actually sees between two card edges.
   static const double historyCardGap = 8;
 
+  /// Horizontal padding inside a History card (D-93).
+  ///
+  /// **18 — Ethar's number.** `_TaskCard` in `task_list.dart:429` pads
+  /// `EdgeInsets.symmetric(horizontal: 18, vertical: 17)`, and this card is
+  /// that card. The previous value was [cardPadding]'s 16, which is right for a
+  /// settings row and two pixels narrow for a card that leads with a number:
+  /// the glyph column Ethar puts on the left needs the air or the text column
+  /// starts visibly off-centre.
+  ///
+  /// Named rather than reusing [cardPadding] because a History card and a
+  /// settings row are different objects at different widths — the reason
+  /// `AppRadius.historyCard` is a separate token for the same reason.
+  static const double historyCardHorizontal = 18;
+
+  /// Vertical padding inside a History card (D-93).
+  ///
+  /// **17 — Ethar's number**, and half of what it is beside: [cardPadding] is 16,
+  /// so the old card was 32 of vertical padding to Ethar's 34. At the app's
+  /// 88 px floor this is invisible per card and decisive across a list of
+  /// thirty — the extra pixel is what lets four entries fit where D-73 fitted
+  /// four and D-72 fitted three.
+  static const double historyCardVertical = 17;
+
   /// Space above a History day label — the gap that separates two groups.
   ///
   /// Deliberately larger than [historyCardGap]: the day boundary is a change of
@@ -88,15 +135,26 @@ abstract final class AppRadius {
   /// 12–16 range; the midpoint keeps the two from drifting apart.
   static const double card = 14;
 
-  /// The History card's radius (D-72, D-73).
+  /// The History card's radius (D-72, D-73, **D-77**, **D-93**).
   ///
-  /// Separate from [card] because the History card is one large surface rather
-  /// than a stack of rows inside a group, and a single object reads better with
-  /// a softer corner than the container its rows are set in. D-72's 30 was
-  /// sized for a 150 pt card; at the 88 pt card D-73 settles on, 30 would be
-  /// close to a stadium, so it comes down to 20 — still visibly rounder than
-  /// the 14 the grouped cards use, still inside the spirit of desing.md §5.3.
-  static const double historyCard = 20;
+  /// **12 — the corner Ethar's `_TaskCard` gives the task card itself**
+  /// (`task_list.dart:405`, `_appCard(radius: 12)`).
+  ///
+  /// D-77 took this to 14 so the History entry would match Ethar's *Create Task
+  /// option* cards (`task_editor.dart`'s `_TaskOption`, which is also 14). D-93
+  /// corrects which Ethar card it was tracking: the option rows and the task card
+  /// are two different components that happen to share a number, and the object
+  /// a History entry is the same kind of thing as — a single row in a list of
+  /// peers, long-pressable and multi-selectable — is the **task card**, not an
+  /// editor field row. Twelve is also where desing.md §5.3's 12–16 band starts,
+  /// which is the value a card this size should sit at.
+  ///
+  /// The token *name* is kept even though [card] carries a different number.
+  /// The two are different objects that must not be allowed to drift — a
+  /// History card leads with a number and a settings group leads with a glyph —
+  /// and one shared value standing for both is precisely the drift this file
+  /// exists to prevent. If a future change moves one, it moves here by name.
+  static const double historyCard = 12;
 
   /// A row inside a grouped card.
   static const double tile = 12;
@@ -128,8 +186,18 @@ abstract final class AppSizes {
   /// header holds a 48 px icon box with 4 px of air above and below it.
   static const double headerHeight = 56;
 
-  /// Minimum height of a tappable settings row (desing.md §4, ~50–56).
-  static const double rowMinHeight = 56;
+  /// Minimum height of a tappable settings row (D-91).
+  ///
+  /// **Raised from 56 to 64.** Ethar's `_SettingsRow` and `_ToggleRow` both
+  /// carry `BoxConstraints(minHeight: 64)`, and a row cannot be shorter than the
+  /// thing it holds: D-91 put a 44 px icon tile in the leading column, and 44
+  /// plus the row's 20 px of vertical padding is already 64. At 56 the tile was
+  /// either clipped or the padding was squeezed, and the two apps' settings
+  /// screens stopped being the same object.
+  ///
+  /// Still a **minimum**, so a two-line row at large text scale grows past it
+  /// rather than clipping (D-54).
+  static const double rowMinHeight = 64;
 
   /// Icon size inside a list row (desing.md §5.4, ~22–24).
   static const double rowIcon = 22;
@@ -139,6 +207,23 @@ abstract final class AppSizes {
 
   /// Side of the About hero brand mark.
   static const double brandIcon = 88;
+
+  /// Side of the glyph leading a History card's meta row (D-93).
+  ///
+  /// **17 — Ethar's number** (`task_list.dart:508`, the `schedule_rounded` beside
+  /// a task's time). A *size* token rather than a new `AppIconSize` bucket
+  /// because that enum's steps are the app's own — 18, 22, 28, 40, 44 — and 17
+  /// belongs to none of them; adding a bucket that sits 1 px below [small] would
+  /// put a step into an enum that deliberately has none.
+  static const double historyMetaGlyph = 17;
+
+  /// Gap between a History card's meta glyph and its meta text (D-93).
+  ///
+  /// **5 — Ethar's number** (`task_list.dart:511`). Not [sm]'s 8: the glyph is
+  /// 17, not 22, and a 22 px glyph wants 8 of air where a 17 px one wants 5. The
+  /// gap belongs to the glyph rather than to the row, which is why it lives here
+  /// beside the glyph's size instead of in `AppSpacing`'s own scale.
+  static const double historyMetaGap = 5;
 
   /// Minimum height of a History card (D-72, D-73).
   ///
@@ -166,4 +251,37 @@ abstract final class AppSizes {
   /// is never letterboxed and the measured 88 px cell is untouched.
   static const double calculatorPanelMaxWidth = 480;
 
+  /// Height of the calculator's backspace row, between the display and the rule
+  /// (**D-81**).
+  ///
+  /// The row is exactly one shared header box ([iconTouchTarget]) tall, and the
+  /// screen reserves this height *before* it sizes the keypad — so a name for the
+  /// reservation, rather than a caller measuring the button's own widget, which
+  /// would be reading a layout result back as if it were the budget.
+  static const double calculatorBackspaceRow = iconTouchTarget;
+
+  /// Side of the floating home button on the Secret Mode screens (D-86).
+  ///
+  /// **56** rather than the header action's [iconTouchTarget] 48: this button is
+  /// not a header action and does not sit in a header, and at 48 a bottom-right
+  /// circle reads as a stray header box that fell to the wrong end of the screen.
+  /// 56 is the Material FAB's small size, which is the same silhouette this is
+  /// borrowing, and it stays comfortably above the prd.md §12 touch floor.
+  ///
+  /// A *size*, not a new colour or radius — the button is painted from
+  /// [context.appColors.textPrimary] and [context.appColors.textOnFunction], both of which
+  /// already exist. D-84 warned that a blank page needing a token would be the
+  /// signal it had stopped being blank; it has stopped being blank, and this is
+  /// the record of how it did so without opening the palette.
+  static const double secretHomeButton = 56;
+}
+
+/// Inset the floating home button keeps from the screen's edges (D-86).
+///
+/// Named here rather than spelled at the call site so the button's clearance is
+/// one fact: it has to clear the system gesture inset on every screen it appears
+/// on, and a number retyped at two call sites is a number that drifts.
+abstract final class AppSecretSpacing {
+  /// From the right and bottom edges, under the [SafeArea] the screens use.
+  static const double homeButtonInset = 24;
 }

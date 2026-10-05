@@ -112,7 +112,7 @@ class CalculatorKeypad extends StatelessWidget {
     return switch (key) {
       CalculatorKey.ac ||
       CalculatorKey.percent ||
-      CalculatorKey.plusMinus => CalculatorButtonVariant.function,
+      CalculatorKey.parentheses => CalculatorButtonVariant.function,
       _ => CalculatorButtonVariant.digit,
     };
   }
@@ -190,11 +190,11 @@ class _KeySpec {
 
 /// Row-major keypad layout, exactly as desing.md §6.1 draws it: the orange
 /// operator column is `÷ × − +` with `=` beneath it, and the function keys
-/// `AC ± %` sit in the top-left corner.
+/// `AC () %` sit in the top-left corner.
 const List<List<_KeySpec>> _layout = <List<_KeySpec>>[
   <_KeySpec>[
     _KeySpec(CalculatorKey.ac),
-    _KeySpec(CalculatorKey.plusMinus),
+    _KeySpec(CalculatorKey.parentheses),
     _KeySpec(CalculatorKey.percent),
     _KeySpec(CalculatorKey.divide),
   ],

@@ -44,7 +44,7 @@ void main() {
   }
 
   String resultText(WidgetTester tester) =>
-      tester.widget<Text>(find.byKey(const Key('calculator-result'))).data!;
+      tester.widget<Text>(find.byKey(const Key('calculator-display-line'))).data!;
 
   /// Opens Settings, flips [row], and returns to the calculator.
   Future<void> toggleFromSettings(

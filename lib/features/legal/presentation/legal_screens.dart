@@ -46,7 +46,7 @@ class LegalDocumentScreen extends StatelessWidget {
                 for (final section in sections) ...[
                   Text(
                     section.heading,
-                    style: AppTypography.legalHeading,
+                    style: context.type.legalHeading,
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   // Bodies contain hard line breaks — the Privacy Policy uses
@@ -54,7 +54,7 @@ class LegalDocumentScreen extends StatelessWidget {
                   // already honours `\n`, so no paragraph splitting is needed,
                   // but each line must not wrap mid-list-item at narrow widths,
                   // which is what the horizontal padding plus body size buys.
-                  Text(section.body, style: AppTypography.body),
+                  Text(section.body, style: context.type.body),
                   const SizedBox(height: AppSpacing.xl),
                 ],
               ],

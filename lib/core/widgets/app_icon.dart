@@ -1,6 +1,6 @@
+import '../../../core/design/app_palette.dart';
 import 'package:flutter/material.dart';
 
-import '../design/app_colors.dart';
 import '../design/app_spacing.dart';
 
 /// Standard icon sizes (desing.md §5.4, plus the History redesign's D-72).
@@ -44,14 +44,14 @@ enum AppIconSize {
 /// Wraps an [IconData] so every icon in the app resolves its size and colour
 /// from tokens instead of hard-coded values (desing.md §5.4).
 ///
-/// Icons default to [AppColors.textPrimary] — white for most, accent for active
+/// Icons default to [context.appColors.textPrimary] — white for most, accent for active
 /// or feedback icons, which is passed explicitly as [color].
 class AppIcon extends StatelessWidget {
   const AppIcon(
     this.icon, {
     super.key,
     this.size = AppIconSize.row,
-    this.color = AppColors.textPrimary,
+    this.color,
     this.semanticLabel,
   });
 
@@ -62,7 +62,10 @@ class AppIcon extends StatelessWidget {
   final AppIconSize size;
 
   /// Fill colour, defaulting to primary text.
-  final Color color;
+  /// Fill colour. `null` means "the theme's primary text", resolved in [build]
+  /// rather than as a default value — a constructor default is evaluated at
+  /// compile time, and the palette is not known then.
+  final Color? color;
 
   /// Accessible name. Omit for decorative icons that sit beside a text label,
   /// so screen readers do not announce the row twice.
@@ -70,7 +73,7 @@ class AppIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final iconWidget = Icon(icon, size: size.value, color: color);
+    final iconWidget = Icon(icon, size: size.value, color: color ?? context.appColors.textPrimary);
     if (semanticLabel == null) return iconWidget;
     return Semantics(
       label: semanticLabel,

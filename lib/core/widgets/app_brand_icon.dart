@@ -1,6 +1,6 @@
+import '../../../core/design/app_palette.dart';
 import 'package:flutter/material.dart';
 
-import '../design/app_colors.dart';
 import '../design/app_typography.dart';
 
 /// The app's brand mark (desing.md §5.5): a rounded square holding four
@@ -36,7 +36,7 @@ class AppBrandIcon extends StatelessWidget {
       height: size,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: AppColors.buttonDigit,
+          color: context.appColors.buttonDigit,
           borderRadius: BorderRadius.circular(size * 0.22),
         ),
         child: Padding(
@@ -47,8 +47,8 @@ class AppBrandIcon extends StatelessWidget {
                 Expanded(
                   child: Row(
                     children: [
-                      _key(_leftColumn[i], AppColors.buttonFunction),
-                      _key(_rightColumn[i], AppColors.accent),
+                      _key(_leftColumn[i], context.appColors.buttonFunction, context.appColors),
+                      _key(_rightColumn[i], context.appColors.accent, context.appColors),
                     ],
                   ),
                 ),
@@ -59,7 +59,7 @@ class AppBrandIcon extends StatelessWidget {
     );
   }
 
-  Widget _key(String label, Color fill) {
+  Widget _key(String label, Color fill, AppPalette palette) {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.all(2),
@@ -73,9 +73,11 @@ class AppBrandIcon extends StatelessWidget {
                 child: Text(
                   label,
                   style: AppTypography.buttonLabel.copyWith(
-                    color: fill == AppColors.accent
-                        ? AppColors.textPrimary
-                        : AppColors.textOnFunction,
+                    // The orange quadrant takes the accent label colour (white in
+                    // both themes); the light one takes the function-key label.
+                    color: fill == palette.accent
+                        ? palette.textOnAccent
+                        : palette.textOnFunction,
                   ),
                 ),
               ),

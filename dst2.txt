@@ -1,0 +1,80 @@
+Resolving dependencies...
+Downloading packages...
+  cli_util 0.4.2 (0.6.0 available)
+  code_assets 1.2.1 (2.1.0 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  cupertino_icons 1.0.9 (2.0.0 available)
+  flutter_riverpod 2.6.1 (3.4.3 available)
+  go_router 14.8.1 (18.0.2 available)
+  hooks 2.0.2 (2.2.0 available)
+  jni 1.0.3 (1.1.0 available)
+  jni_flutter 1.0.3 (1.0.4 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  meta 1.18.3 (1.19.0 available)
+  objective_c 9.5.0 (9.6.2 available)
+  record_use 0.6.0 (1.1.1 available)
+  riverpod 2.6.1 (3.4.3 available)
+  shared_preferences 2.5.3 (2.5.5 available)
+  test_api 0.7.12 (0.7.14 available)
+  vector_math 2.4.0 (2.4.3 available)
+Got dependencies!
+17 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart
+00:00 +0: AppColors holds the palette measured from the mockup pixels (D-03)
+00:00 +1: AppColors the History card fill is a named token, not a shared one (D-72)
+00:00 +2: AppColors the card edge is Ethar's outline, not a chosen one (D-91)
+00:00 +3: AppColors keeps function keys light with dark labels, inverting the contrast
+00:00 +4: AppColors the OFF track reads as "off", not as the accent (R-1, D-61)
+00:00 +5: AppSpacing the screen margin matches the mockup card edges (D-60)
+00:00 +6: AppSpacing keeps card padding and the bottom safe area on the 8pt grid
+00:00 +7: AppSpacing the History card geometry follows the app margin (D-73)
+00:00 +8: AppTypography result, expression, and title sizes sit in the specified ranges
+00:00 +9: AppTypography primary text is white and secondary text is gray
+00:00 +10: AppTheme maps the toggle tracks to the tokens
+00:00 +11: AppTheme paints scaffolds on the app background with hairline dividers
+00:00 +12: CalculatorButtonVariant pairs each fill with a contrasting label
+00:00 +13: CalculatorButton renders its label on the variant fill
+00:00 +14: CalculatorButton function keys put a dark label on the light fill
+00:00 +15: CalculatorButton operator keys are the orange primary action
+00:00 +16: CalculatorButton is round in a square cell
+00:00 +17: CalculatorButton the wide 0 key spans its cell and rounds only the ends
+00:00 +18: CalculatorButton a pressed key dims and shrinks
+00:00 +19: CalculatorButton reports the key by its accessible name
+00:00 +20: SectionHeader uppercases the label in the secondary colour
+00:00 +21: SettingsRow renders title and subtitle with their token styles
+00:01 +22: SettingsRow a tappable row without a control shows a chevron
+00:01 +23: SettingsRow an explicit control replaces the chevron
+00:01 +24: SettingsRow puts its icon in a soft tile, not bare on the card
+00:01 +25: SettingsRow a row is tall enough to hold its tile (D-91)
+00:01 +26: SettingsGroup is one rounded surface with a divider per boundary
+00:01 +27: SettingsGroup is the sibling app card: filled, outlined, no shadow in dark
+00:01 +28: SettingsGroup the hairline starts past the icon tile, not under it
+00:01 +29: ToggleRow shows a switch reflecting the current value
+00:01 +30: ToggleRow the whole row toggles, not just the switch
+00:01 +31: HistoryCard shows the expression above the larger result
+00:01 +32: HistoryCard sits on the card surface
+00:01 +33: HistoryCard is a rounded, borderless, shadowless card (D-72)
+00:01 +34: HistoryCard reserves at least the design height, not a fixed one
+00:01 +35: HistoryCard sits on the app margin rather than inboard of it
+00:01 +36: HistoryCard keeps the chevron in proportion to the card
+00:01 +37: HistoryDayLabel keeps sentence case where SectionHeader uppercases
+00:01 +38: HistoryDayLabel paints the label at the day-label token
+00:01 +39: HistoryDayLabel shares the app margin with the cards below it
+00:01 +40: HistoryDayLabel opens more space above it than it does below
+00:01 +41: HistoryDayLabel is announced as a header so days can be jumped to
+00:01 +42: AppConfirmationDialog resolves false when the user cancels
+00:01 +43: AppConfirmationDialog resolves true only on confirm
+00:01 +44: AppConfirmationDialog the confirm action is orange, the cancel action is not
+00:01 +45: EmptyState shows an icon, a title, and guidance
+00:01 +46: EmptyState omits the guidance when there is none
+00:01 +47: AppBrandIcon is a 2x2 grid of two light and two orange keys (§5.5)
+00:02 +48: AppIcon resolves its size from the bucket
+00:02 +49: AppIcon is decorative unless given a semantic label
+00:02 +50: AppTrashIcon occupies the same square an AppIcon of that bucket would
+00:02 +51: AppTrashIcon paints in the colour it is given, defaulting to white
+00:02 +52: AppTrashIcon is decorative unless given a semantic label
+00:02 +53: AppTrashIcon repaints only when the colour changes
+00:02 +54: AppTrashIcon the slots are holes, not bars
+00:02 +55: AppTrashIcon is centred on its own grid
+00:02 +56: All tests passed!

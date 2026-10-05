@@ -1,6 +1,6 @@
+import '../../../../core/design/app_palette.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/design/app_colors.dart';
 import '../../../../core/design/app_spacing.dart';
 import '../../../../core/design/app_typography.dart';
 import '../domain/app_settings.dart';
@@ -26,7 +26,7 @@ class DecimalPlacesSheet extends StatelessWidget {
   static Future<int?> show(BuildContext context, {required int selected}) {
     return showModalBottomSheet<int>(
       context: context,
-      backgroundColor: AppColors.surface,
+      backgroundColor: context.appColors.surface,
       // The platform drag handle and the default rounded top corners are
       // Material's, not the app's; the app's shapes come from AppRadius.
       shape: const RoundedRectangleBorder(
@@ -68,7 +68,7 @@ class DecimalPlacesSheet extends StatelessWidget {
                 AppSpacing.cardPadding,
                 AppSpacing.sm,
               ),
-              child: Text('Decimal Places', style: AppTypography.legalHeading),
+              child: Text('Decimal Places', style: context.type.legalHeading),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(
@@ -80,7 +80,7 @@ class DecimalPlacesSheet extends StatelessWidget {
               child: Text(
                 'Rounding for results only. Values you are still typing are '
                 'left as entered.',
-                style: AppTypography.rowSubtitle,
+                style: context.type.rowSubtitle,
               ),
             ),
             for (final places in AppSettings.decimalPlacesOptions)
@@ -142,7 +142,7 @@ class _DecimalPlacesOption extends StatelessWidget {
                     Expanded(
                       child: Text(
                         _label(places),
-                        style: AppTypography.rowTitle,
+                        style: context.type.rowTitle,
                       ),
                     ),
                     // A check rather than a radio: the accent is reserved for
@@ -150,9 +150,9 @@ class _DecimalPlacesOption extends StatelessWidget {
                     // ones is the same signal without competing with the operator
                     // keys for attention (desing.md §5.4).
                     if (isSelected)
-                      const Icon(
+                      Icon(
                         Icons.check,
-                        color: AppColors.accent,
+                        color: context.appColors.accent,
                         semanticLabel: 'Selected',
                       ),
                   ],

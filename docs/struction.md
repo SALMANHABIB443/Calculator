@@ -158,6 +158,21 @@ Calculator (Root /)
 Passing state when loading a history item uses a shared state store (the calculator
 provider) rather than route parameters, so the value survives the pop.
 
+**Secret Mode routes (D-82, D-84)**
+```
+History /history
+  └── push → Secret Unlock   /secret/unlock     # ONLY via the 5s hold
+        └── replace → Secret  /secret            # on a correct code
+              └── push → Secret Settings  /secret/settings
+                    └── push → Change PIN  /secret/change-pin
+```
+The unlock screen is entered **only** by the five-second hold, so it is pushed rather than
+reached by a deep link, and a correct code **replaces** it rather than pushing on top — leaving
+the entry screen on the stack under the secret screen would put a back gesture that returns to a
+PIN prompt in front of the user. `history_screen.dart` knows the *route name* and nothing about
+`features/secret/`; the dependency arrow points one way, into `routing`, so the §4 one-way rule
+survives the new entry point (see §16).
+
 ---
 
 ## 8. State Management Approach
@@ -226,6 +241,30 @@ HistoryEntry {
 - `shared_preferences` (D-02).
 - Load on app start; write on every change.
 - Reactive so UI and feedback services stay in sync.
+
+### Secret PIN Storage (D-83)
+
+**Key**
+- `secretPin`: String, exactly four decimal digits, default `"0000"`.
+
+Kept in its **own** repository and its **own** `features/secret/` module rather than folded into
+`AppSettings`. A PIN is a credential, not a preference, and the separate boundary is what makes that
+visible to whoever opens the file next.
+
+**Rules**
+- `shared_preferences`, like every other store here — **plaintext, not encrypted**. The code is
+  readable on a rooted device, which is a strictly smaller claim than the history's and the same
+  claim the rest of this app's data already makes. Recorded as a known limitation in `phases.md`.
+- **No new dependency.** `flutter_secure_storage` was rejected (D-83): it would be the first
+  package added since Phase 1, breaking the §15 lockdown.
+- **No hashing.** The threat is *reading* the store, not *brute-forcing* it, and with no rate limit
+  (D-85) a hash of four digits is no stronger than the plaintext.
+- Validation lives in the `SecretCode` **type** (constructor throws `FormatException`), so a
+  malformed code cannot exist as a value — not at the call site, not in storage.
+- Reads go through the same `_readOrNull` guard as the settings repository, so a corrupt or
+  hand-edited value degrades to `0000` instead of taking down the screen (D-42's contract).
+- **No lockout and no attempt counter** (D-85). Changing the PIN requires the current PIN, so a
+  forgotten one has **no in-app recovery** — a known limitation, not an oversight.
 
 ---
 
@@ -318,6 +357,11 @@ calculator/                      # Apps/Calculator — project root (D-04)
 │   │   ├── settings/
 │   │   │   ├── settings.dart
 │   │   │   └── presentation/
+│   │   ├── secret/                 # Hidden Secret Mode (D-82, D-83, D-84)
+│   │   │   ├── secret.dart
+│   │   │   ├── domain/            # SecretCode — validates four digits on construction
+│   │   │   ├── data/              # secret repository over shared_preferences
+│   │   │   └── presentation/      # unlock, blank screen, settings, change PIN
 │   │   ├── about/
 │   │   │   ├── about.dart
 │   │   │   └── presentation/
@@ -388,6 +432,18 @@ Settings Toggle
 History Item Tap
     → Load result into the calculator store
         → Navigation pop to Calculator
+
+Secret Unlock (5s hold on History's bottom Clear History — D-82)
+    → HistoryScreen.onSecretRequested()
+        → Navigation push /secret/unlock            # History knows a route,
+                                                    # not the Secret feature
+            → SecretCodeNotifier.verify(entered)
+                → SecretRepository.load()            # 'secretPin', default '0000'
+                → wrong → clear + shake, no lockout (D-85)
+                → right → Navigation replace → /secret
+                    → overflow tap → push /secret/settings
+                        → Change PIN → verify current, enter new, confirm
+                            → SecretRepository.save(new)   # persisted immediately
 ```
 
 ---

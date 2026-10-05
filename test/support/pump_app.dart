@@ -13,6 +13,9 @@ import 'package:calculator/features/history/data/history_repository.dart';
 import 'package:calculator/features/history/data/shared_preferences_history_repository.dart';
 import 'package:calculator/features/history/domain/history_entry.dart';
 import 'package:calculator/features/history/presentation/history_controller.dart';
+import 'package:calculator/features/history/presentation/history_screen.dart';
+import 'package:calculator/features/secret/data/shared_preferences_secret_repository.dart';
+import 'package:calculator/features/secret/domain/secret_code.dart';
 import 'package:calculator/features/settings/data/shared_preferences_settings_repository.dart';
 import 'package:calculator/features/settings/domain/app_settings.dart';
 import 'package:calculator/features/settings/presentation/decimal_places_sheet.dart';
@@ -45,12 +48,20 @@ void mockEmptyHistory() => mockHistoryStore(const <HistoryEntry>[]);
 /// maintains by inserting each new entry at index 0 and never re-sorting, so a
 /// seed written in the wrong order would put the screen in a state the app
 /// itself can never produce.
-void mockHistoryStore(List<HistoryEntry> entries, {AppSettings? settings}) {
+void mockHistoryStore(
+  List<HistoryEntry> entries, {
+  AppSettings? settings,
+  SecretCode? secretPin,
+}) {
   SharedPreferences.setMockInitialValues(<String, Object>{
     SharedPreferencesHistoryRepository.storageKey: jsonEncode([
       for (final entry in entries.reversed) entry.toJson(),
     ]),
     if (settings != null) ...settingsStoreValues(settings),
+    // Seeded through the real repository's key so a Secret Mode test starts
+    // from the same bytes the app would have written (D-83).
+    if (secretPin != null)
+      SharedPreferencesSecretRepository.pinKey: secretPin.value,
   });
 }
 
@@ -121,8 +132,9 @@ Future<void> pumpApp(
   List<Override> overrides = const <Override>[],
   List<HistoryEntry> history = const <HistoryEntry>[],
   AppSettings? settings,
+  SecretCode? secretPin,
 }) async {
-  mockHistoryStore(history, settings: settings);
+  mockHistoryStore(history, settings: settings, secretPin: secretPin);
   await tester.pumpWidget(
     ProviderScope(
       overrides: overrides,
@@ -131,6 +143,15 @@ Future<void> pumpApp(
   );
   await tester.pumpAndSettle();
 }
+
+/// How long History's bottom Clear History button must be held before Secret
+/// Mode opens (D-82).
+///
+/// Re-exported from [HistoryScreen] rather than re-declared here so the test
+/// harness holds the *shipped* duration. The alternative — a shorter constant
+/// for tests — would let the production five seconds go unpumped, and the value
+/// is the decision (D-82), not an implementation detail.
+const Duration secretHoldDuration = HistoryScreen.secretHoldDuration;
 
 /// Opens the Calculator screen's history clock (D-20).
 Future<void> openHistory(WidgetTester tester) async {

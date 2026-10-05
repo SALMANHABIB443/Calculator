@@ -1,0 +1,231 @@
+/// Pure calculator logic (PRD §4, FEAT-CALC-001, D-17).
+///
+/// This file has no Flutter dependencies so it can be unit-tested in
+/// isolation. The UI (presentation/calculator_screen.dart) only renders
+/// [CalculatorState]; every key press is delegated to [CalculatorEngine].
+///
+/// Evaluation is strictly left-to-right, applying each operator as it is
+/// pressed, with no `×÷` precedence over `+−` (D-17). So `2 + 3 × 4` = 20.
+///
+/// Two aspects are pinned in DECISIONS.md: the `backspace` key does not exist
+/// (D-19 — the mockup shows no ⌫ key, see desing.md §6.1 and prd.md §14) and
+/// formatting is layered with thousands separators (D-18).
+///
+/// **The engine owns values, not display strings.** [CalculatorState] carries
+/// the typed entry, the computed value, the expression terms, and whether a
+/// result was just completed; turning those into the two right-aligned text
+/// lines needs `decimalPlaces`, which is a presentation concern (D-14). That
+/// mapping lives in `presentation/display_resolver.dart` as a pure function, so
+/// changing the setting re-renders without touching calculation state — and the
+/// raw [CalculatorState.value] is exactly what Phase 5 stores as a history
+/// entry's `resultValue`.
+library;
+
+/// The four basic operators shown on the keypad (desing.md §6.1).
+enum CalculatorOperator {
+  add('+', addGlyph),
+  subtract('−', subtractGlyph),
+  multiply('×', multiplyGlyph),
+  divide('÷', divideGlyph);
+
+  const CalculatorOperator(this.symbol, this.glyph);
+
+  /// Glyph printed on the keypad and in the expression line.
+  final String symbol;
+
+  /// The glyph the parser reads.
+  ///
+  /// A separate field so the keypad's minus and the evaluator's minus are named
+  /// rather than assumed equal. They are both U+2212 today; if they ever drift,
+  /// every subtraction would parse as invalid, and this field is where that
+  /// would be visible.
+  final String glyph;
+
+  double apply(double a, double b) {
+    switch (this) {
+      case CalculatorOperator.add:
+        return a + b;
+      case CalculatorOperator.subtract:
+        return a - b;
+      case CalculatorOperator.multiply:
+        return a * b;
+      case CalculatorOperator.divide:
+        return a / b;
+    }
+  }
+}
+
+/// Every key on the 5×4 keypad (desing.md §6.1, **D-84**).
+///
+/// There is deliberately **no `backspace` member**: the keypad stays at nineteen
+/// keys (D-19) and the delete control sits above the rule on the screen, so it
+/// is a method on the engine rather than a key (**D-81**).
+///
+/// `parentheses` replaces the `±` key: with a real parser behind it, a sign
+/// toggle has nowhere to live — a negative operand is written `-` and
+/// parentheses do the work `±` used to (D-84).
+enum CalculatorKey {
+  digit0('0', 'zero'),
+  digit1('1', 'one'),
+  digit2('2', 'two'),
+  digit3('3', 'three'),
+  digit4('4', 'four'),
+  digit5('5', 'five'),
+  digit6('6', 'six'),
+  digit7('7', 'seven'),
+  digit8('8', 'eight'),
+  digit9('9', 'nine'),
+  dot('.', 'decimal point'),
+  ac('AC', 'all clear'),
+  percent('%', 'percent'),
+  parentheses('()', 'parentheses'),
+  add('+', 'add'),
+  subtract('−', 'subtract'),
+  multiply('×', 'multiply'),
+  divide('÷', 'divide'),
+  equals('=', 'equals');
+
+  const CalculatorKey(this.label, this.semanticsLabel);
+
+  /// Visible label on the keypad.
+  final String label;
+
+  /// Accessible name.
+  final String semanticsLabel;
+
+  bool get isDigit => name.startsWith('digit');
+
+  int get digitValue => int.parse(label);
+
+  CalculatorOperator? get operator {
+    switch (this) {
+      case CalculatorKey.add:
+        return CalculatorOperator.add;
+      case CalculatorKey.subtract:
+        return CalculatorOperator.subtract;
+      case CalculatorKey.multiply:
+        return CalculatorOperator.multiply;
+      case CalculatorKey.divide:
+        return CalculatorOperator.divide;
+      default:
+        return null;
+    }
+  }
+}
+}
+
+/// An immutable snapshot of what the calculator is showing.
+///
+/// A snapshot rather than a live view: a reference taken before a later press
+/// cannot observe that press, and history records the state as it was when `=`
+/// completed. Everything here is final, so a caller holding one holds a moment,
+/// not the machine.
+///
+/// The expression is kept as the **input string** rather than a list of terms
+/// (D-84). Once parentheses and `×÷` precedence exist, the typed text *is* the
+/// calculation — reconstructing it from folded terms would either lose the
+/// brackets or re-parse on every keystroke. [expression] is what the expression
+/// line prints, what backspace edits a character at a time (D-81), and what
+/// [ExpressionEvaluator] reads.
+class CalculatorState {
+  const CalculatorState({
+    required this.expression,
+    required this.value,
+    required this.isError,
+    required this.justEvaluated,
+    this.lastExpression,
+    this.lastValue,
+  });
+
+  /// A calculator with nothing typed and no result.
+  static const CalculatorState initial = CalculatorState(
+    expression: '',
+    value: null,
+    isError: false,
+    justEvaluated: false,
+  );
+
+  /// The expression exactly as keyed, e.g. `900+100` or `(5+5)`.
+  final String expression;
+
+  /// The running total while a chain is in progress, or the answer after `=`.
+  ///
+  /// This is the **live preview** (D-79): it tracks what `=` *would* produce for
+  /// the expression as it stands, so the primary line shows `99 + 5` implying
+  /// `104` rather than the digit being typed. `null` when nothing is computable
+  /// yet, and in the error state.
+  final double? value;
+
+  /// The completed calculation, kept so history can record it and so the first
+  /// backspace after `=` hands the whole expression back (D-83).
+  final String? lastExpression;
+
+  /// The value [lastExpression] produced.
+  final double? lastValue;
+
+  /// Whether the display should read `Error` (desing.md §9).
+  ///
+  /// The expression survives it, so the line above still shows what broke — and
+  /// so `AC` or a fresh digit can clear it.
+  final bool isError;
+
+  /// Set by `=`, cleared by the next key. Distinguishes "a result is on screen"
+  /// from "mid-calculation", which is what makes a digit start over while an
+  /// operator carries on from the result. Surfaced on the snapshot so history can
+  /// see it too (**D-35**).
+  final bool justEvaluated;
+
+  /// Whether the delete control should respond.
+  ///
+  /// False in the error state and on a fresh calculator, true whenever there is
+  /// an expression to take characters off — the mirror of what
+  /// [CalculatorEngine.backspace] will actually do, so the control can never be
+  /// live and then do nothing.
+  bool get canBackspace => !isError && expression.isNotEmpty;
+
+  CalculatorState copyWith({
+    String? expression,
+    double? value,
+    String? lastExpression,
+    double? lastValue,
+    bool? isError,
+    bool? justEvaluated,
+  }) {
+    return CalculatorState(
+      expression: expression ?? this.expression,
+      value: value ?? this.value,
+      lastExpression: lastExpression ?? this.lastExpression,
+      lastValue: lastValue ?? this.lastValue,
+      isError: isError ?? this.isError,
+      justEvaluated: justEvaluated ?? this.justEvaluated,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is CalculatorState &&
+        other.expression == expression &&
+        other.value == value &&
+        other.lastExpression == lastExpression &&
+        other.lastValue == lastValue &&
+        other.isError == isError &&
+        other.justEvaluated == justEvaluated;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    expression,
+    value,
+    lastExpression,
+    lastValue,
+    isError,
+    justEvaluated,
+  );
+
+  @override
+  String toString() =>
+      'CalculatorState(expression: $expression, value: $value, '
+      'isError: $isError, justEvaluated: $justEvaluated)';
+}
+

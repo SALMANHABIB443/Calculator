@@ -50,7 +50,7 @@ class SecondaryPageHeader extends StatelessWidget {
   /// is what keeps the title centred.
   final Widget? trailing;
 
-  /// The title's style, defaulting to [AppTypography.screenTitle].
+  /// The title's style, defaulting to [context.type.screenTitle].
   ///
   /// A named token at the call site rather than a `copyWith`, so a reduction
   /// stays scoped to the screen that asked for it — the About hero card prints
@@ -93,7 +93,7 @@ class SecondaryPageHeader extends StatelessWidget {
             Expanded(
               child: Text(
                 title,
-                style: titleStyle ?? AppTypography.screenTitle,
+                style: titleStyle ?? context.type.screenTitle,
                 textAlign: TextAlign.center,
                 // One line, ellipsised. A wrapped title would make this bar
                 // taller than the 56 px the page is laid out around, and

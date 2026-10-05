@@ -1,8 +1,8 @@
+import '../../../core/design/app_palette.dart';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../design/app_colors.dart';
 import '../design/app_typography.dart';
 
 /// The key styles on the calculator keypad (desing.md §5.1).
@@ -10,23 +10,52 @@ import '../design/app_typography.dart';
 /// Each variant owns its own fill and label colour, so a screen never pairs a
 /// fill with the wrong foreground — the classic trap being the function keys,
 /// which are a light mid-gray carrying **near-black** labels.
+///
+/// The pair is resolved from the palette by [colors] rather than stored on the
+/// enum. A `const` enum field is fixed at compile time, and a key's fill is one
+/// of the tokens that differs between the two themes — the dark theme's
+/// `#1E1E1E` digit key would be a black disc on a white page. Naming the *role*
+/// here and letting the palette supply the colours is what keeps the pairing
+/// rule (which foreground goes with which fill) in one readable place while the
+/// values themselves follow the theme.
 enum CalculatorButtonVariant {
-  /// `0`–`9` and the decimal point: dark fill, white label.
-  digit(background: AppColors.buttonDigit, foreground: AppColors.textPrimary),
+  /// `0`–`9` and the decimal point: the page's key fill, primary label.
+  digit,
 
-  /// `+ − × ÷` and `=`: the orange primary action.
-  operator(
-    background: AppColors.accent,
-    foreground: AppColors.textPrimary,
-  ),
+  /// `+ − × ÷` and `=`: the orange primary action, white label.
+  ///
+  /// [AppPalette.textOnAccent] rather than `textPrimary`: on white, `textPrimary`
+  /// is ink, and ink on the orange `=` would be the one unreadable key on the pad.
+  operator,
 
-  /// `AC`, `+/−`, `%`: light fill, **dark** label.
-  function(
-    background: AppColors.buttonFunction,
-    foreground: AppColors.textOnFunction,
-  );
+  /// `AC`, `+/−`, `%`: the lightest fill, **dark** label.
+  function;
 
-  const CalculatorButtonVariant({
+  /// The fill and label colour pair this variant paints in [palette].
+  CalculatorButtonColors colors(AppPalette palette) => switch (this) {
+    CalculatorButtonVariant.digit => CalculatorButtonColors(
+      background: palette.buttonDigit,
+      foreground: palette.textPrimary,
+    ),
+    CalculatorButtonVariant.operator => CalculatorButtonColors(
+      background: palette.accent,
+      foreground: palette.textOnAccent,
+    ),
+    CalculatorButtonVariant.function => CalculatorButtonColors(
+      background: palette.buttonFunction,
+      foreground: palette.textOnFunction,
+    ),
+  };
+}
+
+/// One key's fill and the label colour chosen to read on it (desing.md §5.1).
+///
+/// A named pair rather than two loose `Color`s so the fill and its foreground
+/// are always passed together — the whole point of the enum above is that no
+/// call site can pair a fill with the wrong foreground.
+class CalculatorButtonColors {
+  /// Paints [foreground] on [background].
+  const CalculatorButtonColors({
     required this.background,
     required this.foreground,
   });
@@ -109,6 +138,9 @@ class _CalculatorButtonState extends State<CalculatorButton> {
         final height = keySize;
         final width = widget.isWide ? maxWidth : keySize;
         final radius = BorderRadius.all(Radius.circular(height / 2));
+        // The key's own fill and label pair, resolved once per build from the
+        // theme so a switch repaints the key in the new palette.
+        final key = widget.variant.colors(context.appColors);
 
         return Semantics(
           button: true,
@@ -118,8 +150,8 @@ class _CalculatorButtonState extends State<CalculatorButton> {
             child: AnimatedOpacity(
               duration: const Duration(milliseconds: 100),
               opacity: enabled
-                  ? (_pressed ? AppColors.pressedOpacity : 1)
-                  : AppColors.pressedOpacity,
+                  ? (_pressed ? context.appColors.pressedOpacity : 1)
+                  : context.appColors.pressedOpacity,
               child: AnimatedScale(
                 duration: const Duration(milliseconds: 100),
                 scale: _pressed ? 0.94 : 1,
@@ -127,7 +159,7 @@ class _CalculatorButtonState extends State<CalculatorButton> {
                   width: width,
                   height: height,
                   child: Material(
-                    color: widget.variant.background,
+                    color: key.background,
                     shape: RoundedRectangleBorder(borderRadius: radius),
                     clipBehavior: Clip.antiAlias,
                     child: InkWell(
@@ -141,8 +173,8 @@ class _CalculatorButtonState extends State<CalculatorButton> {
                           child: Text(
                             widget.label,
                             maxLines: 1,
-                            style: AppTypography.buttonLabel.copyWith(
-                              color: widget.variant.foreground,
+                            style: context.type.buttonLabel.copyWith(
+                              color: key.foreground,
                             ),
                           ),
                         ),

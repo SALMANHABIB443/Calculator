@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'core/design/app_theme_provider.dart';
+import 'core/design/app_theme.dart';
+import 'features/settings/presentation/theme_controller.dart';
 import 'routing/app_router.dart';
 
 /// Root widget: the MaterialApp wired to the Riverpod-provided router
@@ -31,7 +32,10 @@ class CalculatorApp extends ConsumerWidget {
       title: 'Calculator',
       debugShowCheckedModeBanner: false,
       theme: ref.watch(appThemeProvider),
-      darkTheme: ref.watch(appThemeProvider),
+      // Both themes are named explicitly rather than only the active one, so a
+      // `ThemeMode.system` — or a future "follow system" setting — has a dark
+      // side to fall back to instead of Flutter's default blue-grey (D-90).
+      darkTheme: AppTheme.dark,
       themeMode: ref.watch(appThemeModeProvider),
       routerConfig: ref.watch(appRouterProvider),
       // The clamp goes here rather than in a `MediaQuery` wrapped around the

@@ -40,7 +40,7 @@ void main() {
       await tester.pump();
 
       expect(
-        tester.widget<Text>(find.byKey(const Key('calculator-result'))).data,
+        tester.widget<Text>(find.byKey(const Key('calculator-display-line'))).data,
         '7',
       );
     });
@@ -58,7 +58,7 @@ void main() {
       }
 
       expect(
-        tester.widget<Text>(find.byKey(const Key('calculator-result'))).data,
+        tester.widget<Text>(find.byKey(const Key('calculator-display-line'))).data,
         '96',
       );
       expect(
@@ -82,7 +82,7 @@ void main() {
       // display can render, not an exception a frame has to survive.
       expect(tester.takeException(), isNull);
       expect(
-        tester.widget<Text>(find.byKey(const Key('calculator-result'))).data,
+        tester.widget<Text>(find.byKey(const Key('calculator-display-line'))).data,
         isNotNull,
       );
     });

@@ -1,6 +1,6 @@
+import '../../../core/design/app_palette.dart';
 import 'package:flutter/material.dart';
 
-import '../design/app_colors.dart';
 import '../design/app_typography.dart';
 
 /// The confirmation gate for a destructive, irreversible action (D-05).
@@ -62,17 +62,17 @@ class AppConfirmationDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(title, style: AppTypography.rowTitle),
-      content: Text(message, style: AppTypography.body),
-      titleTextStyle: AppTypography.rowTitle,
-      contentTextStyle: AppTypography.body,
+      title: Text(title, style: context.type.rowTitle),
+      content: Text(message, style: context.type.body),
+      titleTextStyle: context.type.rowTitle,
+      contentTextStyle: context.type.body,
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
           child: Text(
             cancelLabel,
-            style: AppTypography.rowTitle.copyWith(
-              color: AppColors.textSecondary,
+            style: context.type.rowTitle.copyWith(
+              color: context.appColors.textSecondary,
             ),
           ),
         ),
@@ -80,7 +80,7 @@ class AppConfirmationDialog extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(true),
           child: Text(
             confirmLabel,
-            style: AppTypography.rowTitle.copyWith(color: AppColors.accent),
+            style: context.type.rowTitle.copyWith(color: context.appColors.accent),
           ),
         ),
       ],

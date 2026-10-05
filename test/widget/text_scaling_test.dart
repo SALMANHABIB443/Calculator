@@ -1,5 +1,4 @@
 import 'package:calculator/app.dart';
-import 'package:calculator/core/design/app_spacing.dart';
 import 'package:calculator/core/design/app_typography.dart';
 import 'package:calculator/features/calculator/presentation/calculator_display.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +22,7 @@ import '../support/pump_app.dart';
 void main() {
   /// The scale the app actually resolved for a page below `MaterialApp`.
   double effectiveScale(WidgetTester tester) {
-    final context = tester.element(find.byKey(const Key('calculator-result')));
+    final context = tester.element(find.byKey(const Key('calculator-display-line')));
     return MediaQuery.textScalerOf(context).scale(1);
   }
 
@@ -80,15 +79,15 @@ void main() {
   });
 
   group('CalculatorDisplay.minimumHeight', () {
-    test('is the 1x figure when nothing is scaled', () {
+    test('is two result line boxes when nothing is scaled', () {
+      // The display is split into two equal halves (D-78), and each half has to
+      // hold the taller of the two lines it can be given, so the reservation is
+      // two boxes: the shortest display in which the largest thing either line
+      // can paint — the 60 px result — still fits at full size in its own half.
       expect(
         CalculatorDisplay.minimumHeight(TextScaler.noScaling),
-        moreOrLessEquals(
-          AppTypography.resultLarge.fontSize! * 1.1 +
-              AppSpacing.sm +
-              AppTypography.expression.fontSize! * 1.5,
-        ),
-        reason: 'the reservation is the two line boxes plus the gap between them',
+        moreOrLessEquals(2 * AppTypography.resultLarge.fontSize! * 1.1),
+        reason: 'two halves, so two line boxes are the whole reservation',
       );
     });
 
@@ -97,15 +96,12 @@ void main() {
         const TextScaler.linear(2.0),
       );
 
-      // Twice the 1x figure *less the one unscaled term*. The gap between the
-      // two lines is a layout constant, not a line box, so it does not move
-      // with the font — asserting a flat 2x would be asserting a gap that
-      // grows when nothing asked it to.
+      // Every term is a line box now, so the whole reservation scales with the
+      // font — a fixed point size would disagree with what is painted (D-54).
       expect(
         at2x,
         moreOrLessEquals(
-          2 * CalculatorDisplay.minimumHeight(TextScaler.noScaling) -
-              AppSpacing.sm,
+          2 * CalculatorDisplay.minimumHeight(TextScaler.noScaling),
         ),
         reason: 'D-54: a fixed reservation would disagree with the painted line',
       );
@@ -128,7 +124,7 @@ void main() {
         await pumpApp(tester);
 
         expect(tester.takeException(), isNull);
-        expect(find.byKey(const Key('calculator-result')), findsOneWidget);
+        expect(find.byKey(const Key('calculator-display-line')), findsOneWidget);
       });
     }
 

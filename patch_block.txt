@@ -1,0 +1,97 @@
+/// - With nothing typed, the press takes back the operator the user changed
+  /// their mind about: `2 +` becomes `2`.
+  /// - With nothing typed and no operator, a finished result is taken back a
+  /// digit at a time: `125 × 8 =` reads `1000`, then `100`, then `10`, then
+  /// `1`, then nothing at all.
+  /// - With nothing left to take back — a fresh calculator, or the error state
+  /// — the state is returned untouched, so the press costs nothing and fires
+  /// no feedback.
+  CalculatorState backspace() {
+    final entry = _entry;
+    if (entry != null) {
+      _deleteLastCharacter(entry);
+      _justEvaluated = false;
+      return state;
+    }
+
+    if (_pending != null) {
+      _pending = null;
+      return state;
+    }
+
+    return _backspaceResult();
+  }
+
+  /// Deletes the last character of [text] from the entry being typed.
+  ///
+  /// The two special cases are the ones where what is left is not a number:
+  /// nothing at all, and a lone `-`. The second is not a half-typed entry, so
+  /// it goes back to being a *staged* sign ([_negativePending]) rather than a
+  /// half-typed number — `± 5 ⌫` is `-` again, and the next digit lands on `-3`.
+  void _deleteLastCharacter(String text) {
+    final trimmed = text.substring(0, text.length - 1);
+    if (trimmed.isEmpty) {
+      // The last digit of a one-digit entry: `0` back to nothing at all.
+      _entry = null;
+    } else if (trimmed == '-') {
+      _entry = null;
+      _negativePending = true;
+    } else {
+      _entry = trimmed;
+    }
+  }
+
+  /// Takes a digit off a finished result (**D-81**).
+  ///
+  /// A result is held as a `double`, so there is no string in the engine to
+  /// shorten — which is why this branch exists at all, and why the control was
+  /// dead on a result before it: neither `canBackspace` nor [backspace] had
+  /// anything to say about the one state where the user is looking at a number
+  /// and most wants to edit it.
+  ///
+  /// The result is *promoted* to a typed entry rather than shadowed by one, so
+  /// the screen shows the shortened number and the next key does the obvious
+  /// thing with it: a digit appends (`1000` → `100` → `105`) and an operator
+  /// commits it (`100` → `100 +`). Promoting also clears the running total, the
+  /// expression terms, and the "just evaluated" flag, because none of them
+  /// describe what is on screen any more — a leftover `_value` would make the
+  /// next operator fold against a total the user can no longer see, and a
+  /// leftover `_justEvaluated` would make the next digit wipe the entry they
+  /// had just edited.
+  ///
+  /// The number is rendered with [_formatValue] — the engine's own precision —
+  /// rather than the display's rounded form, so the digit that disappears is
+  /// the digit the engine actually holds.
+  ///
+  /// A result in scientific notation (`1e+21`, from [formatNumber]) has no
+  /// digits to take back one at a time: shortening it would leave `1e+2`, a
+  /// different number that still looks like an exponent. The press is declined
+  /// and the state comes back identical, which by the "no change means nothing
+  /// happened" contract in `CalculatorController.backspace` costs no sound and
+  /// no vibration.
+  CalculatorState _backspaceResult() {
+    final value = _value;
+    if (!_justEvaluated || value == null || _isError) return state;
+
+    final text = _formatValue(value);
+    if (!_isPlainDecimal(text)) return state;
+
+    _terms.clear();
+    _value = null;
+    _justEvaluated = false;
+    // A staged sign belonged to an operand the user never typed. The result is
+    // the entry now, so the staged sign goes with it rather than reappearing
+    // on the next digit.
+    _negativePending = false;
+    _deleteLastCharacter(text);
+    return state;
+  }
+
+  /// Whether [text] is a plain decimal literal a backspace can shorten.
+  ///
+  /// Matches what `groupThousands` treats as a number, so the values it accepts
+  /// are the ones the display already renders digit by digit: digits with at
+  /// most one decimal point, optionally signed. Scientific notation is
+  /// deliberately excluded — see [_backspaceResult].
+  static bool _isPlainDecimal(String text) =>
+      RegExp(r'^-?\d+(\.\d+)?$').hasMatch(text);

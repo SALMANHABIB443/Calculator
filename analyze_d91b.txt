@@ -1,0 +1,16 @@
+Analyzing Calculator...                                         
+
+   info - Unnecessary use of string interpolation. Try replacing the string literal with the variable name - lib\features\calculator\domain\calculator_engine.dart:484:14 - unnecessary_string_interpolations
+   info - Use interpolation to compose strings and values. Try using string interpolation to build the composite string - lib\features\calculator\domain\calculator_engine.dart:484:14 - prefer_interpolation_to_compose_strings
+   info - Unnecessary use of string interpolation. Try replacing the string literal with the variable name - lib\features\calculator\domain\calculator_engine.dart:560:14 - unnecessary_string_interpolations
+  error - Undefined name 'appThemeProvider'. Try correcting the name to one that is defined, or defining the name - test\store\store_screenshots_test.dart:173:9 - undefined_identifier
+  error - Undefined name 'appThemeProvider'. Try correcting the name to one that is defined, or defining the name - test\store\store_screenshots_test.dart:195:9 - undefined_identifier
+  error - Undefined name 'appThemeProvider'. Try correcting the name to one that is defined, or defining the name - test\store\store_screenshots_test.dart:215:9 - undefined_identifier
+  error - Undefined name 'appThemeProvider'. Try correcting the name to one that is defined, or defining the name - test\store\store_screenshots_test.dart:231:9 - undefined_identifier
+  error - The getter 'background' isn't defined for the type 'CalculatorButtonVariant'. Try importing the library that defines 'background', correcting the name to the name of an existing getter, or defining a getter or field named 'background' - test\widget\design_system_test.dart:243:44 - undefined_getter
+  error - The getter 'foreground' isn't defined for the type 'CalculatorButtonVariant'. Try importing the library that defines 'foreground', correcting the name to the name of an existing getter, or defining a getter or field named 'foreground' - test\widget\design_system_test.dart:244:44 - undefined_getter
+  error - The getter 'background' isn't defined for the type 'CalculatorButtonVariant'. Try importing the library that defines 'background', correcting the name to the name of an existing getter, or defining a getter or field named 'background' - test\widget\design_system_test.dart:245:47 - undefined_getter
+  error - The getter 'foreground' isn't defined for the type 'CalculatorButtonVariant'. Try importing the library that defines 'foreground', correcting the name to the name of an existing getter, or defining a getter or field named 'foreground' - test\widget\design_system_test.dart:247:42 - undefined_getter
+  error - The getter 'background' isn't defined for the type 'CalculatorButtonVariant'. Try importing the library that defines 'background', correcting the name to the name of an existing getter, or defining a getter or field named 'background' - test\widget\design_system_test.dart:251:42 - undefined_getter
+  error - The getter 'foreground' isn't defined for the type 'CalculatorButtonVariant'. Try importing the library that defines 'foreground', correcting the name to the name of an existing getter, or defining a getter or field named 'foreground' - test\widget\design_system_test.dart:255:42 - undefined_getter
+

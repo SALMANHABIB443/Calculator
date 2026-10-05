@@ -1,0 +1,42 @@
+test/store/store_screenshots_test.dart:173:9: Error: Undefined name 'appThemeProvider'.
+        appThemeProvider.overrideWithValue(_robotoTheme(AppTheme.dark)),
+        ^^^^^^^^^^^^^^^^
+test/store/store_screenshots_test.dart:195:9: Error: Undefined name 'appThemeProvider'.
+        appThemeProvider.overrideWithValue(_robotoTheme(AppTheme.dark)),
+        ^^^^^^^^^^^^^^^^
+test/store/store_screenshots_test.dart:215:9: Error: Undefined name 'appThemeProvider'.
+        appThemeProvider.overrideWithValue(_robotoTheme(AppTheme.dark)),
+        ^^^^^^^^^^^^^^^^
+test/store/store_screenshots_test.dart:231:9: Error: Undefined name 'appThemeProvider'.
+        appThemeProvider.overrideWithValue(_robotoTheme(AppTheme.dark)),
+        ^^^^^^^^^^^^^^^^
+test/widget/design_system_test.dart:223:44: Error: The getter 'background' isn't defined for the type 'CalculatorButtonVariant'.
+ - 'CalculatorButtonVariant' is from 'package:calculator/core/widgets/calculator_button.dart' ('lib/core/widgets/calculator_button.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'background'.
+      expect(CalculatorButtonVariant.digit.background, AppColors.buttonDigit);
+                                           ^^^^^^^^^^
+test/widget/design_system_test.dart:224:44: Error: The getter 'foreground' isn't defined for the type 'CalculatorButtonVariant'.
+ - 'CalculatorButtonVariant' is from 'package:calculator/core/widgets/calculator_button.dart' ('lib/core/widgets/calculator_button.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'foreground'.
+      expect(CalculatorButtonVariant.digit.foreground, AppColors.textPrimary);
+                                           ^^^^^^^^^^
+test/widget/design_system_test.dart:225:47: Error: The getter 'background' isn't defined for the type 'CalculatorButtonVariant'.
+ - 'CalculatorButtonVariant' is from 'package:calculator/core/widgets/calculator_button.dart' ('lib/core/widgets/calculator_button.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'background'.
+      expect(CalculatorButtonVariant.operator.background, AppColors.accent);
+                                              ^^^^^^^^^^
+test/widget/design_system_test.dart:227:42: Error: The getter 'foreground' isn't defined for the type 'CalculatorButtonVariant'.
+ - 'CalculatorButtonVariant' is from 'package:calculator/core/widgets/calculator_button.dart' ('lib/core/widgets/calculator_button.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'foreground'.
+        CalculatorButtonVariant.operator.foreground,
+                                         ^^^^^^^^^^
+test/widget/design_system_test.dart:231:42: Error: The getter 'background' isn't defined for the type 'CalculatorButtonVariant'.
+ - 'CalculatorButtonVariant' is from 'package:calculator/core/widgets/calculator_button.dart' ('lib/core/widgets/calculator_button.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'background'.
+        CalculatorButtonVariant.function.background,
+                                         ^^^^^^^^^^
+test/widget/design_system_test.dart:235:42: Error: The getter 'foreground' isn't defined for the type 'CalculatorButtonVariant'.
+ - 'CalculatorButtonVariant' is from 'package:calculator/core/widgets/calculator_button.dart' ('lib/core/widgets/calculator_button.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'foreground'.
+        CalculatorButtonVariant.function.foreground,
+                                         ^^^^^^^^^^

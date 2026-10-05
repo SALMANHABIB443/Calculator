@@ -1,0 +1,1105 @@
+Resolving dependencies...
+Downloading packages...
+  cli_util 0.4.2 (0.6.0 available)
+  code_assets 1.2.1 (2.1.0 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  cupertino_icons 1.0.9 (2.0.0 available)
+  flutter_riverpod 2.6.1 (3.4.3 available)
+  go_router 14.8.1 (18.0.2 available)
+  hooks 2.0.2 (2.2.0 available)
+  jni 1.0.3 (1.1.0 available)
+  jni_flutter 1.0.3 (1.0.4 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  meta 1.18.3 (1.19.0 available)
+  objective_c 9.5.0 (9.6.2 available)
+  record_use 0.6.0 (1.1.1 available)
+  riverpod 2.6.1 (3.4.3 available)
+  shared_preferences 2.5.3 (2.5.5 available)
+  test_api 0.7.12 (0.7.14 available)
+  vector_math 2.4.0 (2.4.3 available)
+Got dependencies!
+17 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart
+00:00 +0: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Rate App asks the prompt; successes show no snack bar
+00:01 +1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) shows the two sections in order
+00:01 +2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Rate App surfaces a snack bar when nothing could run
+00:01 +3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) carries the title alone, with no subtitle
+00:02 +4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Share App summons the sheet; successes show no snack bar
+00:02 +5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) hero shows the icon, name, version, and description
+00:02 +6: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Share App surfaces a snack bar when the sheet cannot open
+00:02 +7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) APP INFORMATION lists name, version, and developer
+00:02 +8: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Terms of Service opens the in-app Terms screen and back returns
+00:02 +9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Terms of Service opens the in-app Terms screen and back returns
+00:02 +10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) each MORE row carries a chevron
+00:03 +11: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) renders on the black app background
+00:03 +12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) scrolls on a short screen without overflowing
+00:03 +13: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) the whole screen fits a 480x1000 phone without overflow
+00:03 +14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Calculator every key is announced by its own name, not its glyph
+00:04 +15: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the grid paints the gaps it declares (D-69) neighbouring keys are keyGap apart across a row
+00:04 +16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the grid paints the gaps it declares (D-69) neighbouring keys are keyGap apart across a row
+00:05 +17: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the grid paints the gaps it declares (D-69) neighbouring keys are keyGap apart across a row
+00:05 +18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Settings rows a navigational row is announced as a button
+00:05 +19: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Settings rows the Theme row is not announced as a button
+00:05 +20: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Settings rows the Theme row is not announced as a button
+00:06 +21: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Settings rows the Theme row is not announced as a button
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: an object with length of <1>
+  Actual: []
+   Which: has length of <0>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/accessibility_test.dart:219:9)
+<asynchronous suspension>
+#5      withSemantics (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/accessibility_test.dart:35:5)
+<asynchronous suspension>
+#6      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/accessibility_test.dart:212:7)
+<asynchronous suspension>
+#7      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#8      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/accessibility_test.dart line 219
+The test description was:
+  the Theme row is not announced as a button
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:06 +21 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: every row is in the same columns (D-69) the orange column is unbroken from divide down to equals
+00:06 +21 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Settings rows the Theme row is not announced as a button [E]
+  Test failed. See exception logs above.
+  The test description was: the Theme row is not announced as a button
+  
+00:06 +22 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Settings rows a toggle keeps both its name and its state
+00:06 +23 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Settings rows a toggle keeps both its name and its state
+00:06 +24 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Settings rows a toggle keeps both its name and its state
+00:06 +25 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the screen edges are the measured margin (D-69) the keypad has the same margin on both sides
+00:06 +26 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Settings rows section headers are marked as headers
+00:07 +27 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Settings rows section headers are marked as headers
+00:07 +28 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the screen edges are the measured margin (D-69) the display line lands on the operator column
+00:07 +29 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: History cards a card announces its expression and result as one action
+00:07 +30 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the display is two screens, calculation above output (D-78) the calculation is above the output, inside the block
+00:07 +31 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the display is two screens, calculation above output (D-78) the calculation is above the output, inside the block
+00:07 +32 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Decimal Places sheet the current option announces as selected
+00:07 +33 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Decimal Places sheet the current option announces as selected
+00:07 +34 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the display is two screens, calculation above output (D-78) each line centres in its own half
+00:07 +35 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Decimal Places sheet an unselected option is not announced as selected
+00:08 +36 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Decimal Places sheet an unselected option is not announced as selected
+00:08 +37 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the backspace sits on the column, above the rule (D-81) it shares the display and keypad left edge
+00:08 +38 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: prd.md §12 — touch targets a settings row is at least 44pt tall
+00:08 +39 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: prd.md §12 — touch targets a settings row is at least 44pt tall
+00:08 +40 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: prd.md §12 — touch targets a settings row is at least 44pt tall
+00:08 +41 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the backspace sits on the column, above the rule (D-81) it paints no border, unlike the header actions above it
+00:08 +42 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: prd.md §12 — touch targets every calculator key is at least 44pt across
+00:08 +43 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the backspace sits on the column, above the rule (D-81) the keypad still holds its floor with the row in the budget
+00:08 +44 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: prd.md §12 — touch targets the clear-history action is at least 44pt tall
+00:08 +45 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the geometry holds across viewport sizes (D-69, D-09) nothing overflows at 320x568
+00:09 +46 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the geometry holds across viewport sizes (D-69, D-09) the margins stay symmetric at 320x568
+00:09 +47 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the geometry holds across viewport sizes (D-69, D-09) the operator column stays flush at 320x568
+00:09 +48 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the geometry holds across viewport sizes (D-69, D-09) the result tracks the column at 320x568
+00:09 +49 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the geometry holds across viewport sizes (D-69, D-09) nothing overflows at 442x890
+00:09 +50 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the geometry holds across viewport sizes (D-69, D-09) the margins stay symmetric at 442x890
+00:09 +51 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the geometry holds across viewport sizes (D-69, D-09) the operator column stays flush at 442x890
+00:09 +52 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the geometry holds across viewport sizes (D-69, D-09) the result tracks the column at 442x890
+00:09 +53 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the geometry holds across viewport sizes (D-69, D-09) nothing overflows at 480x1000
+00:10 +54 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the geometry holds across viewport sizes (D-69, D-09) the margins stay symmetric at 480x1000
+00:10 +55 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the geometry holds across viewport sizes (D-69, D-09) the operator column stays flush at 480x1000
+00:10 +56 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout renders all 19 keys, and no backspace (D-19)
+00:10 +57 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout renders all 19 keys, and no backspace (D-19)
+00:10 +58 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout renders all 19 keys, and no backspace (D-19)
+00:10 +59 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout renders all 19 keys, and no backspace (D-19)
+00:10 +60 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout renders all 19 keys, and no backspace (D-19)
+00:10 +61 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout renders all 19 keys, and no backspace (D-19)
+00:10 +62 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout renders all 19 keys, and no backspace (D-19)
+00:11 +63 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout renders all 19 keys, and no backspace (D-19)
+00:11 +64 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the geometry holds across viewport sizes (D-69, D-09) the operator column stays flush at 1280x800
+00:11 +65 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout lays the keys out as desing.md §6.1 draws them
+00:11 +66 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout lays the keys out as desing.md §6.1 draws them
+00:11 +67 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout lays the keys out as desing.md §6.1 draws them
+00:11 +68 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the geometry holds across viewport sizes (D-69, D-09) the margins stay symmetric at 1280x1600
+00:11 +69 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout the 0 key spans two columns as a stadium (D-29)
+00:11 +70 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the geometry holds across viewport sizes (D-69, D-09) the operator column stays flush at 1280x1600
+00:11 +71 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout uses the measured palette for every key type (D-03)
+00:11 +72 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout uses the measured palette for every key type (D-03)
+00:11 +73 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout uses the measured palette for every key type (D-03)
+00:11 +74 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the cell is bounded on both axes (D-69) the calculator stays a centred, calculator-sized column
+00:11 +75 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout the function keys carry dark labels on the light fill
+00:11 +76 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the cell is bounded on both axes (D-69) keys keep the touch floor on the smallest supported phone
+00:11 +77 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad sizing keys match the diameter measured off the mockup (R-2, D-60)
+00:12 +78 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad sizing keys match the diameter measured off the mockup (R-2, D-60)
+00:12 +79 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the cell is bounded on both axes (D-69) the keypad holds its floor on a window shorter than the reserve
+00:12 +80 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad sizing scales down on a small phone without clipping (D-09)
+00:12 +81 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad sizing scales down on a small phone without clipping (D-09)
+00:12 +82 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad sizing scales down on a small phone without clipping (D-09)
+00:12 +83 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad sizing scales down on a small phone without clipping (D-09)
+00:12 +84 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad sizing scales down on a small phone without clipping (D-09)
+00:12 +85 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the measured geometry is unchanged (D-60, R-2) the reference canvas still renders 88 px keys
+00:12 +86 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad sizing scales up on a large phone without overflowing
+00:12 +87 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad sizing the display and the keypad never squeeze each other
+00:12 +88 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display typing digits updates the primary line
+00:12 +89 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display previews the result while the operand is being typed (D-79)
+00:13 +90 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display equals does not move the number the preview already showed
+00:13 +91 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/cold_start_test.dart: AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two
+00:13 +92 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/cold_start_test.dart: AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two
+00:13 +93 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/cold_start_test.dart: AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two
+00:14 +93 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display computes left to right and groups the result (D-17, D-18)
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: '20'
+  Actual: '14'
+   Which: is different.
+          Expected: 20
+            Actual: 14
+                    ^
+           Differ at offset 0
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart:314:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart line 314
+The test description was:
+  computes left to right and groups the result (D-17, D-18)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:14 +93 -2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/cold_start_test.dart: AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two
+00:14 +93 -2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display computes left to right and groups the result (D-17, D-18) [E]
+  Test failed. See exception logs above.
+  The test description was: computes left to right and groups the result (D-17, D-18)
+  
+00:14 +94 -2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/cold_start_test.dart: AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two
+00:14 +95 -2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/cold_start_test.dart: AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two
+00:14 +96 -2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/cold_start_test.dart: AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two
+00:14 +97 -2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/cold_start_test.dart: AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two
+00:15 +97 -2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display percent and sign toggle both reach the display
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following ArgumentError was thrown running a test:
+Invalid argument (character): is not a calculator key: "±"
+
+When the exception was thrown, this was the stack:
+#0      _keyFor (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/support/keypad_session.dart:78:8)
+#1      keysFor (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/support/keypad_session.dart:25:14)
+#2      tapSequence (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart:30:21)
+#3      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart:368:13)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  percent and sign toggle both reach the display
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:15 +97 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/cold_start_test.dart: AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two
+00:15 +97 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display percent and sign toggle both reach the display [E]
+  Test failed. See exception logs above.
+  The test description was: percent and sign toggle both reach the display
+  
+00:15 +98 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display a leading zero is replaced rather than accumulated
+00:15 +99 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/cold_start_test.dart: AC-006 — settings and history survive a relaunch the precision is still the one the row advertises
+00:15 +100 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/cold_start_test.dart: AC-006 — settings and history survive a relaunch the precision is still the one the row advertises
+00:16 +101 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/cold_start_test.dart: AC-006 — settings and history survive a relaunch the precision is still the one the row advertises
+00:16 +102 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) it reopens the expression behind a result
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: '125 ×'
+  Actual: '125 × 8'
+   Which: is different. Both strings start the same, but the actual value also has the following
+trailing characters:  8
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart:443:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart line 443
+The test description was:
+  it reopens the expression behind a result
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:16 +102 -4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/cold_start_test.dart: AC-006 — settings and history survive a relaunch a recorded calculation is still in the list afterwards
+00:16 +102 -4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) it reopens the expression behind a result [E]
+  Test failed. See exception logs above.
+  The test description was: it reopens the expression behind a result
+  
+00:16 +103 -4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) the worked example: 900+100= then backspace
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: '900 + 10'
+  Actual: '900 + 100'
+   Which: is different. Both strings start the same, but the actual value also has the following
+trailing characters: 0
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart:468:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart line 468
+The test description was:
+  the worked example: 900+100= then backspace
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:16 +103 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/cold_start_test.dart: prd.md §11 — the calculator itself opens cleared a half-typed expression does not survive the relaunch
+00:17 +103 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) the worked example: 900+100= then backspace [E]
+  Test failed. See exception logs above.
+  The test description was: the worked example: 900+100= then backspace
+  
+00:17 +104 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) a digit after backspacing a result continues the operand
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: '125 ×'
+  Actual: '125 × 8'
+   Which: is different. Both strings start the same, but the actual value also has the following
+trailing characters:  8
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart:495:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart line 495
+The test description was:
+  a digit after backspacing a result continues the operand
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:17 +104 -6: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/cold_start_test.dart: prd.md §11 — the calculator itself opens cleared the app opens on the root route, not where it was left
+00:17 +104 -6: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) a digit after backspacing a result continues the operand [E]
+  Test failed. See exception logs above.
+  The test description was: a digit after backspacing a result continues the operand
+  
+00:17 +105 -6: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) a digit after taking back an operator extends the number
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: '900'
+  Actual: ''
+   Which: is different. Both strings start the same, but the actual value is missing the following
+trailing characters: 900
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart:510:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart line 510
+The test description was:
+  a digit after taking back an operator extends the number
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:17 +105 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/cold_start_test.dart: D-55 — no lifecycle observer is needed a toggle flipped before the store answers is not snapped back
+00:17 +105 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) a digit after taking back an operator extends the number [E]
+  Test failed. See exception logs above.
+  The test description was: a digit after taking back an operator extends the number
+  
+00:17 +106 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) it still deletes a typed entry, a digit at a time
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: '0'
+  Actual: '1'
+   Which: is different.
+          Expected: 0
+            Actual: 1
+                    ^
+           Differ at offset 0
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart:535:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart line 535
+The test description was:
+  it still deletes a typed entry, a digit at a time
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:18 +106 -8: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) it still deletes a typed entry, a digit at a time [E]
+  Test failed. See exception logs above.
+  The test description was: it still deletes a typed entry, a digit at a time
+  
+00:18 +106 -8: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) repeated backspace never crashes and ends empty
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: '0'
+  Actual: '9'
+   Which: is different.
+          Expected: 0
+            Actual: 9
+                    ^
+           Differ at offset 0
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart:552:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart line 552
+The test description was:
+  repeated backspace never crashes and ends empty
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:18 +106 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) repeated backspace never crashes and ends empty [E]
+  Test failed. See exception logs above.
+  The test description was: repeated backspace never crashes and ends empty
+  
+00:18 +106 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) backspace declines after division by zero
+00:18 +107 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart: AppColors holds the palette measured from the mockup pixels (D-03)
+00:18 +108 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) AC resets the calculator completely
+00:18 +109 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) AC resets the calculator completely
+00:18 +110 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) AC resets the calculator completely
+00:18 +111 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) AC resets the calculator completely
+00:18 +112 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) AC resets the calculator completely
+00:18 +113 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) AC resets the calculator completely
+00:18 +114 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) AC resets the calculator completely
+00:18 +115 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) AC resets the calculator completely
+00:18 +116 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) AC resets the calculator completely
+00:18 +117 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) AC resets the calculator completely
+00:18 +118 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) AC resets the calculator completely
+00:19 +119 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) AC resets the calculator completely
+00:19 +120 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) AC resets the calculator completely
+00:19 +121 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart: CalculatorButton renders its label on the variant fill
+00:19 +122 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart: CalculatorButton function keys put a dark label on the light fill
+00:19 +123 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart: CalculatorButton operator keys are the orange primary action
+00:19 +124 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart: CalculatorButton is round in a square cell
+00:19 +125 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart: CalculatorButton the wide 0 key spans its cell and rounds only the ends
+00:19 +126 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart: CalculatorButton a pressed key dims and shrinks
+00:20 +127 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) the History back button lands on the 24 px margin
+00:20 +128 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) the History back button lands on the 24 px margin
+00:20 +129 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) the History back button lands on the 24 px margin
+00:20 +130 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) the History back button lands on the 24 px margin
+00:20 +131 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) the History back button lands on the 24 px margin
+00:20 +132 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) the History back button lands on the 24 px margin
+00:20 +133 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) the History back button lands on the 24 px margin
+00:20 +134 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) the History back button lands on the 24 px margin
+00:20 +135 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) the History back button lands on the 24 px margin
+00:20 +136 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) the History back button lands on the 24 px margin
+00:20 +137 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) the History back button lands on the 24 px margin
+00:21 +138 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) the History back button lands on the 24 px margin
+00:21 +139 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart: ToggleRow the whole row toggles, not just the switch
+00:21 +140 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) the History delete button lands 24 px from the right edge
+00:21 +141 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) the History delete button lands 24 px from the right edge
+00:21 +142 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) the History delete button lands 24 px from the right edge
+00:21 +143 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) the History delete button lands 24 px from the right edge
+00:21 +144 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) the History delete button lands 24 px from the right edge
+00:21 +145 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart: HistoryCard sits on the app margin rather than inboard of it
+00:21 +146 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) every header action is the same 48 px square
+00:21 +147 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) every header action is the same 48 px square
+00:21 +148 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) every header action is the same 48 px square
+00:21 +149 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart: HistoryDayLabel paints the label at the day-label token
+00:21 +150 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) the History title is centred on the screen
+00:21 +151 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) the History title is centred on the screen
+00:22 +152 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart: HistoryDayLabel opens more space above it than it does below
+00:22 +153 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) the calculator top bar agrees with the secondary screens
+00:22 +154 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) the calculator top bar agrees with the secondary screens
+00:22 +155 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart: AppConfirmationDialog resolves false when the user cancels
+00:22 +156 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) every screen with a header agrees
+00:22 +157 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) every screen with a header agrees
+00:22 +158 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) every screen with a header agrees
+00:22 +159 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) every screen with a header agrees
+00:22 +160 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) every screen with a header agrees
+00:22 +161 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) every screen with a header agrees
+00:22 +162 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: header chrome sits on the screen margin (D-74) every screen with a header agrees
+00:23 +163 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart: AppIcon is decorative unless given a semantic label
+00:23 +164 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: the History delete action is the design's own trash (D-72, D-73) one glyph, painted, inside the shared bordered box
+00:23 +165 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: the History delete action is the design's own trash (D-72, D-73) one glyph, painted, inside the shared bordered box
+00:23 +166 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart: AppTrashIcon paints in the colour it is given, defaulting to white
+00:23 +167 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: the History delete action is the design's own trash (D-72, D-73) it keeps a 44pt-plus touch target
+00:23 +168 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart: AppTrashIcon is decorative unless given a semantic label
+00:23 +169 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: the History delete action is the design's own trash (D-72, D-73) an empty history greys it instead of advertising it
+00:23 +170 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: the History delete action is the design's own trash (D-72, D-73) an empty history greys it instead of advertising it
+00:23 +171 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: the History delete action is the design's own trash (D-72, D-73) an empty history greys it instead of advertising it
+00:23 +172 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: the History delete action is the design's own trash (D-72, D-73) an empty history greys it instead of advertising it
+00:23 +173 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: an empty history is centred (D-70) the empty state sits in the middle of the page
+00:23 +174 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: an empty history is centred (D-70) it is still centred with history present, after a clear
+00:24 +175 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: an empty history is centred (D-70) it stays centred at the text-scale clamp
+00:24 +176 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: the shared header components (D-74) an icon button is a 48 px bordered box
+00:24 +177 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: the shared header components (D-74) a page header puts its title on the margin
+00:24 +178 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/header_alignment_test.dart: the shared header components (D-74) a secondary header centres its title between equal boxes
+00:24 +179 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: a completed calculation shows up in History (AC-002)
+00:25 +180 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_responsive_test.dart: the card geometry holds on every supported width at 320x568
+00:26 +180 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: repeating the pending operator with = is recorded (D-36)
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "4": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/history_flow_test.dart:51:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/history_flow_test.dart line 51
+The test description was:
+  repeating the pending operator with = is recorded (D-36)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:26 +180 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_responsive_test.dart: the card geometry holds on every supported width at 320x568
+00:26 +180 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: repeating the pending operator with = is recorded (D-36) [E]
+  Test failed. See exception logs above.
+  The test description was: repeating the pending operator with = is recorded (D-36)
+  
+00:26 +181 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: pressing = twice records one card, not two
+00:26 +182 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_responsive_test.dart: the card geometry holds on every supported width at 360x640
+00:27 +183 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: a failed calculation is not recorded
+00:27 +184 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_responsive_test.dart: the card geometry holds on every supported width at 480x1000
+00:27 +185 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: tapping a card loads the result and returns to Calculator (AC-003)
+00:27 +186 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: tapping a card loads the result and returns to Calculator (AC-003)
+00:27 +187 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_responsive_test.dart: nothing but the cards separates the rows
+00:27 +188 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: a loaded result is a fresh value the next key can use (D-37)
+00:27 +189 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_responsive_test.dart: a screen holds enough of them to be worth reading (D-73, D-76)
+00:28 +190 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: loading a result does not record a second copy of it
+00:28 +191 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_responsive_test.dart: the result line is allowed to shrink but never to truncate
+00:28 +192 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: history survives a restart (AC-001)
+00:28 +193 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_responsive_test.dart: the 88 floor is a floor: the card grows at the text clamp
+00:28 +194 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: nothing is recorded while the history toggle is off (AC-005)
+00:28 +195 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: clearing requires confirmation (AC-008, D-05) cancelling keeps every entry
+00:29 +196 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: clearing requires confirmation (AC-008, D-05) confirming empties the history
+00:29 +197 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: clearing requires confirmation (AC-008, D-05) the header trash clears too, and warns first
+00:29 +198 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_screen_test.dart: an empty history explains itself and offers no clear
+00:29 +199 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_screen_test.dart: an empty history explains itself and offers no clear
+00:30 +200 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_screen_test.dart: entries are grouped into day sections, newest day first
+00:31 +201 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_selection_test.dart: entering selection (D-76) a long-press selects that one card and swaps the header
+00:31 +202 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_selection_test.dart: entering selection (D-76) a long-press selects that one card and swaps the header
+00:31 +203 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_selection_test.dart: entering selection (D-76) a long-press selects that one card and swaps the header
+00:31 +204 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_selection_test.dart: entering selection (D-76) a long-press selects that one card and swaps the header
+00:31 +205 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_selection_test.dart: entering selection (D-76) a long-press selects that one card and swaps the header
+00:32 +206 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_screen_test.dart: a retry that fails again returns to the error state
+00:32 +207 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_selection_test.dart: entering selection (D-76) a tap while selecting toggles rather than loading
+00:32 +208 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_selection_test.dart: entering selection (D-76) a tap while selecting toggles rather than loading
+00:32 +209 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_screen_test.dart: a slow read shows a progress indicator until it resolves
+00:32 +210 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_selection_test.dart: entering selection (D-76) a resting card still loads its result (D-76 regression guard)
+00:32 +211 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_selection_test.dart: the selection is white, not orange (D-76) a selected card is tinted, outlined in white, ticked black
+00:33 +212 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_selection_test.dart: select all (D-76) selects every entry, then clears on a second press
+00:33 +213 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_selection_test.dart: select all (D-76) on / off / on lands back on all-selected
+00:33 +214 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/navigation_graph_test.dart: the graph registers exactly the eleven documented paths
+00:33 +215 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_selection_test.dart: leaving selection without deleting (D-76) the cancel action keeps every entry
+00:33 +216 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_selection_test.dart: leaving selection without deleting (D-76) the cancel action keeps every entry
+00:34 +217 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/navigation_graph_test.dart: the graph every registered path resolves to a screen
+00:34 +218 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/navigation_graph_test.dart: the graph every registered path resolves to a screen
+00:34 +219 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/navigation_graph_test.dart: the graph every registered path resolves to a screen
+00:34 +220 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/navigation_graph_test.dart: the graph every registered path resolves to a screen
+00:35 +221 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/navigation_graph_test.dart: the graph every registered path resolves to a screen
+00:35 +222 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/navigation_graph_test.dart: the graph every registered path resolves to a screen
+00:35 +223 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/navigation_graph_test.dart: the graph every registered path resolves to a screen
+00:35 +224 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_selection_test.dart: deleting a selection requires confirmation (D-76, D-05) a cleared selection leaves the screen usable
+00:35 +225 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_selection_test.dart: deleting a selection requires confirmation (D-76, D-05) a cleared selection leaves the screen usable
+00:36 +226 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_selection_test.dart: deleting a selection requires confirmation (D-76, D-05) a cleared selection leaves the screen usable
+00:36 +227 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/navigation_graph_test.dart: D-20 — the Calculator reaches nothing but Settings and History the app is three levels deep at its furthest
+00:36 +228 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/navigation_graph_test.dart: D-20 — the Calculator reaches nothing but Settings and History D-52 — About carries Terms but not Privacy
+00:36 +229 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/navigation_graph_test.dart: D-56 — transitions are the platform default no route customises its page transition
+00:36 +230 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/navigation_graph_test.dart: D-56 — transitions are the platform default each scope gets its own router
+00:37 +231 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/navigation_test.dart: launches to the Calculator screen as the root route
+00:37 +232 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/performance_test.dart: evaluation is synchronous with the key press the result is in the tree after a single frame
+00:38 +233 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/performance_test.dart: evaluation is synchronous with the key press the result is in the tree after a single frame
+00:38 +234 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/performance_test.dart: evaluation is synchronous with the key press the result is in the tree after a single frame
+00:38 +235 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/navigation_test.dart: hamburger opens Settings, and back returns to Calculator
+00:38 +236 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/performance_test.dart: evaluation is synchronous with the key press a chained operation settles within one frame
+00:38 +237 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/navigation_test.dart: history clock opens History, and back returns to Calculator
+00:39 +238 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/performance_test.dart: evaluation is synchronous with the key press a division by zero reports rather than throwing
+00:39 +239 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/navigation_test.dart: Settings reaches About, Privacy, and Terms (D-20)
+00:39 +240 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/navigation_test.dart: Settings reaches About, Privacy, and Terms (D-20)
+00:39 +241 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/performance_test.dart: the history list builds only what is on screen the newest entry is first and the oldest is off-screen
+00:39 +242 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/navigation_test.dart: About shows the version and the developer name (D-11, D-12)
+00:39 +243 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/performance_test.dart: the history list builds only what is on screen scrolling builds the rest without rebuilding the top
+00:40 +244 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/navigation_test.dart: every screen renders on the black app background (D-03)
+00:40 +245 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/navigation_test.dart: the component catalog is reachable in a debug build
+00:41 +246 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the hidden gesture (FEAT-SEC-001, AC-017) a five-second hold opens the PIN screen
+00:42 +247 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_layout_test.dart: the pad is a smaller echo of the calculator, not a second instrument the reference canvas renders 88 px keys, not 123
+00:42 +248 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the hidden gesture (FEAT-SEC-001, AC-017) releasing early does nothing at all
+00:42 +249 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_layout_test.dart: the pad is a smaller echo of the calculator, not a second instrument the pad never exceeds the calculator key it echoes
+00:42 +250 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_layout_test.dart: the pad is a smaller echo of the calculator, not a second instrument the pad never exceeds the calculator key it echoes
+00:42 +251 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the hidden gesture (FEAT-SEC-001, AC-017) a tap still opens the Clear History confirmation
+00:43 +252 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_layout_test.dart: the pad is a smaller echo of the calculator, not a second instrument every key is square and identically sized
+00:44 +253 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the hidden gesture (FEAT-SEC-001, AC-017) the hold is invisible (D-82)
+00:44 +254 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_layout_test.dart: the painted geometry (D-69: a reserved gap is not a gap) the horizontal gap between two keys is the stated 12
+00:44 +255 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the unlock screen (FEAT-SEC-002, AC-018, AC-019) shows four dots and still names neither the feature nor the code
+00:44 +256 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the unlock screen (FEAT-SEC-002, AC-018, AC-019) shows four dots and still names neither the feature nor the code
+00:44 +257 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_layout_test.dart: the painted geometry (D-69: a reserved gap is not a gap) the pad is centred in the column
+00:45 +258 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the unlock screen (FEAT-SEC-002, AC-018, AC-019) never displays the entered digits as characters
+00:45 +259 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_layout_test.dart: the painted geometry (D-69: a reserved gap is not a gap) the last row keeps 0 in the middle column
+00:45 +260 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the unlock screen (FEAT-SEC-002, AC-018, AC-019) backspace removes the last digit and checks nothing
+00:45 +261 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the unlock screen (FEAT-SEC-002, AC-018, AC-019) backspace removes the last digit and checks nothing
+00:45 +262 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_layout_test.dart: the dots sit in the upper half (desing.md §6.8) the dots sit above the pad
+00:45 +263 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the unlock screen (FEAT-SEC-002, AC-018, AC-019) the default 0000 opens the secret screen (AC-018)
+00:46 +264 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_layout_test.dart: the dots sit in the upper half (desing.md §6.8) the dots are horizontally centred
+00:46 +265 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the unlock screen (FEAT-SEC-002, AC-018, AC-019) a wrong code clears the dots and permits an immediate retry
+00:46 +266 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the unlock screen (FEAT-SEC-002, AC-018, AC-019) a wrong code clears the dots and permits an immediate retry
+00:46 +267 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_layout_test.dart: the dots sit in the upper half (desing.md §6.8) the pad sits just below the dots, not adrift below them
+00:46 +268 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the unlock screen (FEAT-SEC-002, AC-018, AC-019) a rejected code shakes the dots
+00:46 +269 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the unlock screen (FEAT-SEC-002, AC-018, AC-019) a rejected code shakes the dots
+00:46 +270 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_layout_test.dart: the pad still shrinks rather than clipping (prd.md AC-015) a wide window does not inflate the pad into a tablet grid
+00:47 +271 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the unlock screen (FEAT-SEC-002, AC-018, AC-019) wrong codes never lock out (D-85)
+00:47 +272 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the secret screen (FEAT-SEC-003, AC-020, D-84) is blank apart from two controls, one of them a way out
+00:47 +273 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the secret screen (FEAT-SEC-003, AC-020, D-84) the overflow button is the shared bordered AppIconButton
+00:48 +274 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: AC-004 — feedback follows the toggles immediately both on by default, so presses ask for both
+00:48 +275 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: AC-004 — feedback follows the toggles immediately both on by default, so presses ask for both
+00:48 +276 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: AC-004 — feedback follows the toggles immediately both on by default, so presses ask for both
+00:49 +276 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the way home (D-86) it sits in the top-left corner, on the header margin
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+The finder "Found 0 widgets with type "IconButton" that are ancestors of widgets with key
+[<'secret-back'>]: []" (used in a call to "getTopLeft()") could not find any matching widgets.
+
+When the exception was thrown, this was the stack:
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2095:7)
+#1      WidgetController.getTopLeft (package:flutter_test/src/controller.dart:1963:12)
+#2      WidgetController.getRect (package:flutter_test/src/controller.dart:2347:23)
+#3      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/secret_flow_test.dart:415:26)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  it sits in the top-left corner, on the header margin
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:49 +276 -11: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: AC-004 — feedback follows the toggles immediately both on by default, so presses ask for both
+00:49 +276 -11: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the way home (D-86) it sits in the top-left corner, on the header margin [E]
+  Test failed. See exception logs above.
+  The test description was: it sits in the top-left corner, on the header margin
+  
+00:49 +277 -11: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the way home (D-86) it clears the touch floor
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: No element
+
+When the exception was thrown, this was the stack:
+#0      Iterable.single (dart:core/iterable.dart:694:25)
+#1      WidgetController.getSize (package:flutter_test/src/controller.dart:2178:47)
+#2      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/secret_flow_test.dart:439:27)
+<asynchronous suspension>
+#3      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#4      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  it clears the touch floor
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:50 +277 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: AC-004 — feedback follows the toggles immediately Sound off stops the click on the very next press
+00:50 +277 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the way home (D-86) it clears the touch floor [E]
+  Test failed. See exception logs above.
+  The test description was: it clears the touch floor
+  
+00:50 +278 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the way home (D-86) the unlocked secret screen keeps its floating home button
+00:50 +279 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: AC-004 — feedback follows the toggles immediately Vibration off stops the haptic on the very next press
+00:50 +280 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the way home (D-86) it is white on black, from the app palette (D-86)
+00:50 +281 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: AC-004 — feedback follows the toggles immediately both off means neither is requested
+00:51 +282 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: AC-004 — feedback follows the toggles immediately both off means neither is requested
+00:51 +283 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: AC-004 — feedback follows the toggles immediately both off means neither is requested
+00:51 +284 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: AC-004 — feedback follows the toggles immediately a stored preference is honoured on the first press of a run
+00:51 +285 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the way home (D-86) from the secret screen it lands on the calculator
+00:51 +286 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: AC-005 — the history toggle gates new entries a calculation is recorded while history is on
+00:51 +287 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the way home (D-86) from the PIN screen it lands on the calculator too
+00:52 +288 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: AC-005 — the history toggle gates new entries turning it off stops the next calculation being recorded
+00:52 +289 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: AC-005 — the history toggle gates new entries turning it off stops the next calculation being recorded
+00:52 +290 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: the secret settings page (FEAT-SEC-004, AC-020, D-84) back returns to the blank secret screen
+00:52 +291 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: AC-005 — the history toggle gates new entries turning it back on resumes recording
+00:53 +292 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: AC-005 — the history toggle gates new entries turning it back on resumes recording
+00:53 +293 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: changing the PIN (FEAT-SEC-005, AC-021) the correct current PIN advances to entering a new one
+00:53 +294 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: AC-005 — the history toggle gates new entries off on a cold start blocks the very first calculation
+00:53 +295 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: changing the PIN (FEAT-SEC-005, AC-021) a mismatched confirmation returns to step two
+00:54 +296 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: AC-005 — the history toggle gates new entries existing history survives the toggle being turned off
+00:54 +297 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: changing the PIN (FEAT-SEC-005, AC-021) a matching confirmation persists the code and ends the flow
+00:54 +298 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: changing the PIN (FEAT-SEC-005, AC-021) a matching confirmation persists the code and ends the flow
+00:55 +299 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: D-14 — precision is formatting-only the next calculation uses the new precision
+00:55 +300 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: changing the PIN (FEAT-SEC-005, AC-021) a PIN with leading zeroes survives as four digits
+00:55 +301 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: D-14 — precision is formatting-only a computed accumulator re-renders at the new precision
+00:55 +302 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: D-14 — precision is formatting-only a computed accumulator re-renders at the new precision
+00:55 +303 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: D-14 — precision is formatting-only a computed accumulator re-renders at the new precision
+00:55 +304 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: D-14 — precision is formatting-only a computed accumulator re-renders at the new precision
+00:55 +305 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: forgetting the PIN (FEAT-SEC-006, AC-022) the link opens a confirmation that names the default
+00:55 +306 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: D-14 — precision is formatting-only an expression still being typed is left exactly as entered
+00:56 +307 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: D-14 — precision is formatting-only an expression still being typed is left exactly as entered
+00:56 +308 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: forgetting the PIN (FEAT-SEC-006, AC-022) confirming makes 0000 the code that opens the screen
+00:56 +309 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: D-14 — precision is formatting-only the expression line is untouched by a precision change
+00:56 +310 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/secret_flow_test.dart: forgetting the PIN (FEAT-SEC-006, AC-022) the reset survives a restart
+00:56 +311 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: D-14 — precision is formatting-only rounding is applied but zeros are never padded (D-21)
+00:57 +312 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: D-14 — precision is formatting-only rounding is applied but zeros are never padded (D-21)
+00:57 +313 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: D-14 — precision is formatting-only zero places gives whole-number results
+00:57 +314 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: calculator state is untouched by the round trip an unfinished calculation survives visiting Settings
+00:57 +315 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_effect_test.dart: calculator state is untouched by the round trip a half-typed entry survives visiting Settings
+00:58 +316 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) shows the three sections in order
+00:59 +317 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/text_scaling_test.dart: the clamp a 1x system scale is passed through untouched
+00:59 +318 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/text_scaling_test.dart: the clamp a 1x system scale is passed through untouched
+00:59 +319 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) every specified row is present, with its subtitle
+00:59 +320 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) every specified row is present, with its subtitle
+00:59 +321 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) every specified row is present, with its subtitle
+01:00 +322 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) every specified row is present, with its subtitle
+01:00 +323 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) every specified row is present, with its subtitle
+01:00 +324 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) every specified row is present, with its subtitle
+01:00 +325 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) every specified row is present, with its subtitle
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "Dark mode": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/settings_screen_test.dart:62:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/settings_screen_test.dart line 62
+The test description was:
+  every specified row is present, with its subtitle
+════════════════════════════════════════════════════════════════════════════════════════════════════
+01:00 +325 -13: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/text_scaling_test.dart: layout holds at the clamp the calculator does not overflow at 442x960
+01:00 +325 -13: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) every specified row is present, with its subtitle [E]
+  Test failed. See exception logs above.
+  The test description was: every specified row is present, with its subtitle
+  
+01:00 +326 -13: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) the three preferences are toggles, not static text
+01:00 +327 -13: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/text_scaling_test.dart: layout holds at the clamp the calculator does not overflow at 480x1000
+01:00 +328 -13: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) every toggle starts on by default (D-16, AC-005)
+01:00 +329 -13: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/text_scaling_test.dart: layout holds at the clamp the scrollable screens do not overflow at 320x568
+01:01 +330 -13: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/text_scaling_test.dart: layout holds at the clamp the scrollable screens do not overflow at 320x568
+01:01 +331 -13: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) the group card carries the 1 px outline (D-91)
+01:01 +332 -13: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/text_scaling_test.dart: layout holds at the clamp the scrollable screens do not overflow at 480x1000
+01:01 +333 -13: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) no shadow in the dark theme, one in the white theme (D-91)
+01:01 +334 -13: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/text_scaling_test.dart: layout holds at the clamp the About header title is not clipped at the clamp
+01:02 +335 -13: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) sits on the black app background (D-03)
+01:02 +336 -13: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: layout (desing.md §6.3) rows keep the minimum tappable height (desing.md §4)
+01:02 +337 -13: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) shows a chevron but is not a tap target
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: no matching candidates
+  Actual: _DescendantWidgetFinder:<Found 1 widget with type "InkWell" descending from widget with
+type "SettingsRow" that are ancestors of widget with text "Theme": [
+            InkWell,
+          ]>
+   Which: means one was found but none were expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/settings_screen_test.dart:215:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/settings_screen_test.dart line 215
+The test description was:
+  shows a chevron but is not a tap target
+════════════════════════════════════════════════════════════════════════════════════════════════════
+01:03 +337 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) shows a chevron but is not a tap target [E]
+  Test failed. See exception logs above.
+  The test description was: shows a chevron but is not a tap target
+  
+01:03 +337 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +338 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +339 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +340 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +341 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +342 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +343 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +344 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +345 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +346 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +347 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +348 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +349 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +350 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +351 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +352 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +353 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +354 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +355 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +356 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +357 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +358 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +359 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +360 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +361 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +362 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +363 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +364 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +365 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Theme row (D-45) tapping it does not navigate anywhere
+01:03 +366 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: AC resets everything (D-83) from an open parenthesis
+01:03 +367 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +368 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +369 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +370 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +371 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +372 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +373 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +374 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +375 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +376 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +377 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +378 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +379 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +380 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +381 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +382 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +383 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +384 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +385 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +386 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +387 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +388 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +389 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +390 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +391 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +392 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +393 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +394 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +395 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +396 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +397 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +398 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +399 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +400 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +401 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +402 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +403 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +404 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +405 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +406 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +407 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +408 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +409 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +410 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +411 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +412 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +413 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +414 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +415 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +416 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +417 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +418 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +419 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +420 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +421 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +422 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Sound starts on and turns off
+01:03 +423 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) Vibration turns off and back on
+01:04 +424 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) turning one off leaves the others alone
+01:04 +425 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) reflects a stored preference on open
+01:04 +426 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) reflects a stored preference on open
+01:04 +427 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) reflects a stored preference on open
+01:04 +428 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) reflects a stored preference on open
+01:04 +429 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) reflects a stored preference on open
+01:04 +430 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) reflects a stored preference on open
+01:04 +431 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) reflects a stored preference on open
+01:04 +432 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) reflects a stored preference on open
+01:04 +433 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) reflects a stored preference on open
+01:04 +434 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) reflects a stored preference on open
+01:04 +435 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) reflects a stored preference on open
+01:04 +436 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) reflects a stored preference on open
+01:04 +437 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: toggles (AC-004, AC-005) the switch itself is also a tap target
+01:05 +438 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) opens a picker offering 0 through 6
+01:05 +439 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) marks the current precision as selected
+01:05 +440 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) choosing a value updates the row subtitle
+01:05 +441 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) choosing a value updates the row subtitle
+01:05 +442 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) choosing a value updates the row subtitle
+01:05 +443 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) choosing a value updates the row subtitle
+01:05 +444 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) choosing a value updates the row subtitle
+01:05 +445 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) choosing a value updates the row subtitle
+01:05 +446 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) choosing a value updates the row subtitle
+01:05 +447 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) choosing a value updates the row subtitle
+01:05 +448 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) choosing a value updates the row subtitle
+01:05 +449 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) choosing a value updates the row subtitle
+01:05 +450 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) choosing a value updates the row subtitle
+01:05 +451 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) choosing a value updates the row subtitle
+01:05 +452 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) choosing a value updates the row subtitle
+01:05 +453 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) choosing a value updates the row subtitle
+01:05 +454 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) choosing a value updates the row subtitle
+01:05 +455 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) choosing a value updates the row subtitle
+01:05 +455 -15: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) choosing a value updates the row subtitle
+01:06 +455 -15: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the secondary line keeps a negative sign in front of its term [E]
+  Expected: '(−1,000 ×'
+    Actual: '( − 1,000 ) ×'
+     Which: is different.
+            Expected: (−1,000 ×
+              Actual: ( − 1,000 ) ...
+                       ^
+             Differ at offset 1
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\display_resolver_test.dart 97:7           main.<fn>.<fn>
+  
+01:06 +456 -15: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the secondary line keeps a staged sign off the line until it becomes a number
+01:06 +457 -15: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +457 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +457 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the secondary line prints the signed operand once a digit completes it [E]
+  Expected: '2 + -5'
+    Actual: '2 + ( − 5'
+     Which: is different.
+            Expected: 2 + -5
+              Actual: 2 + ( − 5
+                          ^
+             Differ at offset 4
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\display_resolver_test.dart 108:7          main.<fn>.<fn>
+  
+01:06 +458 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +459 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +460 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +461 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +462 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +463 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +464 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +465 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +466 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +467 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +468 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +469 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +470 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +471 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +472 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +473 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +474 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +475 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +476 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +477 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +478 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +479 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +480 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +481 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +482 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +483 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) one place reads in the singular
+01:06 +484 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) zero is selectable, so whole-number arithmetic is possible
+01:06 +485 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) dismissing the picker changes nothing
+01:07 +486 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) dismissing the picker changes nothing
+01:07 +487 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) dismissing the picker changes nothing
+01:07 +488 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) dismissing the picker changes nothing
+01:07 +489 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) dismissing the picker changes nothing
+01:07 +490 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) dismissing the picker changes nothing
+01:07 +491 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) dismissing the picker changes nothing
+01:07 +492 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) dismissing the picker changes nothing
+01:07 +493 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) dismissing the picker changes nothing
+01:07 +494 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) dismissing the picker changes nothing
+01:07 +495 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) dismissing the picker changes nothing
+01:07 +496 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) dismissing the picker changes nothing
+01:07 +497 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) dismissing the picker changes nothing
+01:07 +498 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) dismissing the picker changes nothing
+01:07 +499 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: Decimal Places (FEAT-SET-004, D-14, D-46) dismissing the picker changes nothing
+01:07 +500 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: percent is contextual (D-86, supersedes D-06) divides by 100 under ÷
+01:07 +501 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: About links (D-07, D-20) App Version, Privacy Policy, and Terms all navigate
+01:07 +502 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: About links (D-07, D-20) App Version, Privacy Policy, and Terms all navigate
+01:07 +503 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: About links (D-07, D-20) App Version, Privacy Policy, and Terms all navigate
+01:07 +504 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: About links (D-07, D-20) App Version, Privacy Policy, and Terms all navigate
+01:07 +505 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: About links (D-07, D-20) App Version, Privacy Policy, and Terms all navigate
+01:07 +506 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: About links (D-07, D-20) App Version, Privacy Policy, and Terms all navigate
+01:07 +507 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: About links (D-07, D-20) each carries a chevron
+01:07 +508 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: resilience scrolls on a short screen without overflowing
+01:07 +509 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: resilience the whole screen fits a 480x1000 phone without overflow
+01:08 +510 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/settings_screen_test.dart: resilience the whole screen fits a 480x1000 phone without overflow
+01:08 +511 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: groupThousands inserts a separator every three integer digits
+01:08 +512 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: groupThousands keeps the fractional part intact
+01:08 +513 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: groupThousands handles negatives
+01:08 +514 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: groupThousands returns non-numeric values unchanged
+01:08 +515 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult rounds to decimalPlaces without padding (D-21)
+01:08 +516 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult inserts thousands separators (D-18)
+01:08 +517 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult keeps the sign outside the separators
+01:08 +518 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult defaults to two decimal places
+01:08 +519 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult treats a negative precision as zero rather than throwing
+01:08 +520 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult returns Error for non-finite values
+01:08 +521 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult does not overflow with digits on extreme magnitudes
+01:08 +522 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult is stable across the float noise a calculator accumulates
+01:09 +523 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: records a completed calculation
+01:09 +524 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: records before the repository has finished loading
+01:09 +525 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: clears every entry
+01:09 +526 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: clears even when called before the repository has loaded
+01:09 +527 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: the toggle is read on every write, not cached at construction
+01:09 +528 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: the in-memory fallback honours the history setting (D-40, AC-005)
+01:09 +529 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: the in-memory fallback keeps the same cap as the real one
+01:09 +530 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: an unreadable store degrades to in-memory rather than failing
+01:09 +531 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Privacy Policy is non-empty
+01:09 +532 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Privacy Policy has enough sections to be a document
+01:09 +533 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Privacy Policy has no placeholder markers
+01:09 +534 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Privacy Policy headings are unique
+01:09 +535 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Privacy Policy sections all have non-empty bodies
+01:09 +536 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Privacy Policy states its own version
+01:09 +537 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Terms of Service is non-empty
+01:09 +538 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Terms of Service has enough sections to be a document
+01:09 +539 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Terms of Service has no placeholder markers
+01:09 +540 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Terms of Service headings are unique
+01:09 +541 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Terms of Service sections all have non-empty bodies
+01:09 +542 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Terms of Service states its own version
+01:09 +543 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: privacy policy claims match the platform says it makes no network requests
+01:09 +544 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: privacy policy claims match the platform says backups are disabled
+01:09 +545 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: privacy policy claims match the platform says how to delete data
+01:09 +546 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: privacy policy claims match the platform names the two things actually stored
+01:09 +547 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: contact details both documents carry a contact address
+01:09 +548 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: contact details the contact placeholder is still flagged for release
+01:10 +549 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/review_service_test.dart: ReviewService.rateApp requests the native prompt when the platform is available
+01:10 +550 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/review_service_test.dart: ReviewService.rateApp opens the store listing when the prompt is unavailable
+01:10 +551 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/review_service_test.dart: ReviewService.rateApp reports unavailable when the availability check throws
+01:10 +552 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/review_service_test.dart: ReviewService.rateApp reports unavailable when the prompt itself throws
+01:10 +553 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/review_service_test.dart: ReviewService.rateApp reports unavailable when the store listing throws
+01:10 +554 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a well-formed code holds its digits
+01:10 +555 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a well-formed code keeps leading zeroes, which are digits and not padding
+01:10 +556 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a well-formed code is equal to another code with the same digits
+01:10 +557 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a well-formed code is not equal to a different code
+01:10 +558 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a malformed code is rejected for being too short
+01:10 +559 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a malformed code is rejected for being too long
+01:10 +560 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a malformed code is rejected for being empty
+01:10 +561 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a malformed code is rejected for holding non-digits
+01:10 +562 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a malformed code is rejected for carrying a sign or a decimal point
+01:10 +563 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: isWellFormed accepts exactly four digits
+01:10 +564 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: isWellFormed rejects anything else, including null
+01:10 +565 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: isWellFormed agrees with the constructor on every case it covers
+01:10 +566 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: the default is 0000 on a fresh install
+01:10 +567 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: toString does not leak the code
+01:11 +568 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_persistence_test.dart: a fresh install reads the documented default
+01:11 +569 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_persistence_test.dart: a changed PIN survives a relaunch
+01:11 +570 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_persistence_test.dart: a changed PIN is the code the next unlock requires
+01:11 +571 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_persistence_test.dart: the last of several changes is the one that survives
+01:11 +572 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_persistence_test.dart: a PIN with leading zeroes survives a relaunch
+01:11 +573 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_persistence_test.dart: a store that cannot be reached degrades to the default
+01:11 +574 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_persistence_test.dart: an unreachable store still accepts and persists a change
+01:11 +575 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: load returns 0000 on a fresh install
+01:11 +576 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: load returns the stored code once one exists
+01:11 +577 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: load a key holding the wrong type degrades to the default
+01:11 +578 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: load a malformed value degrades to the default rather than throwing
+01:11 +579 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: load never throws, whatever the store holds
+01:11 +580 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: save round-trips a code
+01:11 +581 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: save writes under the documented key, as a plain string
+01:11 +582 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: save a second save overwrites rather than accumulating
+01:11 +583 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: save survives a restart
+01:11 +584 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: save round-trips a code with leading zeroes
+01:11 +585 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: InMemorySecretRepository obeys the same defaults contract as the real one
+01:11 +586 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: InMemorySecretRepository holds what it was given
+01:11 +587 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: InMemorySecretRepository can be seeded
+01:12 +588 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: load publishes what the repository returns
+01:12 +589 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: load the synchronous view mirrors the loaded value (D-41)
+01:12 +590 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: load the synchronous view falls back to defaults while loading
+01:12 +591 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: apply publishes the new value and persists it
+01:12 +592 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: apply persists exactly once, with the whole object
+01:12 +593 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: apply a change that changes nothing writes nothing
+01:12 +594 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: apply leaves the other preferences untouched
+01:12 +595 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: a write that beats the initial load (D-43) the user change survives the load resolving
+01:12 +596 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: a write that beats the initial load (D-43) the guarded value is also what gets persisted
+01:12 +597 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: a fresh install reads the documented defaults
+01:12 +598 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: a fresh install reads the documented defaults
+01:12 +599 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: a fresh install reads the documented defaults
+01:12 +600 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: every preference survives a relaunch
+01:12 +601 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: a single preference survives, the rest fall back to defaults
+01:12 +602 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: the last of several writes is the one that survives
+01:12 +603 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: a seeded store is read as stored, not as defaults
+01:12 +604 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: an out-of-range stored precision is clamped, not rejected
+01:12 +605 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: the synchronous view is usable before the load resolves
+01:12 +606 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: an unavailable plugin leaves the app on usable defaults
+01:13 +607 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: load returns the documented defaults when the store is empty
+01:13 +608 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: load returns defaults for a partially written store, field by field
+01:13 +609 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: load a key holding the wrong type degrades to its default
+01:13 +610 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: load one corrupt key does not take the other preferences with it
+01:13 +611 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: load clamps a stored precision outside the offered range (D-46)
+01:13 +612 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: save round-trips every field
+01:13 +613 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: save writes one primitive key per preference, not a blob
+01:13 +614 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: save a second save overwrites rather than accumulating
+01:13 +615 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: save clamps on write as well as on read
+01:13 +616 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: InMemorySettingsRepository obeys the same defaults contract as the real one
+01:13 +617 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: InMemorySettingsRepository holds what it was given and forgets on construction
+01:13 +618 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: InMemorySettingsRepository can be seeded
+01:13 +619 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: AppSettings compares by value, not identity (D-47)
+01:13 +620 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: AppSettings is identical to itself
+01:13 +621 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: AppSettings is not equal to a different type
+01:13 +622 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: AppSettings the picker offers 0 through 6, ascending, with no gaps
+01:13 +623 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: AppSettings clampDecimalPlaces leaves a value in range alone
+01:13 +624 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: storage format (D-02) writes a single key holding a JSON list
+01:13 +625 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: storage format (D-02) round-trips an entry through JSON unchanged
+01:13 +626 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: storage format (D-02) keeps the most recently added entry first
+01:13 +627 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: persistence across a restart (AC-006) data written before a restart is readable after it
+01:13 +628 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: persistence across a restart (AC-006) starts empty when the key was never written
+01:13 +629 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: the 200-entry cap (AC-014, D-02) keeps the newest 200 and evicts the oldest first
+01:14 +630 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: the 200-entry cap (AC-014, D-02) keeps the newest 200 and evicts the oldest first
+01:14 +631 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: the 200-entry cap (AC-014, D-02) keeps the newest 200 and evicts the oldest first
+01:15 +632 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: the 200-entry cap (AC-014, D-02) exactly at the cap keeps everything
+01:15 +633 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: the 200-entry cap (AC-014, D-02) exactly at the cap keeps everything
+01:15 +634 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: the 200-entry cap (AC-014, D-02) exactly at the cap keeps everything
+01:15 +635 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: the 200-entry cap (AC-014, D-02) exactly at the cap keeps everything
+01:15 +636 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: the 200-entry cap (AC-014, D-02) exactly at the cap keeps everything
+01:15 +637 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: the 200-entry cap (AC-014, D-02) exactly at the cap keeps everything
+01:15 +638 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: the 200-entry cap (AC-014, D-02) exactly at the cap keeps everything
+01:15 +639 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: the 200-entry cap (AC-014, D-02) enforces the cap on the persisted JSON, not just the read
+01:16 +640 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: the history toggle (AC-005) add is a no-op while disabled
+01:16 +641 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: the history toggle (AC-005) isEnabled reflects the setting
+01:16 +642 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: the history toggle (AC-005) disabling stops new entries but keeps existing ones (FEAT-HIST-004)
+01:16 +643 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: addResult assigns an id and a timestamp from the repository
+01:16 +644 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: addResult respects the toggle
+01:16 +645 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: clearAll (AC-008) empties the list and removes the key
+01:16 +646 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: clearAll (AC-008) is safe on an already-empty history
+01:16 +647 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: corrupt data degrades instead of throwing ignores a value that is not JSON
+01:16 +648 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: corrupt data degrades instead of throwing ignores JSON that is not a list
+01:16 +649 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: corrupt data degrades instead of throwing ignores a list of non-objects
+01:16 +650 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: corrupt data degrades instead of throwing drops only the malformed record, keeping the rest
+01:16 +651 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: corrupt data degrades instead of throwing an entry with an unparseable timestamp is dropped
+01:16 +652 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: day grouping (AC-002) an empty history produces no groups
+01:16 +653 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: day grouping (AC-002) splits Today from Yesterday, newest day first
+01:16 +654 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: day grouping (AC-002) collapses a same-day run into one group, newest entry first
+01:16 +655 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: day grouping (AC-002) labels an older day with its calendar date
+01:16 +656 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: day grouping (AC-002) keeps days in descending order
+01:16 +657 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart: day grouping (AC-002) exposes each group as an unmodifiable list
+01:16 +658 -16: Some tests failed.
+
+Failing tests:
+  C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the secondary line keeps a negative sign in front of its term
+  C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the secondary line prints the signed operand once a digit completes it
+  C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Settings rows the Theme row is not announced as a button
+  C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) a digit after backspacing a result continues the operand
+  ... and 12 more

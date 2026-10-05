@@ -1,13 +1,13 @@
+import '../../../core/design/app_palette.dart';
 import 'package:flutter/material.dart';
 
-import '../design/app_colors.dart';
 import '../design/app_spacing.dart';
 
 /// A header action drawn as a bordered square around its glyph (D-74).
 ///
 /// The QR-Scanner-style header pass replaced the app's bare header glyphs with
-/// a visible 48 px button: a [AppColors.surface] fill, a 1 px
-/// [AppColors.divider] border, and a [AppRadius.iconButton] corner. Drawing the
+/// a visible 48 px button: a [context.appColors.surface] fill, a 1 px
+/// [context.appColors.divider] border, and a [AppRadius.iconButton] corner. Drawing the
 /// box is the point of the component — a bare glyph three pixels off the line
 /// every card in the app is built on reads as a squashed layout, while a box
 /// whose *edge* rides the margin reads as a deliberate object.
@@ -34,8 +34,9 @@ class AppIconButton extends StatelessWidget {
     this.iconWidget,
     this.onPressed,
     this.tooltip,
-    this.color = AppColors.textPrimary,
-    this.disabledColor = AppColors.textSecondary,
+    this.color,
+    this.disabledColor,
+    this.bordered = true,
   }) : assert(
          icon != null || iconWidget != null,
          'AppIconButton needs either an IconData or a widget to draw',
@@ -61,28 +62,47 @@ class AppIconButton extends StatelessWidget {
   final String? tooltip;
 
   /// Colour of a [icon] glyph, and of that glyph in every state but disabled.
-  final Color color;
+  final Color? color;
 
   /// Colour of a [icon] glyph when [onPressed] is `null`.
-  final Color disabledColor;
+  final Color? disabledColor;
 
-  /// The bordered square every header action wears.
+  /// Whether the glyph sits in the bordered 48 px square (D-74).
   ///
-  /// The border lives on the *shape* rather than on [ButtonStyle.side] because
-  /// the shape is what both the fill and the outline are painted from — a shape
-  /// that carries its own side renders the same whichever of the two paths the
-  /// framework takes.
-  static const OutlinedBorder _box = RoundedRectangleBorder(
-    borderRadius: BorderRadius.all(Radius.circular(AppRadius.iconButton)),
-    side: BorderSide(color: AppColors.divider),
-  );
+  /// **The box is this component's point**, so it is on by default and every
+  /// header action keeps it. [false] drops the fill and the outline and leaves a
+  /// bare glyph in the same 48 px touch target — for a control that reads as
+  /// editing the number beside it rather than as a screen-level action, which is
+  /// what the calculator's `⌫` is: a bordered box there competed with the
+  /// result it sits above and read as a fifth destination.
+  ///
+  /// The *target* never changes either way. Both renderings occupy
+  /// [AppSizes.iconTouchTarget] and are a real [IconButton], so the touch floor
+  /// (prd.md §12) and the accessibility layer are identical — only the ink is
+  /// gone.
+  final bool bordered;
 
   /// The one size every header action is pinned to.
   static const Size _size = Size.square(AppSizes.iconTouchTarget);
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     final glyph = iconWidget ?? Icon(icon, size: AppSizes.rowIcon);
+
+    // The bordered square, built here rather than held as a `static const`.
+    //
+    // The border lives on the *shape* rather than on [ButtonStyle.side] because
+    // the shape is what both the fill and the outline are painted from — a shape
+    // that carries its own side renders the same whichever of the two paths the
+    // framework takes. A `const` shape would have to bake in one divider colour,
+    // and a divider is exactly the token that differs between the two themes: a
+    // dark-theme outline on a white card would be invisible. Rebuilding it costs
+    // one allocation and is what lets the box follow the theme.
+    final box = RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(AppRadius.iconButton)),
+      side: BorderSide(color: colors.divider),
+    );
 
     return IconButton(
       onPressed: onPressed,
@@ -96,19 +116,34 @@ class AppIconButton extends StatelessWidget {
         minimumSize: const WidgetStatePropertyAll<Size>(_size),
         maximumSize: const WidgetStatePropertyAll<Size>(_size),
         padding: const WidgetStatePropertyAll<EdgeInsets>(EdgeInsets.zero),
-        backgroundColor: const WidgetStatePropertyAll<Color>(
-          AppColors.surface,
+        // Transparent rather than absent, so the *button* still occupies the
+        // same 48 px box it does with a border: dropping the background property
+        // would leave the shape to supply the paint and change nothing else,
+        // but an explicit transparent fill states the intent — the target is
+        // unchanged, only its ink is gone.
+        backgroundColor: WidgetStatePropertyAll<Color>(
+          bordered ? colors.surface : Colors.transparent,
         ),
         // `ButtonStyle` has no `disabledForegroundColor` field: a state's colour
         // is one resolved property, so the disabled state is spelled out in the
         // resolver rather than as a second slot.
         foregroundColor: WidgetStateProperty.resolveWith<Color>(
           (Set<WidgetState> states) => states.contains(WidgetState.disabled)
-              ? disabledColor
-              : color,
+              ? disabledColor ?? colors.textSecondary
+              : color ?? colors.textPrimary,
         ),
-        shape: const WidgetStatePropertyAll<OutlinedBorder>(
-          _box,
+        shape: WidgetStatePropertyAll<OutlinedBorder>(
+          bordered
+              ? box
+              // A borderless variant still has to hand the style an
+              // [OutlinedBorder] — `WidgetStatePropertyAll<OutlinedBorder>` will
+              // not take a `BorderlessBorder` — so it is the same shape with no
+              // side, which paints the fill and nothing else.
+              : const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(AppRadius.iconButton),
+                  ),
+                ),
         ),
       ),
       icon: glyph,

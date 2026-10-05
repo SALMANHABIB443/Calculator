@@ -1020,6 +1020,79 @@ claim and the backup claim in `test/unit/legal_content_test.dart`.
 
 ---
 
+## Phase 11: Secret Mode — **SPECIFIED (implementation not started)**
+
+**Added after Phase 10.** Every phase above is complete and shipped; this one is the first work
+that has been **specified but not built**. No `lib/` or `test/` code exists for it yet — what
+exists is the decision record, the feature breakdown, and the screen specifications.
+
+### What is specified
+
+Secret Mode is a hidden area reached by holding the History screen's bottom Clear History button
+for five seconds and entering a four-digit PIN (`0000` by default). What lies behind it is
+deliberately almost nothing: a blank screen with one overflow button in the top-left, leading to
+a settings page holding a single "Change PIN" row.
+
+| Feature | Ref |
+|---------|-----|
+| Five-second hidden hold on Clear History; tap path untouched | D-82, FEAT-SEC-001 |
+| Four-digit PIN entry, default `0000`, corrupt value degrades to the default | D-83, FEAT-SEC-002 |
+| Blank secret screen, one top-left `AppIconButton` | D-84, FEAT-SEC-003 |
+| One-row secret Settings page | D-84, FEAT-SEC-004 |
+| Three-step Change PIN (verify → enter → confirm) | D-85, FEAT-SEC-005 |
+
+**Four decisions carry the design, and three of them are refusals:**
+
+- **The hold is invisible** (D-82). No progress ring, no haptic, no sound, nothing at all while the
+  button is held — §8 records the held state as identical to the default. Any feedback at all would
+  make the gesture discoverable by accident, which defeats it. Five seconds is the balance point:
+  too long to reach by accident, short enough not to frustrate the user who knows.
+- **The PIN is plaintext in `shared_preferences`** (D-83). `flutter_secure_storage` was rejected
+  because it would be the app's **first new dependency since Phase 1**, breaking the lockdown that
+  held through ten phases; hashing was rejected because the threat is *reading* the store, not
+  brute-forcing it, and with no rate limit a hash of four digits is no stronger than the plaintext.
+- **There is no lockout** (D-85). A lockout punishes the owner who mistypes their own four-digit
+  code, and the only recovery would be a reinstall that loses the history. Wrong codes clear and
+  shake; retry is immediate.
+- **The screen is blank** (D-84) and the settings page holds exactly one row. The full Settings
+  page is not duplicated in a hidden area — that would be a second place to maintain four settings
+  no user would reach.
+
+### What is not specified, and why
+
+There is **no mockup** for any of it. D-13 maps all four mockups to real screens and none of them
+shows a PIN screen, a blank screen, or a hidden settings page, so §6.8–§6.10 in `desing.md` are
+written from the app's own tokens and introduce **no new design token**. A blank page needs no
+colour of its own; that it can be built from `AppColors.background`, `AppIconButton`, and
+`SettingsRow` is the evidence that it is specified consistently with the rest of the app.
+
+### Known limitations of this phase
+
+- **Nothing is implemented.** This phase wrote specifications. There is no gesture detector, no
+  `SecretCode` type, no repository, no screen, and no test. `feature.md` §G and `prd.md` FR-007
+  describe intended behaviour, not shipped behaviour, and `phases.md` is the document that says so.
+- **The PIN is not secure storage.** `shared_preferences` is unencrypted, so the code is readable on
+  a rooted device (D-83). This is a *smaller* exposure than the history sitting in the same store,
+  and it is stated as a limitation rather than presented as a security guarantee. Anyone reading this
+  document should treat Secret Mode as a **privacy affordance against casual browsing**, not as
+  authentication.
+- **A forgotten PIN has no in-app recovery.** Changing it requires the current one (D-85), so the
+  only way out is reinstalling — which clears the history the user was trying to protect. This is the
+  sharpest edge in the feature and it is deliberate: the alternative, an unverified reset, would make
+  the code decorative.
+- **Four wrong guesses are free.** 10⁴ codes brute-force in under a minute, and the store is
+  readable without guessing at all (D-83, D-85). Stated plainly so nobody mistakes this for a
+  security boundary.
+- **No test has been written, so no test has been run.** The specified tests are: unit coverage for
+  `SecretCode`'s validation and the corrupt-value fallback, a repository load/save round-trip
+  modelled on `settings_repository_test.dart`, and a widget flow covering hold → unlock → blank
+  screen → 3-dot → settings → change PIN. Note that the five-second hold has **no on-screen
+  affordance to assert on**, so its test has to pump the gesture rather than find a widget (D-82).
+- **Inherited from Phase 10, unchanged:** no device or emulator was available, so nothing in this
+  app has been seen running.
+
+---
+
 ## Feature Prioritization Reminder
 
 **Must Have (MVP)**  
@@ -1054,6 +1127,10 @@ All features marked Must Have in feature.md and all AC-xxx in prd.md.
 | Platform differences (haptics/sound)| No package dependency; uses built-in `HapticFeedback` / `SystemSound` (D-16) |
 | Legal copy not ready at release  | Placeholder content ships in v1.0 (D-07); final text is a Phase 10 checklist item |
 | Scope creep                       | Strict adherence to the Must-Have list in `feature.md` |
+| A secret feature whose gesture is found by accident | The hold gives **no** feedback — no ring, sound, or haptic — so it cannot be discovered by resting a thumb on the button (D-82) |
+| Secret PIN read from a compromised device | Accepted and stated, not hidden: the store is plaintext, the threat is the same one the history already carries, and no package was added to hide it (D-83) |
+| A user locks themselves out with a wrong PIN | **No lockout**, by design — the alternative's only recovery is a reinstall that loses the history (D-85) |
+| Secret Mode mistaken for authentication | Framed in the docs as a **privacy affordance against casual browsing**; both exposures are listed in Phase 11's known limitations |
 
 ---
 

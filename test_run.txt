@@ -1,0 +1,1311 @@
+﻿Resolving dependencies...
+Downloading packages...
+  cli_util 0.4.2 (0.6.0 available)
+  code_assets 1.2.1 (2.1.0 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  cupertino_icons 1.0.9 (2.0.0 available)
+  flutter_riverpod 2.6.1 (3.4.3 available)
+  go_router 14.8.1 (18.0.2 available)
+  hooks 2.0.2 (2.2.0 available)
+  jni 1.0.3 (1.1.0 available)
+  jni_flutter 1.0.3 (1.0.4 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  meta 1.18.3 (1.19.0 available)
+  objective_c 9.5.0 (9.6.2 available)
+  record_use 0.6.0 (1.1.1 available)
+  riverpod 2.6.1 (3.4.3 available)
+  shared_preferences 2.5.3 (2.5.5 available)
+  test_api 0.7.12 (0.7.14 available)
+  vector_math 2.4.0 (2.4.3 available)
+Got dependencies!
+17 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/store/store_screenshots_test.dart                                                                                  
+00:01 +0: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/store/store_screenshots_test.dart                                                                                  
+00:02 +0: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/store/store_screenshots_test.dart                                                                                  
+00:03 +0: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/store/store_screenshots_test.dart                                                                                  
+00:03 +0: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/store/store_screenshots_test.dart: (setUpAll)                                                                              
+00:03 +0: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/store/store_screenshots_test.dart: store screenshots 01 calculator                                                         
+00:03 +0 ~1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/store/store_screenshots_test.dart: store screenshots 01 calculator                                                      
+00:03 +0 ~1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/store/store_screenshots_test.dart: store screenshots 02 history                                                         
+00:03 +0 ~2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/store/store_screenshots_test.dart: store screenshots 02 history                                                         
+00:03 +0 ~2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/store/store_screenshots_test.dart: store screenshots 03 settings                                                        
+00:03 +0 ~3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/store/store_screenshots_test.dart: store screenshots 03 settings                                                        
+00:03 +0 ~3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/store/store_screenshots_test.dart: store screenshots 04 privacy policy                                                  
+00:03 +0 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/store/store_screenshots_test.dart: store screenshots 04 privacy policy                                                  
+00:03 +0 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/store/store_screenshots_test.dart: (tearDownAll)                                                                        
+00:03 +0 ~4: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart                                                                                
+00:03 +0 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `` then () is `(`                             
+00:03 +1 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `` then () is `(`                             
+00:03 +1 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `5` then () is `5×(`                          
+00:03 +2 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `5` then () is `5×(`                          
+00:03 +2 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `5+` then () is `5+(`                         
+00:03 +3 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `5+` then () is `5+(`                         
+00:03 +3 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `5×` then () is `5×(`                         
+00:03 +4 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `5×` then () is `5×(`                         
+00:03 +4 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `()` then () is `((`                          
+00:03 +5 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `()` then () is `((`                          
+00:03 +5 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `()5` then () is `(5)`                        
+00:03 +6 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `()5` then () is `(5)`                        
+00:03 +6 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `()5+` then () is `(5+(`                      
+00:03 +7 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `()5+` then () is `(5+(`                      
+00:03 +7 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `()5+2` then () is `(5+2)`                    
+00:03 +8 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `()5+2` then () is `(5+2)`                    
+00:03 +8 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `()5+2()` then () is `(5+2)×(`                
+00:03 +9 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `()5+2()` then () is `(5+2)×(`                
+00:03 +9 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `5+2` then () is `5+2×(`                      
+00:03 +10 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) `5+2` then () is `5+2×(`                     
+00:03 +10 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) nests rather than closing early              
+00:03 +11 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) nests rather than closing early              
+00:03 +11 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the () key decides open or close (D-85) closes as soon as the open group has an operand                                                      
+00:03 +12 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the () key decides open or close (D-85) closes as soon as the open group has an operand                                                      
+00:03 +12 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the () key decides open or close (D-85) a % is a value, so the next () multiplies into a group                                               
+00:03 +13 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the () key decides open or close (D-85) a % is a value, so the next () multiplies into a group                                               
+00:03 +13 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) never emits two closing parentheses in a row 
+00:03 +14 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the () key decides open or close (D-85) never emits two closing parentheses in a row 
+00:03 +14 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: backspace removes exactly one character (D-81) takes an operator off                 
+00:03 +15 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: backspace removes exactly one character (D-81) takes an operator off                 
+00:03 +15 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: backspace removes exactly one character (D-81) takes one digit at a time             
+00:03 +16 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: backspace removes exactly one character (D-81) takes one digit at a time             
+00:03 +16 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace removes exactly one character (D-81) walks the whole expression back to empty, never past it                                       
+00:03 +17 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace removes exactly one character (D-81) walks the whole expression back to empty, never past it                                       
+00:03 +17 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: backspace removes exactly one character (D-81) works with decimals                   
+00:03 +18 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: backspace removes exactly one character (D-81) works with decimals                   
+00:03 +18 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: backspace removes exactly one character (D-81) works with parentheses                
+00:03 +19 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: backspace removes exactly one character (D-81) works with parentheses                
+00:03 +19 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace removes exactly one character (D-81) on an empty expression it costs nothing                                                       
+00:03 +20 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace removes exactly one character (D-81) on an empty expression it costs nothing                                                       
+00:03 +20 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: backspace removes exactly one character (D-81) updates the preview                   
+00:03 +21 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: backspace removes exactly one character (D-81) updates the preview                   
+00:03 +21 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace after equals restores the calculation (D-83) the first press hands back the whole expression                                       
+00:03 +22 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace after equals restores the calculation (D-83) the first press hands back the whole expression                                       
+00:03 +22 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace after equals restores the calculation (D-83) and leaves the calculator editable, not locked                                        
+00:03 +23 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace after equals restores the calculation (D-83) and leaves the calculator editable, not locked                                        
+00:03 +23 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace after equals restores the calculation (D-83) repeated backspace keeps working                                                      
+00:03 +24 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace after equals restores the calculation (D-83) repeated backspace keeps working                                                      
+00:03 +24 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace after equals restores the calculation (D-83) a digit after restoring extends the expression again                                  
+00:03 +25 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace after equals restores the calculation (D-83) a digit after restoring extends the expression again                                  
+00:03 +25 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace after equals restores the calculation (D-83) the answer is still shown after the restore                                           
+00:03 +26 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace after equals restores the calculation (D-83) the answer is still shown after the restore                                           
+00:03 +26 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: AC resets everything (D-83) from a completed calculation                             
+00:03 +27 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: AC resets everything (D-83) from a completed calculation                             
+00:03 +27 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: AC resets everything (D-83) from an error                                            
+00:03 +28 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: AC resets everything (D-83) from an error                                            
+00:03 +28 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: AC resets everything (D-83) from an open parenthesis                                 
+00:03 +29 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: AC resets everything (D-83) from an open parenthesis                                 
+00:03 +29 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: digits a leading zero is replaced rather than accumulated                            
+00:03 +30 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: digits a leading zero is replaced rather than accumulated                            
+00:03 +30 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: digits type after an operator                                                        
+00:03 +31 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: digits type after an operator                                                        
+00:03 +31 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: digits type after a closing parenthesis is refused                                   
+00:03 +32 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: digits type after a closing parenthesis is refused                                   
+00:03 +32 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: digits after equals a digit starts a new calculation                                 
+00:03 +33 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: digits after equals a digit starts a new calculation                                 
+00:03 +33 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: digits a lone zero is preserved                                                      
+00:03 +34 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: digits a lone zero is preserved                                                      
+00:03 +34 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the decimal point completes a number                                                 
+00:03 +35 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the decimal point completes a number                                                 
+00:03 +35 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the decimal point is refused when the number already has one                         
+00:03 +36 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the decimal point is refused when the number already has one                         
+00:03 +36 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the decimal point starts 0. after an operator                                        
+00:03 +37 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the decimal point starts 0. after an operator                                        
+00:03 +37 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the decimal point starts 0. after a multiply                                         
+00:03 +38 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the decimal point starts 0. after a multiply                                         
+00:03 +38 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the decimal point works inside parentheses                                           
+00:03 +39 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the decimal point works inside parentheses                                           
+00:03 +39 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the decimal point a lone decimal point starts a number                               
+00:03 +40 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the decimal point a lone decimal point starts a number                               
+00:03 +40 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: operators a pending operator is replaced, keeping the number                         
+00:03 +41 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: operators a pending operator is replaced, keeping the number                         
+00:03 +41 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: operators one with nothing to its left is ignored                                    
+00:03 +42 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: operators one with nothing to its left is ignored                                    
+00:03 +42 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: operators one after a closing parenthesis is allowed, so a group can be used         
+00:03 +43 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: operators one after a closing parenthesis is allowed, so a group can be used         
+00:03 +43 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: operators after equals it continues from the result                                  
+00:03 +44 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: operators after equals it continues from the result                                  
+00:03 +44 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: percent (D-86) divides by 100 under multiply                                         
+00:03 +45 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: percent (D-86) divides by 100 under multiply                                         
+00:03 +45 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: percent (D-86) divides by 100 on its own                                             
+00:03 +46 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: percent (D-86) divides by 100 on its own                                             
+00:03 +46 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: percent (D-86) is a share of the left operand under add                              
+00:03 +47 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: percent (D-86) is a share of the left operand under add                              
+00:03 +47 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: percent (D-86) is a share of the left operand under subtract                         
+00:03 +48 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: percent (D-86) is a share of the left operand under subtract                         
+00:03 +48 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: percent (D-86) works inside parentheses                                              
+00:03 +49 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: percent (D-86) works inside parentheses                                              
+00:03 +49 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: percent (D-86) refuses to lead an expression                                         
+00:03 +50 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: percent (D-86) refuses to lead an expression                                         
+00:03 +50 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: percent (D-86) attaches to a group                                                   
+00:03 +51 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: percent (D-86) attaches to a group                                                   
+00:03 +51 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: parentheses calculate (D-84) the specification examples                              
+00:03 +52 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: parentheses calculate (D-84) the specification examples                              
+00:03 +52 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: parentheses calculate (D-84) precedence applies across the whole expression          
+00:03 +53 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: parentheses calculate (D-84) precedence applies across the whole expression          
+00:03 +53 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: parentheses calculate (D-84) an unclosed group is completed by =                     
+00:03 +54 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: parentheses calculate (D-84) an unclosed group is completed by =                     
+00:03 +54 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: equals and the result state keeps the expression and the result apart                
+00:03 +55 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: equals and the result state keeps the expression and the result apart                
+00:03 +55 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: equals and the result state a repeated equals changes nothing                        
+00:03 +56 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: equals and the result state a repeated equals changes nothing                        
+00:03 +56 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: equals and the result state division by zero reports the error state                 
+00:03 +57 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: equals and the result state division by zero reports the error state                 
+00:03 +57 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: equals and the result state an operator after a result continues from it             
+00:03 +58 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: equals and the result state an operator after a result continues from it             
+00:03 +58 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: equals and the result state a digit after a result starts over                       
+00:03 +59 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: equals and the result state a digit after a result starts over                       
+00:03 +59 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: equals and the result state = on an untouched calculator does nothing                
+00:03 +60 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: equals and the result state = on an untouched calculator does nothing                
+00:03 +60 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: equals and the result state an error clears on the next key                          
+00:03 +61 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: equals and the result state an error clears on the next key                          
+00:03 +61 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: error handling division by zero never throws                                         
+00:03 +62 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: error handling division by zero never throws                                         
+00:03 +62 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: error handling an empty group errors rather than crashing                            
+00:03 +63 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: error handling an empty group errors rather than crashing                            
+00:03 +63 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: error handling backspace is refused in the error state                               
+00:03 +64 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: error handling backspace is refused in the error state                               
+00:03 +64 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: error handling a huge number is handled without throwing                             
+00:03 +65 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: error handling a huge number is handled without throwing                             
+00:03 +65 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: loadValue (D-37) puts the value on screen as a result                                
+00:03 +66 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: loadValue (D-37) puts the value on screen as a result                                
+00:03 +66 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: loadValue (D-37) an operator continues from it                                       
+00:03 +67 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: loadValue (D-37) an operator continues from it                                       
+00:03 +67 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: loadValue (D-37) a digit starts a fresh calculation                                  
+00:03 +68 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: loadValue (D-37) a digit starts a fresh calculation                                  
+00:03 +68 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: loadValue (D-37) it discards whatever was on the keypad                              
+00:03 +69 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: loadValue (D-37) it discards whatever was on the keypad                              
+00:03 +69 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: loadValue (D-37) a non-finite value is ignored                                       
+00:03 +70 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: loadValue (D-37) a non-finite value is ignored                                       
+00:03 +70 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the state snapshot compares by content                                               
+00:03 +71 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the state snapshot compares by content                                               
+00:03 +71 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the state snapshot an old reference cannot observe later presses                     
+00:03 +72 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the state snapshot an old reference cannot observe later presses                     
+00:03 +72 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the state snapshot copyWith replaces only what it names                              
+00:03 +73 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the state snapshot copyWith replaces only what it names                              
+00:03 +73 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the state snapshot canBackspace mirrors the expression                               
+00:03 +74 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the state snapshot canBackspace mirrors the expression                               
+00:03 +74 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: justEvaluated (D-35) is set only by =                                                
+00:03 +75 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: justEvaluated (D-35) is set only by =                                                
+00:03 +75 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: justEvaluated (D-35) is cleared by the next key                                      
+00:03 +76 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: justEvaluated (D-35) is cleared by the next key                                      
+00:03 +76 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: justEvaluated (D-35) an error never sets it, so nothing is recorded                  
+00:03 +77 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: justEvaluated (D-35) an error never sets it, so nothing is recorded                  
+00:03 +77 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the keypad has no backspace key                                                      
+00:03 +78 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the keypad has no backspace key                                                      
+00:03 +78 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the keypad covers the 5x4 keypad, with () where the sign toggle used to be           
+00:03 +79 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the keypad covers the 5x4 keypad, with () where the sign toggle used to be           
+00:03 +79 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the keypad the parentheses key has an accessible name                                
+00:03 +80 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the keypad the parentheses key has an accessible name                                
+00:03 +80 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the keypad maps the four operator keys to operators                                  
+00:03 +81 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: the keypad maps the four operator keys to operators                                  
+00:03 +81 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: formatNumber renders integers without a decimal point                                
+00:03 +82 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: formatNumber renders integers without a decimal point                                
+00:03 +82 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: formatNumber trims trailing zeros rather than padding                                
+00:03 +83 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: formatNumber trims trailing zeros rather than padding                                
+00:03 +83 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: formatNumber returns Error for non-finite values                                     
+00:03 +84 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/calculator_engine_test.dart: formatNumber returns Error for non-finite values                                     
+00:03 +84 ~4: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart                                                                                      
+00:03 +84 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: isSameDay ignores the time of day                                                           
+00:03 +85 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: isSameDay ignores the time of day                                                           
+00:03 +85 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: isSameDay separates adjacent days                                                           
+00:03 +86 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: isSameDay separates adjacent days                                                           
+00:03 +86 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: isSameDay separates the same date in a different month or year                              
+00:03 +87 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: isSameDay separates the same date in a different month or year                              
+00:03 +87 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: dayGroupLabel labels a calculation made today                                               
+00:03 +88 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: dayGroupLabel labels a calculation made today                                               
+00:03 +88 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: dayGroupLabel labels a calculation made yesterday                                           
+00:03 +89 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: dayGroupLabel labels a calculation made yesterday                                           
+00:03 +89 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: dayGroupLabel labels anything older as a calendar date                                      
+00:03 +90 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: dayGroupLabel labels anything older as a calendar date                                      
+00:03 +90 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: dayGroupLabel crosses a month boundary into Yesterday                                       
+00:03 +91 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: dayGroupLabel crosses a month boundary into Yesterday                                       
+00:03 +91 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: dayGroupLabel crosses a year boundary into Yesterday                                        
+00:03 +92 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: dayGroupLabel crosses a year boundary into Yesterday                                        
+00:03 +92 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: dayGroupLabel handles a leap day                                                            
+00:03 +93 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: dayGroupLabel handles a leap day                                                            
+00:03 +93 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: dayGroupLabel names every month, in order                                                   
+00:03 +94 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: dayGroupLabel names every month, in order                                                   
+00:03 +94 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: dayGroupLabel defaults now to the current time                                              
+00:03 +95 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: dayGroupLabel defaults now to the current time                                              
+00:04 +95 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/date_group_test.dart: dayGroupLabel defaults now to the current time                                              
+00:04 +95 ~4: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart                                                                                
+00:04 +95 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the primary line shows 0 before anything is keyed                    
+00:04 +96 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the primary line shows 0 before anything is keyed                    
+00:04 +96 ~4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the primary line shows the number being typed, without rounding it   
+00:04 +96 ~4 -1: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart                                                                         
+00:04 +96 ~4 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: precedence (D-84, supersedes D-17) × and ÷ bind tighter than + and −           
+00:04 +96 ~4 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the primary line shows the number being typed, without rounding it [E]
+  Expected: '1.23456'
+    Actual: '1.23'
+     Which: is different. Both strings start the same, but the actual value is missing the following trailing characters: 456
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\display_resolver_test.dart 25:7           main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart -p vm --plain-name "resolveDisplay — the primary line shows the number being typed, without rounding it"
+
+00:04 +97 ~4 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: precedence (D-84, supersedes D-17) × and ÷ bind tighter than + and −           
+00:04 +98 ~4 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: precedence (D-84, supersedes D-17) × and ÷ bind tighter than + and −           
+00:04 +99 ~4 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the primary line never pads trailing zeros                        
+00:04 +100 ~4 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the primary line never pads trailing zeros                       
+00:04 +101 ~4 -1: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the primary line never pads trailing zeros                       
+00:04 +102 ~4 -2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: parentheses groups a simple sum                                               
+00:04 +102 ~4 -2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: parentheses groups two sums                                                   
+00:04 +102 ~4 -2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the primary line never pads trailing zeros [E]                   
+  RangeError (end): Invalid value: Not in inclusive range 4..5: 1
+  dart:core                                                                    _StringBase.substring
+  package:calculator/features/calculator/domain/calculator_engine.dart 402:34  CalculatorEngine._dot
+  package:calculator/features/calculator/domain/calculator_engine.dart 308:42  CalculatorEngine.apply
+  test\support\keypad_session.dart 34:12                                       applyKeys
+  test\support\keypad_session.dart 40:43                                       apply
+  test\unit\display_resolver_test.dart 9:20                                    displayOf
+  test\unit\display_resolver_test.dart 42:14                                   main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart -p vm --plain-name "resolveDisplay — the primary line never pads trailing zeros"
+
+00:04 +103 ~4 -2: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the primary line applies thousands separators to a computed result                                                      
+00:04 +104 ~4 -2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: parentheses nests                                                             
+00:04 +105 ~4 -2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the primary line groups a negative result too                    
+00:04 +106 ~4 -2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the primary line groups a negative result too                    
+00:04 +107 ~4 -2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the primary line groups a negative result too                    
+00:04 +108 ~4 -2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the primary line groups a negative result too                    
+00:04 +109 ~4 -2: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the primary line groups a negative result too                    
+00:04 +109 ~4 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the primary line groups a negative result too [E]                
+  Invalid argument (character): is not a calculator key: "±"
+  test\support\keypad_session.dart 78:8       _keyFor
+  test\support\keypad_session.dart 25:14      keysFor
+  test\support\keypad_session.dart 40:53      apply
+  test\unit\display_resolver_test.dart 9:20   displayOf
+  test\unit\display_resolver_test.dart 51:14  main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart -p vm --plain-name "resolveDisplay — the primary line groups a negative result too"
+
+00:04 +110 ~4 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter ... percent is contextual (D-86, supersedes D-06) divides by 100 when it stands alone                                                        
+00:04 +110 ~4 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the secondary line is blank while a single number is being typed 
+00:04 +111 ~4 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter ... percent is contextual (D-86, supersedes D-06) is a share of the left operand under +                                                     
+00:04 +112 ~4 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter ... percent is contextual (D-86, supersedes D-06) is a share of the left operand under +                                                     
+00:04 +112 ~4 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the secondary line shows the operator and the operand being typed
+00:04 +113 ~4 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the secondary line shows the operator and the operand being typed
+00:04 +114 ~4 -3: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the secondary line shows the operator and the operand being typed
+00:04 +114 ~4 -4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the secondary line shows the operator and the operand being typed [E]
+  Expected: '100 +'
+    Actual: '100 + '
+     Which: is different. Both strings start the same, but the actual value also has the following trailing characters:  
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\display_resolver_test.dart 61:7           main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart -p vm --plain-name "resolveDisplay — the secondary line shows the operator and the operand being typed"
+
+00:04 +115 ~4 -4: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the secondary line accumulates every term in a chain             
+00:04 +116 ~4 -4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... percent is contextual (D-86, supersedes D-06) is not contextual when it is part of a product                                             
+00:04 +117 ~4 -4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the secondary line groups each term independently of the operators                                                      
+00:04 +118 ~4 -4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the secondary line groups each term independently of the operators                                                      
+00:04 +119 ~4 -4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the secondary line groups each term independently of the operators                                                      
+00:04 +120 ~4 -4: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the secondary line groups each term independently of the operators                                                      
+00:04 +120 ~4 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the secondary line groups each term independently of the operators [E]
+  Expected: '1,000 × 8 +'
+    Actual: '1,000 × 8 + '
+     Which: is different. Both strings start the same, but the actual value also has the following trailing characters:  
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\display_resolver_test.dart 70:7           main.<fn>.<fn>
+  
+
+00:04 +120 ~4 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: decimals parses a trailing dot as the number being typed                      
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart -p vm --plain-name "resolveDisplay — the secondary line groups each term independently of the operators"
+
+00:04 +121 ~4 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/expression_evaluator_test.dart: decimals parses a trailing dot as the number being typed                      
+00:04 +121 ~4 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the secondary line drops the trailing operator once equals is pressed                                                   
+00:04 +122 ~4 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the secondary line drops the trailing operator once equals is pressed                                                   
+00:04 +122 ~4 -5: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the secondary line collapses to the result when a chain is continued                                                    
+00:04 +122 ~4 -6: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the secondary line collapses to the result when a chain is continued [E]
+  Expected: '1,000 +'
+    Actual: '1,000 + '
+     Which: is different. Both strings start the same, but the actual value also has the following trailing characters:  
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\display_resolver_test.dart 78:7           main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart -p vm --plain-name "resolveDisplay — the secondary line collapses to the result when a chain is continued"
+
+00:04 +122 ~4 -6: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the secondary line is blank again when a new calculation starts after equals                                            
+00:04 +123 ~4 -6: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the secondary line is blank again when a new calculation starts after equals                                            
+00:04 +123 ~4 -6: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the secondary line ignores a leading operator, so a number never follows one                                            
+00:04 +124 ~4 -6: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the secondary line ignores a leading operator, so a number never follows one                                            
+00:04 +124 ~4 -6: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the secondary line keeps a negative sign in front of its term    
+00:04 +124 ~4 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the secondary line keeps a negative sign in front of its term [E]
+  Invalid argument (character): is not a calculator key: "±"
+  test\support\keypad_session.dart 78:8       _keyFor
+  test\support\keypad_session.dart 25:14      keysFor
+  test\support\keypad_session.dart 40:53      apply
+  test\unit\display_resolver_test.dart 9:20   displayOf
+  test\unit\display_resolver_test.dart 93:14  main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart -p vm --plain-name "resolveDisplay — the secondary line keeps a negative sign in front of its term"
+
+00:04 +124 ~4 -7: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the secondary line keeps a staged sign off the line until it becomes a number                                           
+00:04 +124 ~4 -8: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the secondary line keeps a staged sign off the line until it becomes a number [E]
+  Invalid argument (character): is not a calculator key: "±"
+  test\support\keypad_session.dart 78:8       _keyFor
+  test\support\keypad_session.dart 25:14      keysFor
+  test\support\keypad_session.dart 40:53      apply
+  test\unit\display_resolver_test.dart 9:20   displayOf
+  test\unit\display_resolver_test.dart 99:14  main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart -p vm --plain-name "resolveDisplay — the secondary line keeps a staged sign off the line until it becomes a number"
+
+00:04 +124 ~4 -8: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the secondary line prints the signed operand once a digit completes it                                                  
+00:04 +124 ~4 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the secondary line prints the signed operand once a digit completes it [E]
+  Invalid argument (character): is not a calculator key: "±"
+  test\support\keypad_session.dart 78:8        _keyFor
+  test\support\keypad_session.dart 25:14       keysFor
+  test\support\keypad_session.dart 40:53       apply
+  test\unit\display_resolver_test.dart 9:20    displayOf
+  test\unit\display_resolver_test.dart 103:14  main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart -p vm --plain-name "resolveDisplay — the secondary line prints the signed operand once a digit completes it"
+
+00:04 +124 ~4 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the live preview (D-79) shows what equals would produce while the operand is being typed                                
+00:04 +125 ~4 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the live preview (D-79) shows what equals would produce while the operand is being typed                                
+00:04 +125 ~4 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the live preview (D-79) keeps showing the running total until an operand is typed                                       
+00:04 +126 ~4 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the live preview (D-79) keeps showing the running total until an operand is typed                                       
+00:04 +126 ~4 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the live preview (D-79) does not move the number when equals is pressed                                                 
+00:04 +127 ~4 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the live preview (D-79) does not move the number when equals is pressed                                                 
+00:04 +127 ~4 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the live preview (D-79) previews the next term of a chain, not just the first                                           
+00:04 +128 ~4 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the live preview (D-79) previews the next term of a chain, not just the first                                           
+00:04 +128 ~4 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the live preview (D-79) previews subtraction and division too    
+00:04 +129 ~4 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the live preview (D-79) previews subtraction and division too    
+00:04 +129 ~4 -9: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the live preview (D-79) previews a signed operand without touching the accumulator                                      
+00:04 +129 ~4 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the live preview (D-79) previews a signed operand without touching the accumulator [E]
+  Invalid argument (character): is not a calculator key: "±"
+  test\support\keypad_session.dart 78:8        _keyFor
+  test\support\keypad_session.dart 25:14       keysFor
+  test\support\keypad_session.dart 40:53       apply
+  test\unit\display_resolver_test.dart 9:20    displayOf
+  test\unit\display_resolver_test.dart 139:14  main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart -p vm --plain-name "resolveDisplay — the live preview (D-79) previews a signed operand without touching the accumulator"
+
+00:04 +129 ~4 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the live preview (D-79) rounds the preview to decimalPlaces, so equals is a visual no-op                               
+00:04 +130 ~4 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the live preview (D-79) rounds the preview to decimalPlaces, so equals is a visual no-op                               
+00:04 +130 ~4 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the live preview (D-79) keeps the running total when the fold cannot be computed                                       
+00:04 +131 ~4 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the live preview (D-79) keeps the running total when the fold cannot be computed                                       
+00:04 +131 ~4 -10: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — the live preview (D-79) does not round the digits still being typed                                                    
+00:04 +131 ~4 -11: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the live preview (D-79) does not round the digits still being typed [E]
+  Expected: '1.23456'
+    Actual: '1.23'
+     Which: is different. Both strings start the same, but the actual value is missing the following trailing characters: 456
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\display_resolver_test.dart 161:7          main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart -p vm --plain-name "resolveDisplay — the live preview (D-79) does not round the digits still being typed"
+
+00:04 +131 ~4 -11: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the live preview (D-79) groups the preview like any other result
+00:04 +132 ~4 -11: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the live preview (D-79) groups the preview like any other result
+00:04 +132 ~4 -11: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the error state shows Error and retains the expression          
+00:04 +133 ~4 -11: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the error state shows Error and retains the expression          
+00:04 +133 ~4 -11: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the error state reports the error for 0 ÷ 0 as well             
+00:04 +134 ~4 -11: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the error state reports the error for 0 ÷ 0 as well             
+00:04 +134 ~4 -11: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the error state clears once a new calculation starts            
+00:04 +135 ~4 -11: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — the error state clears once a new calculation starts            
+00:04 +135 ~4 -11: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — decimalPlaces is formatting-only changing it re-renders a result without touching the calculation                      
+00:04 +136 ~4 -11: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — decimalPlaces is formatting-only changing it re-renders a result without touching the calculation                      
+00:04 +136 ~4 -11: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — decimalPlaces is formatting-only changing it never rewrites an entry the user is still typing                          
+00:04 +136 ~4 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveDisplay — decimalPlaces is formatting-only changing it never rewrites an entry the user is still typing [E]
+  Expected: '1.23456'
+    Actual: '1'
+     Which: is different. Both strings start the same, but the actual value is missing the following trailing characters: .23456
+  a typed entry must not be rounded to 0 places
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\display_resolver_test.dart 209:9          main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart -p vm --plain-name "resolveDisplay — decimalPlaces is formatting-only changing it never rewrites an entry the user is still typing"
+
+00:04 +136 ~4 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — decimalPlaces is formatting-only changing it does not disturb the expression line                                      
+00:04 +137 ~4 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveDisplay — decimalPlaces is formatting-only changing it does not disturb the expression line                                      
+00:04 +137 ~4 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveExpressionLine is blank while a single number is being typed              
+00:04 +138 ~4 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveExpressionLine is blank while a single number is being typed              
+00:04 +138 ~4 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveExpressionLine joins the terms with their operators                       
+00:04 +139 ~4 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveExpressionLine joins the terms with their operators                       
+00:04 +139 ~4 -12: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveExpressionLine appends an operator awaiting its operand                   
+00:04 +139 ~4 -13: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveExpressionLine appends an operator awaiting its operand [E]               
+  Expected: '2 +'
+    Actual: '2 + '
+     Which: is different. Both strings start the same, but the actual value also has the following trailing characters:  
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\display_resolver_test.dart 240:7          main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart -p vm --plain-name "resolveExpressionLine appends an operator awaiting its operand"
+
+00:04 +139 ~4 -13: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveExpressionLine appends the operand being typed, so nothing typed goes missing                                                    
+00:04 +140 ~4 -13: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveExpressionLine appends the operand being typed, so nothing typed goes missing                                                    
+00:04 +140 ~4 -13: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveExpressionLine drops the pending operator once = is pressed               
+00:04 +140 ~4 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveExpressionLine drops the pending operator once = is pressed [E]           
+  Expected: '2 +'
+    Actual: '2 + '
+     Which: is different. Both strings start the same, but the actual value also has the following trailing characters:  
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\display_resolver_test.dart 252:7          main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart -p vm --plain-name "resolveExpressionLine drops the pending operator once = is pressed"
+
+00:04 +140 ~4 -14: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveExpressionLine collapses to the result when the user continues from one   
+00:04 +140 ~4 -15: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveExpressionLine collapses to the result when the user continues from one [E]
+  Expected: '1,000 +'
+    Actual: '1,000 + '
+     Which: is different. Both strings start the same, but the actual value also has the following trailing characters:  
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\display_resolver_test.dart 257:7          main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart -p vm --plain-name "resolveExpressionLine collapses to the result when the user continues from one"
+
+00:04 +140 ~4 -15: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveExpressionLine groups each number independently, leaving operators untouched                                                     
+00:04 +141 ~4 -15: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveExpressionLine groups each number independently, leaving operators untouched                                                     
+00:04 +141 ~4 -15: C:/Users/Mahadi/Desktop/Desktop/Flutter ... resolveExpressionLine keeps a lone operator readable rather than leading with a space                                                   
+00:04 +141 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveExpressionLine keeps a lone operator readable rather than leading with a space [E]
+  Expected: '2 +'
+    Actual: '2 + '
+     Which: is different. Both strings start the same, but the actual value also has the following trailing characters:  
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\unit\display_resolver_test.dart 268:7          main.<fn>.<fn>
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart -p vm --plain-name "resolveExpressionLine keeps a lone operator readable rather than leading with a space"
+
+00:04 +141 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveExpressionLine keeps the failed expression so the user can see what broke 
+00:04 +142 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveExpressionLine keeps the failed expression so the user can see what broke 
+00:04 +142 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveExpressionLine is blank for a value loaded from history (D-37)            
+00:04 +143 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/display_resolver_test.dart: resolveExpressionLine is blank for a value loaded from history (D-37)            
+00:04 +143 ~4 -16: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart                                                                                     
+00:04 +143 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: groupThousands leaves values under one thousand untouched                                  
+00:04 +144 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: groupThousands leaves values under one thousand untouched                                  
+00:04 +144 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: groupThousands inserts a separator every three integer digits                              
+00:04 +145 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: groupThousands inserts a separator every three integer digits                              
+00:04 +145 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: groupThousands keeps the fractional part intact                                            
+00:04 +146 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: groupThousands keeps the fractional part intact                                            
+00:04 +146 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: groupThousands handles negatives                                                           
+00:04 +147 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: groupThousands handles negatives                                                           
+00:04 +147 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: groupThousands returns non-numeric values unchanged                                        
+00:04 +148 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: groupThousands returns non-numeric values unchanged                                        
+00:04 +148 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult rounds to decimalPlaces without padding (D-21)                                
+00:04 +149 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult rounds to decimalPlaces without padding (D-21)                                
+00:04 +149 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult inserts thousands separators (D-18)                                           
+00:04 +150 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult inserts thousands separators (D-18)                                           
+00:04 +150 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult keeps the sign outside the separators                                         
+00:04 +151 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult keeps the sign outside the separators                                         
+00:04 +151 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult defaults to two decimal places                                                
+00:04 +152 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult defaults to two decimal places                                                
+00:04 +152 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult treats a negative precision as zero rather than throwing                      
+00:04 +153 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult treats a negative precision as zero rather than throwing                      
+00:04 +153 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult returns Error for non-finite values                                           
+00:04 +154 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult returns Error for non-finite values                                           
+00:04 +154 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult does not overflow with digits on extreme magnitudes                           
+00:04 +155 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult does not overflow with digits on extreme magnitudes                           
+00:04 +155 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult is stable across the float noise a calculator accumulates                     
+00:04 +156 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult is stable across the float noise a calculator accumulates                     
+00:05 +156 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/format_test.dart: formatResult is stable across the float noise a calculator accumulates                     
+00:05 +156 ~4 -16: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart                                                                         
+00:05 +156 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: records a completed calculation                                                
+00:05 +157 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: records a completed calculation                                                
+00:05 +157 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: records before the repository has finished loading                             
+00:05 +158 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: records before the repository has finished loading                             
+00:05 +158 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: clears every entry                                                             
+00:05 +159 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: clears every entry                                                             
+00:05 +159 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: clears even when called before the repository has loaded                       
+00:05 +160 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: clears even when called before the repository has loaded                       
+00:05 +160 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: the toggle is read on every write, not cached at construction                  
+00:05 +161 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: the toggle is read on every write, not cached at construction                  
+00:05 +161 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: the in-memory fallback honours the history setting (D-40, AC-005)              
+00:05 +162 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: the in-memory fallback honours the history setting (D-40, AC-005)              
+00:05 +162 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: the in-memory fallback keeps the same cap as the real one                      
+00:05 +163 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: the in-memory fallback keeps the same cap as the real one                      
+00:05 +163 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: an unreadable store degrades to in-memory rather than failing                  
+00:05 +164 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/history_controller_test.dart: an unreadable store degrades to in-memory rather than failing                  
+00:05 +164 ~4 -16: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart                                                                              
+00:05 +164 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Privacy Policy is non-empty                           
+00:05 +165 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Privacy Policy is non-empty                           
+00:05 +165 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Privacy Policy has enough sections to be a document   
+00:05 +166 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Privacy Policy has enough sections to be a document   
+00:05 +166 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Privacy Policy has no placeholder markers             
+00:05 +167 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Privacy Policy has no placeholder markers             
+00:05 +167 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Privacy Policy headings are unique                    
+00:05 +168 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Privacy Policy headings are unique                    
+00:05 +168 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Privacy Policy sections all have non-empty bodies     
+00:05 +169 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Privacy Policy sections all have non-empty bodies     
+00:05 +169 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Privacy Policy states its own version                 
+00:05 +170 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Privacy Policy states its own version                 
+00:05 +170 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Terms of Service is non-empty                         
+00:05 +171 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Terms of Service is non-empty                         
+00:05 +171 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Terms of Service has enough sections to be a document 
+00:05 +172 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Terms of Service has enough sections to be a document 
+00:05 +172 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Terms of Service has no placeholder markers           
+00:05 +173 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Terms of Service has no placeholder markers           
+00:05 +173 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Terms of Service headings are unique                  
+00:05 +174 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Terms of Service headings are unique                  
+00:05 +174 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Terms of Service sections all have non-empty bodies   
+00:05 +175 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Terms of Service sections all have non-empty bodies   
+00:05 +175 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Terms of Service states its own version               
+00:05 +176 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: legal documents are real copy Terms of Service states its own version               
+00:05 +176 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: privacy policy claims match the platform says it makes no network requests          
+00:05 +177 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: privacy policy claims match the platform says it makes no network requests          
+00:05 +177 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: privacy policy claims match the platform says backups are disabled                  
+00:05 +178 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: privacy policy claims match the platform says backups are disabled                  
+00:05 +178 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: privacy policy claims match the platform says how to delete data                    
+00:05 +179 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: privacy policy claims match the platform says how to delete data                    
+00:05 +179 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: privacy policy claims match the platform names the two things actually stored       
+00:05 +180 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: privacy policy claims match the platform names the two things actually stored       
+00:05 +180 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: contact details both documents carry a contact address                              
+00:05 +181 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: contact details both documents carry a contact address                              
+00:05 +181 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: contact details the contact placeholder is still flagged for release                
+00:05 +182 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/legal_content_test.dart: contact details the contact placeholder is still flagged for release                
+00:05 +182 ~4 -16: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/review_service_test.dart                                                                             
+00:05 +182 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/review_service_test.dart: ReviewService.rateApp requests the native prompt when the platform is available    
+00:05 +183 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/review_service_test.dart: ReviewService.rateApp requests the native prompt when the platform is available    
+00:05 +183 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/review_service_test.dart: ReviewService.rateApp opens the store listing when the prompt is unavailable       
+00:05 +184 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/review_service_test.dart: ReviewService.rateApp opens the store listing when the prompt is unavailable       
+00:05 +184 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/review_service_test.dart: ReviewService.rateApp reports unavailable when the availability check throws       
+00:05 +185 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/review_service_test.dart: ReviewService.rateApp reports unavailable when the availability check throws       
+00:05 +185 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/review_service_test.dart: ReviewService.rateApp reports unavailable when the prompt itself throws            
+00:05 +186 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/review_service_test.dart: ReviewService.rateApp reports unavailable when the prompt itself throws            
+00:05 +186 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/review_service_test.dart: ReviewService.rateApp reports unavailable when the store listing throws            
+00:05 +187 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/review_service_test.dart: ReviewService.rateApp reports unavailable when the store listing throws            
+00:06 +187 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/review_service_test.dart: ReviewService.rateApp reports unavailable when the store listing throws            
+00:06 +187 ~4 -16: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart                                                                                
+00:06 +187 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a well-formed code holds its digits                                                   
+00:06 +188 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a well-formed code holds its digits                                                   
+00:06 +188 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a well-formed code keeps leading zeroes, which are digits and not padding             
+00:06 +189 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a well-formed code keeps leading zeroes, which are digits and not padding             
+00:06 +189 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a well-formed code is equal to another code with the same digits                      
+00:06 +190 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a well-formed code is equal to another code with the same digits                      
+00:06 +190 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a well-formed code is not equal to a different code                                   
+00:06 +191 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a well-formed code is not equal to a different code                                   
+00:06 +191 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a malformed code is rejected for being too short                                      
+00:06 +192 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a malformed code is rejected for being too short                                      
+00:06 +192 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a malformed code is rejected for being too long                                       
+00:06 +193 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a malformed code is rejected for being too long                                       
+00:06 +193 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a malformed code is rejected for being empty                                          
+00:06 +194 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a malformed code is rejected for being empty                                          
+00:06 +194 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a malformed code is rejected for holding non-digits                                   
+00:06 +195 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a malformed code is rejected for holding non-digits                                   
+00:06 +195 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a malformed code is rejected for carrying a sign or a decimal point                   
+00:06 +196 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: a malformed code is rejected for carrying a sign or a decimal point                   
+00:06 +196 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: isWellFormed accepts exactly four digits                                              
+00:06 +197 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: isWellFormed accepts exactly four digits                                              
+00:06 +197 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: isWellFormed rejects anything else, including null                                    
+00:06 +198 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: isWellFormed rejects anything else, including null                                    
+00:06 +198 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: isWellFormed agrees with the constructor on every case it covers                      
+00:06 +199 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: isWellFormed agrees with the constructor on every case it covers                      
+00:06 +199 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: the default is 0000 on a fresh install                                                
+00:06 +200 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: the default is 0000 on a fresh install                                                
+00:06 +200 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: toString does not leak the code                                                       
+00:06 +201 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_code_test.dart: toString does not leak the code                                                       
+00:06 +201 ~4 -16: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_persistence_test.dart                                                                         
+00:06 +201 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_persistence_test.dart: a fresh install reads the documented default                                   
+00:06 +202 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_persistence_test.dart: a fresh install reads the documented default                                   
+00:06 +202 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_persistence_test.dart: a changed PIN survives a relaunch                                              
+00:06 +203 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_persistence_test.dart: a changed PIN survives a relaunch                                              
+00:06 +203 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_persistence_test.dart: a changed PIN is the code the next unlock requires                             
+00:06 +204 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_persistence_test.dart: a changed PIN is the code the next unlock requires                             
+00:06 +204 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_persistence_test.dart: the last of several changes is the one that survives                           
+00:06 +205 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_persistence_test.dart: the last of several changes is the one that survives                           
+00:06 +205 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_persistence_test.dart: a PIN with leading zeroes survives a relaunch                                  
+00:06 +206 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_persistence_test.dart: a PIN with leading zeroes survives a relaunch                                  
+00:06 +206 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_persistence_test.dart: a store that cannot be reached degrades to the default                         
+00:06 +207 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_persistence_test.dart: a store that cannot be reached degrades to the default                         
+00:06 +207 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_persistence_test.dart: an unreachable store still accepts and persists a change                       
+00:06 +208 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_persistence_test.dart: an unreachable store still accepts and persists a change                       
+00:06 +208 ~4 -16: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart                                                                          
+00:06 +208 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: load returns 0000 on a fresh install                                            
+00:06 +209 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: load returns 0000 on a fresh install                                            
+00:06 +209 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: load returns the stored code once one exists                                    
+00:06 +210 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: load returns the stored code once one exists                                    
+00:06 +210 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: load a key holding the wrong type degrades to the default                       
+00:06 +211 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: load a key holding the wrong type degrades to the default                       
+00:06 +211 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: load a malformed value degrades to the default rather than throwing             
+00:06 +212 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: load a malformed value degrades to the default rather than throwing             
+00:06 +212 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: load never throws, whatever the store holds                                     
+00:06 +213 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: load never throws, whatever the store holds                                     
+00:06 +213 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: save round-trips a code                                                         
+00:06 +214 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: save round-trips a code                                                         
+00:06 +214 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: save writes under the documented key, as a plain string                         
+00:06 +215 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: save writes under the documented key, as a plain string                         
+00:06 +215 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: save a second save overwrites rather than accumulating                          
+00:06 +216 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: save a second save overwrites rather than accumulating                          
+00:06 +216 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: save survives a restart                                                         
+00:06 +217 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: save survives a restart                                                         
+00:06 +217 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: save round-trips a code with leading zeroes                                     
+00:06 +218 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: save round-trips a code with leading zeroes                                     
+00:06 +218 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: InMemorySecretRepository obeys the same defaults contract as the real one       
+00:06 +219 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: InMemorySecretRepository obeys the same defaults contract as the real one       
+00:06 +219 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: InMemorySecretRepository holds what it was given                                
+00:06 +220 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: InMemorySecretRepository holds what it was given                                
+00:06 +220 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: InMemorySecretRepository can be seeded                                          
+00:06 +221 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/secret_repository_test.dart: InMemorySecretRepository can be seeded                                          
+00:06 +221 ~4 -16: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart                                                                        
+00:06 +221 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: load publishes what the repository returns                                    
+00:07 +221 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: load publishes what the repository returns                                    
+00:07 +222 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: load publishes what the repository returns                                    
+00:07 +222 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: load the synchronous view mirrors the loaded value (D-41)                     
+00:07 +223 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: load the synchronous view mirrors the loaded value (D-41)                     
+00:07 +223 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: load the synchronous view falls back to defaults while loading                
+00:07 +224 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: load the synchronous view falls back to defaults while loading                
+00:07 +224 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: apply publishes the new value and persists it                                 
+00:07 +225 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: apply publishes the new value and persists it                                 
+00:07 +225 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: apply persists exactly once, with the whole object                            
+00:07 +226 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: apply persists exactly once, with the whole object                            
+00:07 +226 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: apply a change that changes nothing writes nothing                            
+00:07 +227 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: apply a change that changes nothing writes nothing                            
+00:07 +227 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: apply leaves the other preferences untouched                                  
+00:07 +228 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: apply leaves the other preferences untouched                                  
+00:07 +228 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... a write that beats the initial load (D-43) the user change survives the load resolving                                                  
+00:07 +229 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... a write that beats the initial load (D-43) the user change survives the load resolving                                                  
+00:07 +229 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... a write that beats the initial load (D-43) the guarded value is also what gets persisted                                                
+00:07 +230 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... a write that beats the initial load (D-43) the guarded value is also what gets persisted                                                
+00:07 +230 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: degradation an unavailable plugin yields in-memory settings, not an error     
+00:07 +231 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: degradation an unavailable plugin yields in-memory settings, not an error     
+00:07 +231 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: degradation a write still works against the fallback                          
+00:07 +232 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_controller_test.dart: degradation a write still works against the fallback                          
+00:07 +232 ~4 -16: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart                                                                       
+00:07 +232 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: a fresh install reads the documented defaults                                
+00:07 +233 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: a fresh install reads the documented defaults                                
+00:07 +233 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: every preference survives a relaunch                                         
+00:07 +234 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: every preference survives a relaunch                                         
+00:07 +234 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: a single preference survives, the rest fall back to defaults                 
+00:07 +235 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: a single preference survives, the rest fall back to defaults                 
+00:07 +235 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: the last of several writes is the one that survives                          
+00:07 +236 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: the last of several writes is the one that survives                          
+00:07 +236 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: a seeded store is read as stored, not as defaults                            
+00:07 +237 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: a seeded store is read as stored, not as defaults                            
+00:07 +237 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: an out-of-range stored precision is clamped, not rejected                    
+00:07 +238 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: an out-of-range stored precision is clamped, not rejected                    
+00:07 +238 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: the synchronous view is usable before the load resolves                      
+00:07 +239 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: the synchronous view is usable before the load resolves                      
+00:07 +239 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: an unavailable plugin leaves the app on usable defaults                      
+00:07 +240 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_persistence_test.dart: an unavailable plugin leaves the app on usable defaults                      
+00:07 +240 ~4 -16: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart                                                                        
+00:07 +240 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: load returns the documented defaults when the store is empty                  
+00:07 +241 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: load returns the documented defaults when the store is empty                  
+00:07 +241 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: load returns defaults for a partially written store, field by field           
+00:07 +242 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: load returns defaults for a partially written store, field by field           
+00:07 +242 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: load a key holding the wrong type degrades to its default                     
+00:07 +243 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: load a key holding the wrong type degrades to its default                     
+00:07 +243 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: load one corrupt key does not take the other preferences with it              
+00:07 +244 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: load one corrupt key does not take the other preferences with it              
+00:07 +244 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: load clamps a stored precision outside the offered range (D-46)               
+00:07 +245 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: load clamps a stored precision outside the offered range (D-46)               
+00:07 +245 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: save round-trips every field                                                  
+00:07 +246 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: save round-trips every field                                                  
+00:07 +246 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: save writes one primitive key per preference, not a blob                      
+00:07 +247 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: save writes one primitive key per preference, not a blob                      
+00:07 +247 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: save a second save overwrites rather than accumulating                        
+00:07 +248 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: save a second save overwrites rather than accumulating                        
+00:07 +248 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: save clamps on write as well as on read                                       
+00:07 +249 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: save clamps on write as well as on read                                       
+00:07 +249 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: InMemorySettingsRepository obeys the same defaults contract as the real one   
+00:07 +250 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: InMemorySettingsRepository obeys the same defaults contract as the real one   
+00:07 +250 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: InMemorySettingsRepository holds what it was given and forgets on construction
+00:07 +251 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: InMemorySettingsRepository holds what it was given and forgets on construction
+00:07 +251 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: InMemorySettingsRepository can be seeded                                      
+00:07 +252 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: InMemorySettingsRepository can be seeded                                      
+00:07 +252 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: AppSettings compares by value, not identity (D-47)                            
+00:07 +253 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: AppSettings compares by value, not identity (D-47)                            
+00:07 +253 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: AppSettings is identical to itself                                            
+00:07 +254 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: AppSettings is identical to itself                                            
+00:07 +254 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: AppSettings is not equal to a different type                                  
+00:07 +255 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: AppSettings is not equal to a different type                                  
+00:07 +255 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: AppSettings the picker offers 0 through 6, ascending, with no gaps            
+00:07 +256 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: AppSettings the picker offers 0 through 6, ascending, with no gaps            
+00:07 +256 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: AppSettings clampDecimalPlaces leaves a value in range alone                  
+00:07 +257 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/settings_repository_test.dart: AppSettings clampDecimalPlaces leaves a value in range alone                  
+00:07 +257 ~4 -16: loading C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/unit/shared_preferences_history_repository_test.dart                                                      
+00:07 +257 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... storage format (D-02) writes a single key holding a JSON list                                                                           
+00:07 +258 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... storage format (D-02) writes a single key holding a JSON list                                                                           
+00:07 +258 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... storage format (D-02) round-trips an entry through JSON unchanged                                                                       
+00:07 +259 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... storage format (D-02) round-trips an entry through JSON unchanged                                                                       
+00:07 +259 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... storage format (D-02) keeps the most recently added entry first                                                                         
+00:07 +260 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... storage format (D-02) keeps the most recently added entry first                                                                         
+00:07 +260 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... persistence across a restart (AC-006) data written before a restart is readable after it                                                
+00:07 +261 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... persistence across a restart (AC-006) data written before a restart is readable after it                                                
+00:07 +261 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... persistence across a restart (AC-006) starts empty when the key was never written                                                       
+00:07 +262 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... persistence across a restart (AC-006) starts empty when the key was never written                                                       
+00:07 +262 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the 200-entry cap (AC-014, D-02) keeps the newest 200 and evicts the oldest first                                                       
+00:08 +262 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the 200-entry cap (AC-014, D-02) keeps the newest 200 and evicts the oldest first                                                       
+00:08 +263 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the 200-entry cap (AC-014, D-02) keeps the newest 200 and evicts the oldest first                                                       
+00:08 +264 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the 200-entry cap (AC-014, D-02) keeps the newest 200 and evicts the oldest first                                                       
+00:08 +265 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the 200-entry cap (AC-014, D-02) keeps the newest 200 and evicts the oldest first                                                       
+00:08 +266 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the 200-entry cap (AC-014, D-02) keeps the newest 200 and evicts the oldest first                                                       
+00:08 +267 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the 200-entry cap (AC-014, D-02) keeps the newest 200 and evicts the oldest first                                                       
+00:08 +268 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the 200-entry cap (AC-014, D-02) keeps the newest 200 and evicts the oldest first                                                       
+00:08 +269 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the 200-entry cap (AC-014, D-02) keeps the newest 200 and evicts the oldest first                                                       
+00:08 +270 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the 200-entry cap (AC-014, D-02) keeps the newest 200 and evicts the oldest first                                                       
+00:09 +270 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the 200-entry cap (AC-014, D-02) keeps the newest 200 and evicts the oldest first                                                       
+00:09 +271 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Rate App asks the prompt; successes show no snack bar                             
+00:09 +272 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Rate App asks the prompt; successes show no snack bar                             
+00:10 +272 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Rate App asks the prompt; successes show no snack bar                             
+00:10 +273 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) shows the two sections in order                            
+00:11 +273 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) shows the two sections in order                            
+00:11 +274 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) shows the two sections in order                            
+00:11 +275 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the 200-entry cap (AC-014, D-02) enforces the cap on the persisted JSON, not just the read                                              
+00:11 +276 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Calculator every key is announced by its own name, not its glyph                  
+00:11 +277 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Calculator every key is announced by its own name, not its glyph                  
+00:11 +278 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Calculator every key is announced by its own name, not its glyph                  
+00:11 +279 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Calculator every key is announced by its own name, not its glyph                  
+00:11 +280 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Calculator every key is announced by its own name, not its glyph                  
+00:11 +281 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Calculator every key is announced by its own name, not its glyph                  
+00:11 +282 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Calculator every key is announced by its own name, not its glyph                  
+00:11 +283 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Calculator every key is announced by its own name, not its glyph                  
+00:11 +284 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Calculator every key is announced by its own name, not its glyph                  
+00:11 +285 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Calculator every key is announced by its own name, not its glyph                  
+00:11 +286 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Calculator every key is announced by its own name, not its glyph                  
+00:11 +287 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Calculator every key is announced by its own name, not its glyph                  
+00:11 +288 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Calculator every key is announced by its own name, not its glyph                  
+00:11 +289 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Calculator every key is announced by its own name, not its glyph                  
+00:11 +290 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Calculator every key is announced by its own name, not its glyph                  
+00:11 +291 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Calculator every key is announced by its own name, not its glyph                  
+00:11 +292 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Calculator every key is announced by its own name, not its glyph                  
+00:11 +293 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Calculator every key is announced by its own name, not its glyph                  
+00:11 +294 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Calculator every key is announced by its own name, not its glyph                  
+00:11 +295 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Calculator every key is announced by its own name, not its glyph                  
+00:11 +296 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Calculator every key is announced by its own name, not its glyph                  
+00:11 +297 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Share App surfaces a snack bar when the sheet cannot open                         
+00:11 +298 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Share App surfaces a snack bar when the sheet cannot open                         
+00:12 +298 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Share App surfaces a snack bar when the sheet cannot open                         
+00:12 +299 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Share App surfaces a snack bar when the sheet cannot open                         
+00:12 +300 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Settings rows a row is one labelled node, not three loose fragments               
+00:12 +301 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) APP INFORMATION lists name, version, and developer         
+00:12 +302 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_actions_test.dart: Terms of Service opens the in-app Terms screen and back returns                   
+00:12 +303 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Settings rows a navigational row is announced as a button                         
+00:12 +304 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) MORE lists rate, share, and terms with their subtitles     
+00:12 +305 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Settings rows the Theme row is not announced as a button                          
+00:13 +305 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Settings rows the Theme row is not announced as a button                          
+00:13 +306 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/about_screen_test.dart: layout (desing.md §6.4) each MORE row carries a chevron                            
+00:13 +307 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Settings rows a toggle keeps both its name and its state                          
+00:13 +308 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the grid paints the gaps it declares (D-69) neighbouring keys are keyGap apart across a row                                             
+00:13 +309 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the grid paints the gaps it declares (D-69) neighbouring keys are keyGap apart across a row                                             
+00:13 +310 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the grid paints the gaps it declares (D-69) neighbouring keys are keyGap apart across a row                                             
+00:14 +310 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the grid paints the gaps it declares (D-69) neighbouring keys are keyGap apart across a row                                             
+00:14 +311 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the grid paints the gaps it declares (D-69) neighbouring keys are keyGap apart across a row                                             
+00:14 +312 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the grid paints the gaps it declares (D-69) neighbouring keys are keyGap apart across a row                                             
+00:14 +313 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: History cards the card is the only stop for its entry                             
+00:14 +314 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: History cards the card is the only stop for its entry                             
+00:14 +315 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: History cards the card is the only stop for its entry                             
+00:14 +316 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_layout_test.dart: the grid paints the gaps it declares (D-69) no two keys touch                 
+00:14 +317 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Decimal Places sheet the current option announces as selected                     
+00:14 +318 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Decimal Places sheet the current option announces as selected                     
+00:14 +319 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/accessibility_test.dart: Decimal Places sheet the current option announces as selected                     
+00:14 +320 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout renders all 19 keys, and no backspace (D-19)                    
+00:14 +321 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout renders all 19 keys, and no backspace (D-19)                    
+00:15 +321 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout renders all 19 keys, and no backspace (D-19)                    
+00:15 +322 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout renders all 19 keys, and no backspace (D-19)                    
+00:15 +323 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout renders all 19 keys, and no backspace (D-19)                    
+00:15 +324 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout renders all 19 keys, and no backspace (D-19)                    
+00:15 +325 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout renders all 19 keys, and no backspace (D-19)                    
+00:15 +326 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout renders all 19 keys, and no backspace (D-19)                    
+00:15 +327 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout renders all 19 keys, and no backspace (D-19)                    
+00:15 +328 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the display is two screens, calculation above output (D-78) the calculation is above the output, inside the block                       
+00:15 +329 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the display is two screens, calculation above output (D-78) the calculation is above the output, inside the block                       
+00:15 +330 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: keypad layout lays the keys out as desing.md §6.1 draws them                  
+00:15 +331 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the display is two screens, calculation above output (D-78) the output sits clear of the keys, not against them                         
+00:16 +331 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the display is two screens, calculation above output (D-78) the output sits clear of the keys, not against them                         
+00:16 +332 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:16 +333 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:16 +334 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:16 +335 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:16 +336 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:16 +337 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:16 +338 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:16 +339 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:16 +340 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:16 +341 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:16 +342 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +342 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +343 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +344 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +345 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +346 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +347 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +348 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +349 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +350 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +351 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +352 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +353 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +354 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +355 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +356 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +357 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +358 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +359 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +360 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +361 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +362 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +363 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a precision chosen in run one is in force in run two                                   
+00:17 +364 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart: CalculatorButton renders its label on the variant fill                            
+00:17 +365 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart: CalculatorButton renders its label on the variant fill                            
+00:18 +365 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart: CalculatorButton renders its label on the variant fill                            
+00:18 +366 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display previews the result while the operand is being typed (D-79)                                               
+00:18 +367 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display previews the result while the operand is being typed (D-79)                                               
+00:18 +368 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display previews the result while the operand is being typed (D-79)                                               
+00:18 +369 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display previews the result while the operand is being typed (D-79)                                               
+00:18 +370 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display previews the result while the operand is being typed (D-79)                                               
+00:18 +371 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display previews the result while the operand is being typed (D-79)                                               
+00:18 +372 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display previews the result while the operand is being typed (D-79)                                               
+00:18 +373 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display previews the result while the operand is being typed (D-79)                                               
+00:18 +374 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display previews the result while the operand is being typed (D-79)                                               
+00:18 +375 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display previews the result while the operand is being typed (D-79)                                               
+00:18 +376 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display previews the result while the operand is being typed (D-79)                                               
+00:18 +377 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display previews the result while the operand is being typed (D-79)                                               
+00:18 +377 ~4 -16: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display previews the result while the operand is being typed (D-79)
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "99 +": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart:253:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart line 253
+The test description was:
+  previews the result while the operand is being typed (D-79)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+00:18 +377 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display previews the result while the operand is being typed (D-79) [E]
+  Test failed. See exception logs above.
+  The test description was: previews the result while the operand is being typed (D-79)
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart -p vm --plain-name "key presses drive the display previews the result while the operand is being typed (D-79)"
+
+00:18 +378 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch the precision is still the one the row advertises                                      
+00:18 +379 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the geometry holds across viewport sizes (D-69, D-09) the result tracks the column at 442x890                                           
+00:18 +380 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display equals does not move the number the preview already showed                                                
+00:18 +381 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display equals does not move the number the preview already showed                                                
+00:18 +382 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display equals does not move the number the preview already showed                                                
+00:18 +383 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display equals does not move the number the preview already showed                                                
+00:18 +384 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display equals does not move the number the preview already showed                                                
+00:18 +385 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a recorded calculation is still in the list afterwards                                 
+00:18 +386 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a recorded calculation is still in the list afterwards                                 
+00:18 +387 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a recorded calculation is still in the list afterwards                                 
+00:18 +388 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a recorded calculation is still in the list afterwards                                 
+00:19 +388 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a recorded calculation is still in the list afterwards                                 
+00:19 +389 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a recorded calculation is still in the list afterwards                                 
+00:19 +390 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a recorded calculation is still in the list afterwards                                 
+00:19 +391 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a recorded calculation is still in the list afterwards                                 
+00:19 +392 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a recorded calculation is still in the list afterwards                                 
+00:19 +393 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a recorded calculation is still in the list afterwards                                 
+00:19 +394 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a recorded calculation is still in the list afterwards                                 
+00:19 +395 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a recorded calculation is still in the list afterwards                                 
+00:19 +396 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a recorded calculation is still in the list afterwards                                 
+00:19 +397 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a recorded calculation is still in the list afterwards                                 
+00:19 +398 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a recorded calculation is still in the list afterwards                                 
+00:19 +399 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a recorded calculation is still in the list afterwards                                 
+00:19 +400 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a recorded calculation is still in the list afterwards                                 
+00:19 +401 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a recorded calculation is still in the list afterwards                                 
+00:19 +402 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... AC-006 — settings and history survive a relaunch a recorded calculation is still in the list afterwards                                 
+00:19 +403 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display shows the running total, not an error, mid-calculation (D-79)                                             
+00:19 +404 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display shows the running total, not an error, mid-calculation (D-79)                                             
+00:19 +405 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/design_system_test.dart: AppConfirmationDialog resolves false when the user cancels                        
+00:19 +406 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... prd.md §11 — the calculator itself opens cleared a half-typed expression does not survive the relaunch                                  
+00:19 +407 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... prd.md §11 — the calculator itself opens cleared a half-typed expression does not survive the relaunch                                  
+00:19 +408 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... prd.md §11 — the calculator itself opens cleared a half-typed expression does not survive the relaunch                                  
+00:19 +409 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... prd.md §11 — the calculator itself opens cleared a half-typed expression does not survive the relaunch                                  
+00:19 +410 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... prd.md §11 — the calculator itself opens cleared a half-typed expression does not survive the relaunch                                  
+00:19 +411 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display computes left to right and groups the result (D-17, D-18)                                                 
+00:19 +412 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display computes left to right and groups the result (D-17, D-18)                                                 
+00:19 +413 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display computes left to right and groups the result (D-17, D-18)                                                 
+00:19 +414 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display computes left to right and groups the result (D-17, D-18)                                                 
+00:20 +414 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display computes left to right and groups the result (D-17, D-18)                                                 
+00:20 +415 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display computes left to right and groups the result (D-17, D-18)                                                 
+00:20 +416 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display computes left to right and groups the result (D-17, D-18)                                                 
+00:20 +416 ~4 -17: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display computes left to right and groups the result (D-17, D-18)
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: '20'
+  Actual: '14'
+   Which: is different.
+          Expected: 20
+            Actual: 14
+                    ^
+           Differ at offset 0
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart:314:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart line 314
+The test description was:
+  computes left to right and groups the result (D-17, D-18)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+00:20 +416 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display computes left to right and groups the result (D-17, D-18) [E]
+  Test failed. See exception logs above.
+  The test description was: computes left to right and groups the result (D-17, D-18)
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart -p vm --plain-name "key presses drive the display computes left to right and groups the result (D-17, D-18)"
+
+00:20 +417 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the geometry holds across viewport sizes (D-69, D-09) the operator column stays flush at 1280x800                                       
+00:20 +418 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the geometry holds across viewport sizes (D-69, D-09) the operator column stays flush at 1280x800                                       
+00:20 +419 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display reproduces the mockup chain on screen           
+00:20 +420 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display reproduces the mockup chain on screen           
+00:20 +421 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display reproduces the mockup chain on screen           
+00:20 +422 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display reproduces the mockup chain on screen           
+00:20 +423 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display reproduces the mockup chain on screen           
+00:20 +424 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display reproduces the mockup chain on screen           
+00:20 +425 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display reproduces the mockup chain on screen           
+00:20 +426 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display reproduces the mockup chain on screen           
+00:20 +427 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display reproduces the mockup chain on screen           
+00:20 +428 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display reproduces the mockup chain on screen           
+00:20 +429 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display reproduces the mockup chain on screen           
+00:20 +429 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the geometry holds across viewport sizes (D-69, D-09) the margins stay symmetric at 1280x1600                                           
+00:20 +430 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display AC clears both lines                            
+00:20 +431 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display AC clears both lines                            
+00:20 +432 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the geometry holds across viewport sizes (D-69, D-09) the result tracks the column at 1280x1600                                         
+00:20 +433 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display division by zero shows Error, not a crash (AC-010)                                                        
+00:20 +434 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display division by zero shows Error, not a crash (AC-010)                                                        
+00:20 +435 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the cell is bounded on both axes (D-69) the calculator stays a centred, calculator-sized column                                         
+00:20 +436 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display recovers from an error on the next digit        
+00:20 +437 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display recovers from an error on the next digit        
+00:20 +438 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the cell is bounded on both axes (D-69) keys keep the touch floor at the text-scale clamp                                               
+00:21 +438 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the cell is bounded on both axes (D-69) keys keep the touch floor at the text-scale clamp                                               
+00:21 +439 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display percent and sign toggle both reach the display  
+00:21 +440 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display percent and sign toggle both reach the display  
+00:21 +441 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display percent and sign toggle both reach the display  
+00:21 +442 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display percent and sign toggle both reach the display  
+00:21 +443 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display percent and sign toggle both reach the display  
+00:21 +444 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display percent and sign toggle both reach the display  
+00:21 +445 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display percent and sign toggle both reach the display  
+00:21 +445 ~4 -18: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display percent and sign toggle both reach the display  
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following ArgumentError was thrown running a test:
+Invalid argument (character): is not a calculator key: "±"
+
+When the exception was thrown, this was the stack:
+#0      _keyFor (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/support/keypad_session.dart:78:8)
+#1      keysFor (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/support/keypad_session.dart:25:14)
+#2      tapSequence (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart:30:21)
+#3      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart:368:13)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  percent and sign toggle both reach the display
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+00:21 +445 ~4 -19: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: key presses drive the display percent and sign toggle both reach the display [E]
+  Test failed. See exception logs above.
+  The test description was: percent and sign toggle both reach the display
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart -p vm --plain-name "key presses drive the display percent and sign toggle both reach the display"
+
+00:21 +445 ~4 -19: C:/Users/Mahadi/Desktop/Desktop/Flutter ... key presses drive the display a leading zero is replaced rather than accumulated                                                        
+00:21 +446 ~4 -19: C:/Users/Mahadi/Desktop/Desktop/Flutter ... header chrome sits on the screen margin (D-74) the History back button lands on the 24 px margin                                        
+00:21 +447 ~4 -19: C:/Users/Mahadi/Desktop/Desktop/Flutter ... header chrome sits on the screen margin (D-74) the History back button lands on the 24 px margin                                        
+00:22 +447 ~4 -19: C:/Users/Mahadi/Desktop/Desktop/Flutter ... header chrome sits on the screen margin (D-74) the History back button lands on the 24 px margin                                        
+00:22 +447 ~4 -19: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: display sizing a very long value still fits without clipping                  
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: '99,999,999,999,999'
+  Actual: '1e+14'
+   Which: is different.
+          Expected: 99,999,999 ...
+            Actual: 1e+14
+                    ^
+           Differ at offset 0
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart:411:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart line 411
+The test description was:
+  a very long value still fits without clipping
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+00:22 +447 ~4 -20: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: display sizing a very long value still fits without clipping [E]              
+  Test failed. See exception logs above.
+  The test description was: a very long value still fits without clipping
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart -p vm --plain-name "display sizing a very long value still fits without clipping"
+
+00:22 +447 ~4 -20: C:/Users/Mahadi/Desktop/Desktop/Flutter ... header chrome sits on the screen margin (D-74) the History back button lands on the 24 px margin                                        
+00:22 +447 ~4 -20: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) it reopens the expression behind a result
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: '125 ×'
+  Actual: '125 × 8'
+   Which: is different. Both strings start the same, but the actual value also has the following
+trailing characters:  8
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart:443:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart line 443
+The test description was:
+  it reopens the expression behind a result
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+00:22 +447 ~4 -21: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) it reopens the expression behind a result [E]
+  Test failed. See exception logs above.
+  The test description was: it reopens the expression behind a result
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart -p vm --plain-name "backspace after a calculation (D-81) it reopens the expression behind a result"
+
+00:22 +448 ~4 -21: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: a completed calculation shows up in History (AC-002)                               
+00:23 +448 ~4 -21: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: a completed calculation shows up in History (AC-002)                               
+00:23 +449 ~4 -21: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: a completed calculation shows up in History (AC-002)                               
+00:23 +450 ~4 -21: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: a completed calculation shows up in History (AC-002)                               
+00:23 +451 ~4 -21: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: a completed calculation shows up in History (AC-002)                               
+00:23 +451 ~4 -21: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) the worked example: 900+100= then backspace
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: '900 + 10'
+  Actual: '900 + 100'
+   Which: is different. Both strings start the same, but the actual value also has the following
+trailing characters: 0
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart:468:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart line 468
+The test description was:
+  the worked example: 900+100= then backspace
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+00:23 +451 ~4 -22: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) the worked example: 900+100= then backspace [E]
+  Test failed. See exception logs above.
+  The test description was: the worked example: 900+100= then backspace
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart -p vm --plain-name "backspace after a calculation (D-81) the worked example: 900+100= then backspace"
+
+00:23 +452 ~4 -22: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: a completed calculation shows up in History (AC-002)                               
+00:23 +453 ~4 -22: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_responsive_test.dart: the card geometry holds on every supported width at 320x568                  
+00:24 +453 ~4 -22: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_responsive_test.dart: the card geometry holds on every supported width at 320x568                  
+00:24 +453 ~4 -22: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) a digit after backspacing a result continues the operand
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: '125 ×'
+  Actual: '125 × 8'
+   Which: is different. Both strings start the same, but the actual value also has the following
+trailing characters:  8
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart:495:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart line 495
+The test description was:
+  a digit after backspacing a result continues the operand
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+00:24 +453 ~4 -23: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) a digit after backspacing a result continues the operand [E]
+  Test failed. See exception logs above.
+  The test description was: a digit after backspacing a result continues the operand
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart -p vm --plain-name "backspace after a calculation (D-81) a digit after backspacing a result continues the operand"
+
+00:24 +454 ~4 -23: C:/Users/Mahadi/Desktop/Desktop/Flutter ... header chrome sits on the screen margin (D-74) every screen with a header agrees                                                        
+00:24 +455 ~4 -23: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: repeating the pending operator with = is recorded (D-36)                           
+00:24 +455 ~4 -23: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) a digit after taking back an operator extends the number
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: '900'
+  Actual: ''
+   Which: is different. Both strings start the same, but the actual value is missing the following
+trailing characters: 900
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart:510:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart line 510
+The test description was:
+  a digit after taking back an operator extends the number
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+00:24 +455 ~4 -24: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) a digit after taking back an operator extends the number [E]
+  Test failed. See exception logs above.
+  The test description was: a digit after taking back an operator extends the number
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart -p vm --plain-name "backspace after a calculation (D-81) a digit after taking back an operator extends the number"
+
+00:25 +456 ~4 -24: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: repeating the pending operator with = is recorded (D-36)                           
+00:25 +457 ~4 -24: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: repeating the pending operator with = is recorded (D-36)                           
+00:25 +457 ~4 -24: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: repeating the pending operator with = is recorded (D-36)                           
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "4": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/history_flow_test.dart:51:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/history_flow_test.dart line 51
+The test description was:
+  repeating the pending operator with = is recorded (D-36)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+00:25 +457 ~4 -25: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: repeating the pending operator with = is recorded (D-36) [E]                       
+  Test failed. See exception logs above.
+  The test description was: repeating the pending operator with = is recorded (D-36)
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart -p vm --plain-name "repeating the pending operator with = is recorded (D-36)"
+
+00:25 +458 ~4 -25: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_responsive_test.dart: the card geometry holds on every supported width at 480x1000                 
+00:25 +459 ~4 -25: C:/Users/Mahadi/Desktop/Desktop/Flutter ... the History delete action is the design's own trash (D-72, D-73) it keeps a 44pt-plus touch target                                      
+00:25 +460 ~4 -25: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: pressing = twice records one card, not two                                         
+00:25 +461 ~4 -25: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace after a calculation (D-81) repeated backspace never crashes and ends empty                                                    
+00:25 +462 ~4 -25: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace after a calculation (D-81) repeated backspace never crashes and ends empty                                                    
+00:25 +463 ~4 -25: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace after a calculation (D-81) repeated backspace never crashes and ends empty                                                    
+00:25 +464 ~4 -25: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace after a calculation (D-81) repeated backspace never crashes and ends empty                                                    
+00:25 +465 ~4 -25: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace after a calculation (D-81) repeated backspace never crashes and ends empty                                                    
+00:25 +466 ~4 -25: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace after a calculation (D-81) repeated backspace never crashes and ends empty                                                    
+00:26 +466 ~4 -25: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace after a calculation (D-81) repeated backspace never crashes and ends empty                                                    
+00:26 +467 ~4 -25: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace after a calculation (D-81) repeated backspace never crashes and ends empty                                                    
+00:26 +467 ~4 -25: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) repeated backspace never crashes and ends empty
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: null
+  Actual: RangeError:<RangeError (end): Invalid value: Not in inclusive range 4..6: 2>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart:551:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/Mahadi/Desktop/Desktop/Flutter%20Apps/Apps/Calculator/test/widget/calculator_screen_test.dart line 551
+The test description was:
+  repeated backspace never crashes and ends empty
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+00:26 +468 ~4 -25: C:/Users/Mahadi/Desktop/Desktop/Flutter ... backspace after a calculation (D-81) repeated backspace never crashes and ends empty                                                    
+00:26 +468 ~4 -26: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) repeated backspace never crashes and ends empty [E]
+  Test failed. See exception logs above.
+  The test description was: repeated backspace never crashes and ends empty
+  
+
+To run this test again: C:\flutter\bin\cache\dart-sdk\bin\dart.exe test C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart -p vm --plain-name "backspace after a calculation (D-81) repeated backspace never crashes and ends empty"
+
+00:26 +469 ~4 -26: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_responsive_test.dart: the result line is allowed to shrink but never to truncate                   
+00:26 +470 ~4 -26: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_responsive_test.dart: the result line is allowed to shrink but never to truncate                   
+00:26 +471 ~4 -26: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_responsive_test.dart: the result line is allowed to shrink but never to truncate                   
+00:26 +472 ~4 -26: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_responsive_test.dart: the result line is allowed to shrink but never to truncate                   
+00:26 +473 ~4 -26: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_responsive_test.dart: the result line is allowed to shrink but never to truncate                   
+00:26 +474 ~4 -26: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_responsive_test.dart: the result line is allowed to shrink but never to truncate                   
+00:26 +475 ~4 -26: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_responsive_test.dart: the result line is allowed to shrink but never to truncate                   
+00:26 +476 ~4 -26: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) AC resets the calculator completely      
+00:26 +477 ~4 -26: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/calculator_screen_test.dart: backspace after a calculation (D-81) AC resets the calculator completely      
+00:26 +478 ~4 -26: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: loading a result does not record a second copy of it                               
+00:27 +478 ~4 -26: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: loading a result does not record a second copy of it                               
+00:27 +479 ~4 -26: C:/Users/Mahadi/Desktop/Desktop/Flutter Apps/Apps/Calculator/test/widget/history_flow_test.dart: loading a result does not record a second copy of it                               

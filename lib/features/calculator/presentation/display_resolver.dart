@@ -20,6 +20,7 @@ library;
 
 import '../../../core/utils/format.dart';
 import '../domain/calculator_engine.dart';
+import '../domain/expression_evaluator.dart';
 
 /// The two strings the calculator display paints, resolved from the engine's
 /// state (desing.md §3).
@@ -39,28 +40,64 @@ class CalculatorDisplayState {
   final bool isError;
 }
 
-/// The expression line for [state] — the terms, their operators, and any
-/// operator the user has pressed but not yet supplied an operand for.
+/// The expression line for [state] — the expression as typed, with thousands
+/// separators applied to each number independently.
 ///
-/// Built from segments rather than by concatenating, so a pending operator
-/// with no committed term behind it — reachable by pressing `+` on a fresh
-/// calculator, or on one that just errored — reads `+` rather than ` +`.
+/// Built by walking the expression rather than by printing [CalculatorState.expression]
+/// directly, so `1000×8+` reads `1,000 × 8 +` and the operator glyphs are never
+/// disturbed (D-18). The walk is what lets a *typed* number keep its exact digits
+/// on the line above while the primary line rounds a preview (D-30): the line is
+/// an echo of what was keyed, never a re-rendering of a computed value.
 ///
-/// Each number is grouped independently (D-18), so `1000 × 8` reads
-/// `1,000 × 8` and the operator glyphs are never disturbed.
+/// Blank while a single number is being typed — `125` on its own carries no
+/// operation worth restating — and blank for a value loaded from history
+/// (**D-37**), where printing the number above itself would print it twice.
 String resolveExpressionLine(CalculatorState state) {
-  final segments = <String>[];
-  for (final term in state.terms) {
-    final operatorBefore = term.operatorBefore;
-    if (operatorBefore != null) segments.add(operatorBefore);
-    segments.add(groupThousands(term.text));
+  if (!state.hasOperation) return '';
+
+  final parts = <String>[];
+  final buffer = StringBuffer();
+  for (var i = 0; i < state.expression.length; i++) {
+    final character = state.expression[i];
+    if (_isNumberGlyph(character)) {
+      buffer.write(character);
+      continue;
+    }
+    _flush(parts, buffer);
+    parts.add(character);
   }
-  final pending = state.pendingOperator;
-  if (pending != null) segments.add(pending.symbol);
-  return segments.join(' ');
+  _flush(parts, buffer);
+  return parts.join(' ');
+}
+
+/// Whether [character] belongs to the number being printed rather than to the
+/// arithmetic between numbers.
+///
+/// The parser's minus is deliberately **not** one of them: it is the glyph both
+/// the subtract operator and a negative operand's sign, and only the character
+/// before it can say which — `5-3` is an operation, `-3` is a value. Deciding
+/// that here would mean tracking position, so instead the sign stays glued to the
+/// operator and `5 × -3` prints as `5 ×- 3`. Grouping a lone `-` with the digits
+/// it introduces is left to [CalculatorState.hasOperation]'s caller, which is
+/// where the sign matters and here it does not.
+bool _isNumberGlyph(String character) =>
+    isDigitGlyph(character) || character == dotGlyph;
+
+/// Pushes the pending digits out as a grouped number, leaving the buffer empty.
+void _flush(List<String> parts, StringBuffer buffer) {
+  if (buffer.isEmpty) return;
+  parts.add(groupThousands(buffer.toString()));
+  buffer.clear();
 }
 
 /// Resolves the two display lines for [state] at [decimalPlaces] precision.
+///
+/// The primary line is the **preview** [CalculatorState.value] whenever there is
+/// one, so `99+5` already reads `104` (D-79). A number still being typed is the
+/// exception: it is shown exactly as keyed, unrounded, because a user reading
+/// the digit they just pressed must see that digit (D-30). `1.23456` shows
+/// `1.23456`; the moment it becomes part of a calculation it is a preview and
+/// rounds like one.
 CalculatorDisplayState resolveDisplay(
   CalculatorState state, {
   required int decimalPlaces,
@@ -77,12 +114,14 @@ CalculatorDisplayState resolveDisplay(
     );
   }
 
-  final entry = state.entry;
-  final value = state.value;
-  final result = entry != null
-      ? groupThousands(entry)
-      : value != null
-      ? formatResult(value, decimalPlaces: decimalPlaces)
+  // The digits still being typed, unrounded and unformatted (D-30). `null` the
+  // moment the expression is anything more than one bare number, because then the
+  // primary line is showing a preview rather than an entry.
+  final typed = state.typedNumber;
+  final result = typed != null
+      ? groupThousands(typed)
+      : state.value != null
+      ? formatResult(state.value!, decimalPlaces: decimalPlaces)
       : '0';
 
   return CalculatorDisplayState(

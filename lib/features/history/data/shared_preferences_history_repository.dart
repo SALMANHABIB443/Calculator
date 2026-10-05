@@ -79,6 +79,21 @@ class SharedPreferencesHistoryRepository implements HistoryRepository {
   }
 
   @override
+  Future<void> deleteByIds(Set<String> ids) async {
+    if (ids.isEmpty) return;
+
+    final remaining =
+        (await _readAll()).where((entry) => !ids.contains(entry.id)).toList();
+
+    // The same reasoning as [clearAll]: when the delete empties the store, the
+    // key is removed outright rather than rewritten as `[]`, so a fully cleared
+    // history leaves nothing behind in the platform's file.
+    if (remaining.isEmpty) return clearAll();
+
+    await _writeAll(remaining);
+  }
+
+  @override
   Future<void> clearAll() async {
     // Remove the key outright rather than storing `[]`, so a cleared history
     // leaves nothing behind in the platform's XML file.

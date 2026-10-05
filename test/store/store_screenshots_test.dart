@@ -38,9 +38,14 @@ library;
 import 'dart:io';
 
 import 'package:calculator/core/design/app_theme.dart';
-import 'package:calculator/core/design/app_theme_provider.dart';
 import 'package:calculator/features/history/domain/history_entry.dart';
 import 'package:calculator/features/settings/domain/app_settings.dart';
+// `appThemeProvider` lives in the features layer, not in `core/design`:
+// D-45 moved it to `theme_controller.dart` when the white theme arrived, and
+// this import is what the move left behind. Without it the whole store-screenshot
+// run fails to compile — and it is the one test that photographs the Settings
+// screen, so it is exactly the file that must not be broken by a theme change.
+import 'package:calculator/features/settings/presentation/theme_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';

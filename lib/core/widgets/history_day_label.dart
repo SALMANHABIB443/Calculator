@@ -38,7 +38,7 @@ class HistoryDayLabel extends StatelessWidget {
       // "Today" is announced exactly like the expressions beneath it.
       child: Semantics(
         header: true,
-        child: Text(label, style: AppTypography.historyDayLabel),
+        child: Text(label, style: context.type.historyDayLabel),
       ),
     );
   }

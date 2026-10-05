@@ -1,0 +1,6 @@
+Analyzing Calculator...                                         
+
+   info - Unnecessary use of string interpolation. Try replacing the string literal with the variable name - lib\features\calculator\domain\calculator_engine.dart:484:14 - unnecessary_string_interpolations
+   info - Use interpolation to compose strings and values. Try using string interpolation to build the composite string - lib\features\calculator\domain\calculator_engine.dart:484:14 - prefer_interpolation_to_compose_strings
+   info - Unnecessary use of string interpolation. Try replacing the string literal with the variable name - lib\features\calculator\domain\calculator_engine.dart:560:14 - unnecessary_string_interpolations
+

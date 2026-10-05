@@ -7,6 +7,8 @@ import '../features/about/presentation/about_screen.dart';
 import '../features/calculator/presentation/calculator_screen.dart';
 import '../features/history/presentation/history_screen.dart';
 import '../features/legal/presentation/legal_screens.dart';
+import '../features/secret/presentation/change_pin_screen.dart';
+import '../features/secret/presentation/secret_screens.dart';
 import '../features/settings/presentation/settings_screen.dart';
 import 'app_routes.dart';
 
@@ -48,6 +50,26 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.terms,
         builder: (context, state) => const TermsOfServiceScreen(),
+      ),
+      // Secret Mode (D-82, D-84). Four routes for what is deliberately an
+      // almost-empty area; they are ordinary routes because the five-second hold
+      // has to push one, and pushing needs a registered path. Nothing links here
+      // but the gesture.
+      GoRoute(
+        path: AppRoutes.secretUnlock,
+        builder: (context, state) => const SecretUnlockScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.secret,
+        builder: (context, state) => const SecretScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.secretSettings,
+        builder: (context, state) => const SecretSettingsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.secretChangePin,
+        builder: (context, state) => const ChangePinScreen(),
       ),
       if (kDebugMode)
         GoRoute(

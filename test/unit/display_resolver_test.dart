@@ -48,7 +48,9 @@ void main() {
     });
 
     test('groups a negative result too', () {
-      expect(displayOf('1000±=').result, '-1,000');
+      // D-84 removed the `±` key: a negative operand is now written in the
+      // expression itself, so the result is negative without a sign toggle.
+      expect(displayOf('()−1000()=').result, '-1,000');
     });
   });
 
@@ -57,9 +59,9 @@ void main() {
       expect(displayOf('125').expression, isEmpty);
     });
 
-    test('shows the operator once one is pressed', () {
+    test('shows the operator and the operand being typed', () {
       expect(displayOf('100+').expression, '100 +');
-      expect(displayOf('100+7').expression, '100 +');
+      expect(displayOf('100+7').expression, '100 + 7');
     });
 
     test('accumulates every term in a chain', () {
@@ -82,13 +84,91 @@ void main() {
       expect(displayOf('125×8=7').expression, isEmpty);
     });
 
-    test('shows a lone pending operator without a leading space', () {
-      // Reachable by pressing `+` on a fresh calculator.
-      expect(displayOf('+').expression, '+');
+    test('ignores a leading operator, so a number never follows one', () {
+      // D-80: `+` on a fresh calculator is declined by the engine, so there is
+      // no lone `+` for the line to print.
+      expect(displayOf('+').expression, isEmpty);
+      expect(displayOf('+5').expression, isEmpty);
     });
 
     test('keeps a negative sign in front of its term', () {
-      expect(displayOf('5×3±=').expression, '5 × -3');
+      // D-85: a negative operand is written inside a group, so the sign is
+      // printed with the digits it belongs to rather than floating on its own.
+      expect(displayOf('()−1000()×=').expression, '(−1,000 ×');
+    });
+
+    test('keeps a staged sign off the line until it becomes a number', () {
+      // `()` has opened a group and the `−` that follows has decided the operand
+      // is negative, but `−` is not a number yet, so the line waits rather than
+      // printing a dangling sign.
+      expect(displayOf('2+()−').expression, '2 + ( −');
+    });
+
+    test('prints the signed operand once a digit completes it', () {
+      expect(displayOf('2+()−5').expression, '2 + -5');
+    });
+  });
+
+  group('resolveDisplay — the live preview (D-79)', () {
+    test('shows what equals would produce while the operand is being typed', () {
+      // The bug this fixes: the output line used to show `5`, the entry, instead
+      // of the answer `99 + 5` already implies.
+      expect(displayOf('99+5').result, '104');
+      expect(displayOf('99+5').expression, '99 + 5');
+    });
+
+    test('keeps showing the running total until an operand is typed', () {
+      expect(displayOf('99+').result, '99');
+    });
+
+    test('does not move the number when equals is pressed', () {
+      // `=` only commits what the preview already showed, so the two lines read
+      // the same before and after.
+      final preview = displayOf('99+5');
+      final evaluated = displayOf('99+5=');
+      expect(evaluated.result, preview.result);
+      expect(evaluated.expression, preview.expression);
+    });
+
+    test('previews the next term of a chain, not just the first', () {
+      expect(displayOf('100+7+').result, '107');
+      expect(displayOf('100+7+4').result, '111');
+    });
+
+    test('previews subtraction and division too', () {
+      expect(displayOf('100−7').result, '93');
+      expect(displayOf('100÷4').result, '25');
+    });
+
+    test('previews a signed operand without touching the accumulator', () {
+      expect(displayOf('2+()−5').result, '-3');
+      expect(displayOf('2+()−5=').result, '-3');
+    });
+
+    test('rounds the preview to decimalPlaces, so equals is a visual no-op', () {
+      expect(displayOf('1÷3').result, '0.33');
+      expect(displayOf('1÷3').result, displayOf('1÷3=').result);
+      expect(displayOf('1÷3', decimalPlaces: 4).result, '0.3333');
+    });
+
+    test('keeps the running total when the fold cannot be computed', () {
+      // D-79: an unfinished calculation must not flash Error at the user who is
+      // still typing the divisor; `=` is where it becomes an error.
+      final display = displayOf('5÷0');
+      expect(display.result, '5');
+      expect(display.isError, isFalse);
+      expect(displayOf('5÷0=').result, 'Error');
+    });
+
+    test('does not round the digits still being typed', () {
+      // D-30 is preserved: the *entry* belongs to the user exactly as entered,
+      // and the expression line above carries those unrounded digits.
+      expect(displayOf('1.23456').result, '1.23456');
+      expect(displayOf('1.23456+').result, '1.23');
+    });
+
+    test('groups the preview like any other result', () {
+      expect(displayOf('999+1').result, '1,000');
     });
   });
 
@@ -166,6 +246,11 @@ void main() {
       expect(expressionOf('1000×8+'), '1,000 × 8 +');
     });
 
+    test('appends the operand being typed, so nothing typed goes missing', () {
+      expect(expressionOf('2+2'), '2 + 2');
+      expect(expressionOf('1000×8+8'), '1,000 × 8 + 8');
+    });
+
     test('drops the pending operator once = is pressed', () {
       // Before `=`, `2 +` is waiting for an operand; after it, the same two
       // terms read as a finished sum with no trailing glyph.
@@ -182,7 +267,10 @@ void main() {
     });
 
     test('keeps a lone operator readable rather than leading with a space', () {
-      expect(expressionOf('+'), '+');
+      // D-80 changed this: an operator with no left operand is declined by the
+      // engine, so there is no lone operator left to print.
+      expect(expressionOf('+'), isEmpty);
+      expect(expressionOf('2+'), '2 +');
     });
 
     test('keeps the failed expression so the user can see what broke', () {

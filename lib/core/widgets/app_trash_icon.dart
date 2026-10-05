@@ -1,6 +1,6 @@
+import '../../../core/design/app_palette.dart';
 import 'package:flutter/material.dart';
 
-import '../design/app_colors.dart';
 import 'app_icon.dart';
 
 /// The trash glyph the History screen deletes with (**D-73**).
@@ -23,7 +23,7 @@ class AppTrashIcon extends StatelessWidget {
   const AppTrashIcon({
     super.key,
     this.size = AppIconSize.row,
-    this.color = AppColors.textPrimary,
+    this.color,
     this.semanticLabel,
   });
 
@@ -31,7 +31,7 @@ class AppTrashIcon extends StatelessWidget {
   final AppIconSize size;
 
   /// Fill colour, defaulting to primary text.
-  final Color color;
+  final Color? color;
 
   /// Accessible name. Omit for decorative icons, so screen readers do not
   /// announce the row twice.
@@ -46,7 +46,9 @@ class AppTrashIcon extends StatelessWidget {
     // the glyph inside it happens to look like.
     final icon = SizedBox.square(
       dimension: size.value,
-      child: CustomPaint(painter: AppTrashPainter(color)),
+      child: CustomPaint(
+        painter: AppTrashPainter(color ?? context.appColors.textPrimary),
+      ),
     );
     if (semanticLabel == null) return icon;
     return Semantics(

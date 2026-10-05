@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/config/app_info.dart';
-import '../../../core/design/app_colors.dart';
 import '../../../core/design/app_spacing.dart';
 import '../../../core/design/app_typography.dart';
 import '../../../core/widgets/core_widgets.dart';
@@ -13,6 +12,7 @@ import '../../../routing/app_routes.dart';
 import '../domain/app_settings.dart';
 import 'decimal_places_sheet.dart';
 import 'settings_controller.dart';
+import 'theme_sheet.dart';
 
 /// User preferences plus the entry points to About and the legal screens
 /// (desing.md §6.3).
@@ -57,14 +57,32 @@ class SettingsScreen extends ConsumerWidget {
                 icon: Icons.wb_sunny_outlined,
                 title: 'Theme',
                 subtitle: _themeLabel(settings.theme),
-                // Display-only in v1.0 (D-45). The explicit `trailing` is
-                // required rather than relying on the row's own chevron,
-                // because SettingsRow only draws one when `onTap != null` — and
-                // setting `onTap` would invent a screen the app does not have.
-                trailing: const AppIcon(
-                  Icons.chevron_right,
-                  color: AppColors.textSecondary,
-                ),
+                // A picker rather than an inline toggle. The row's chevron
+                // promises something *below*, which is the same affordance the
+                // Decimal Places row uses, and two named options do not fit on
+                // one row without either truncating or stealing the row's tap
+                // target. D-45 made this read-only because dark was the only
+                // theme; with two (D-90) it becomes a choice, and the sheet is
+                // the smallest surface that expresses one.
+                onTap: () async {
+                  final chosen = await ThemeSheet.show(
+                    context,
+                    selected: AppThemeName.from(settings.theme),
+                  );
+                  // Dismissing without choosing leaves the theme alone.
+                  if (chosen == null) return;
+                  await controller.apply(
+                    (s) => s.copyWith(theme: chosen.storageValue),
+                  );
+                },
+                // D-92: the chevron is deliberately *not* passed as
+                // `trailing`. This row is tappable, so `SettingsRow` draws
+                // the chevron itself — in the same 8 px gap and the same
+                // `ExcludeSemantics` as every navigational row. Handing it one
+                // explicitly bought nothing visually and cost the alignment:
+                // an explicit trailing skips that gap, so this arrow sat 8 px
+                // further right than the ones on App Version, Privacy Policy,
+                // and Terms of Service.
               ),
             ],
           ),
@@ -138,7 +156,7 @@ class SettingsScreen extends ConsumerWidget {
           Center(
             child: Text(
               '${AppInfo.name} ${AppInfo.version.split('+').first}',
-              style: AppTypography.caption,
+              style: context.type.caption,
             ),
           ),
           const SizedBox(height: AppSpacing.bottomSafe),
@@ -152,12 +170,13 @@ class SettingsScreen extends ConsumerWidget {
   static String _decimalPlacesLabel(int places) =>
       '$places decimal ${places == 1 ? 'place' : 'places'}';
 
-  /// The human name of the stored [AppSettings.theme] (D-45).
+  /// The human name of the stored [AppSettings.theme] (D-90).
   ///
-  /// Reads the stored value rather than hard-coding “Dark mode”, so the row
-  /// tells the truth if a light theme is ever added, while still collapsing to
-  /// a single branch today. The default stands in for an unrecognised name, so a
-  /// corrupt preference cannot render a blank subtitle.
+  /// Resolved through [AppThemeName.from] rather than compared against a
+  /// literal, so an unrecognised stored name renders the default's label instead
+  /// of leaking the raw string into the UI — the old version's fallback returned
+  /// `AppSettings.defaults.theme`, which happened to be `'dark'` and would have
+  /// shown the word "dark" as if it were a label.
   static String _themeLabel(String theme) =>
-      theme == 'dark' ? 'Dark mode' : AppSettings.defaults.theme;
+      AppThemeName.from(theme).label;
 }

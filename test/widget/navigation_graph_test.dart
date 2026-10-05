@@ -31,14 +31,18 @@ import '../support/pump_app.dart';
 
 void main() {
   group('the graph', () {
-    testWidgets('registers exactly the seven documented paths', (tester) async {
+    testWidgets('registers exactly the eleven documented paths', (tester) async {
       mockEmptyHistory();
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
       final paths = _allPaths(container.read(appRouterProvider));
 
-      // D-20's six, plus the debug-only catalog (D-25).
+      // D-20's six, plus the debug-only catalog (D-25), plus the four Secret Mode
+      // routes Phase 11 added (D-82, D-84). The hidden ones are registered even
+      // though nothing links to them: the five-second hold has to push a real
+      // path, and registering it is cheaper than inventing a private navigator
+      // for one screen.
       expect(
         paths,
         containsAll(<String>[
@@ -49,11 +53,15 @@ void main() {
           AppRoutes.privacy,
           AppRoutes.terms,
           AppRoutes.catalog,
+          AppRoutes.secretUnlock,
+          AppRoutes.secret,
+          AppRoutes.secretSettings,
+          AppRoutes.secretChangePin,
         ]),
       );
       expect(
         paths,
-        hasLength(7),
+        hasLength(11),
         reason: 'a new screen must be a decision, not an accident',
       );
     });
@@ -126,7 +134,18 @@ void main() {
 
         // Exactly two, because every other route is meant to be a level deeper.
         // A third would mean a new way out of the Calculator.
-        expect(find.byType(IconButton), findsNWidgets(2));
+        //
+        // Counted as the *navigable* actions rather than as every `IconButton`
+        // on screen. The backspace (D-81) is a third `IconButton`, and it has
+        // been since it was added — but it is not a way out of the Calculator,
+        // so counting it would have turned this test red for a control that
+        // does not threaten the graph at all. The filter is what keeps the
+        // assertion saying what it means: two destinations, plus whatever
+        // editing affordances the screen carries.
+        final navigable = find.byWidgetPredicate(
+          (widget) => widget is IconButton && widget.tooltip != 'Backspace',
+        );
+        expect(navigable, findsNWidgets(2));
       },
     );
 
@@ -146,7 +165,7 @@ void main() {
       await goBack(tester);
       expect(find.text('Decimal Places'), findsWidgets);
       await goBack(tester);
-      expect(find.byKey(const Key('calculator-result')), findsOneWidget);
+      expect(find.byKey(const Key('calculator-display-line')), findsOneWidget);
       expect(find.byIcon(Icons.arrow_back), findsNothing);
     });
 

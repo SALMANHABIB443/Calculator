@@ -1,6 +1,6 @@
+import '../../../core/design/app_palette.dart';
 import 'package:flutter/material.dart';
 
-import '../design/app_colors.dart';
 import '../design/app_spacing.dart';
 import '../design/app_typography.dart';
 import 'app_brand_icon.dart';
@@ -119,9 +119,9 @@ class _ComponentCatalogScreenState extends State<ComponentCatalogScreen> {
                     'This cannot be undone.',
                 confirmLabel: 'Clear',
               ),
-              child: const Text(
+              child: Text(
                 'Show confirmation dialog',
-                style: AppTypography.bottomAction,
+                style: context.type.bottomAction,
               ),
             ),
           ),
@@ -137,25 +137,28 @@ class _ComponentCatalogScreenState extends State<ComponentCatalogScreen> {
       AppSpacing.screenHorizontal,
       AppSpacing.sm,
     ),
-    child: Text(text.toUpperCase(), style: AppTypography.sectionHeader),
+    child: Text(text.toUpperCase(), style: context.type.sectionHeader),
   );
 
   /// Every palette token with its hex, so a Phase 9 correction is visible here
   /// before it is compared against the mockup.
   Widget _swatches() {
-    const tokens = <String, Color>{
-      'background': AppColors.background,
-      'surface': AppColors.surface,
-      'accent': AppColors.accent,
-      'buttonDigit': AppColors.buttonDigit,
-      'buttonFunction': AppColors.buttonFunction,
-      'textPrimary': AppColors.textPrimary,
-      'onFunction': AppColors.textOnFunction,
-      'textSecondary': AppColors.textSecondary,
-      'divider': AppColors.divider,
-      'trackOn': AppColors.toggleTrackOn,
-      'trackOff': AppColors.toggleTrackOff,
-      'thumb': AppColors.toggleThumb,
+    // Built per build rather than as a `const` map: a palette is theme state,
+    // and this catalogue is exactly where a designer should see the values the
+    // running theme is actually using, not the dark theme's.
+    final tokens = <String, Color>{
+      'background': context.appColors.background,
+      'surface': context.appColors.surface,
+      'accent': context.appColors.accent,
+      'buttonDigit': context.appColors.buttonDigit,
+      'buttonFunction': context.appColors.buttonFunction,
+      'textPrimary': context.appColors.textPrimary,
+      'onFunction': context.appColors.textOnFunction,
+      'textSecondary': context.appColors.textSecondary,
+      'divider': context.appColors.divider,
+      'trackOn': context.appColors.toggleTrackOn,
+      'trackOff': context.appColors.toggleTrackOff,
+      'thumb': context.appColors.toggleThumb,
     };
 
     return Padding(
@@ -172,20 +175,20 @@ class _ComponentCatalogScreenState extends State<ComponentCatalogScreen> {
   }
 
   List<Widget> _typographySamples() {
-    const samples = <String, TextStyle>{
-      'resultLarge': AppTypography.resultLarge,
-      'expression': AppTypography.expression,
-      'screenTitle': AppTypography.screenTitle,
-      'subtitle': AppTypography.subtitle,
-      'sectionHeader': AppTypography.sectionHeader,
-      'rowTitle': AppTypography.rowTitle,
-      'rowSubtitle': AppTypography.rowSubtitle,
-      'historyExpression': AppTypography.historyExpression,
-      'historyResult': AppTypography.historyResult,
-      'buttonLabel': AppTypography.buttonLabel,
-      'bottomAction': AppTypography.bottomAction,
-      'caption': AppTypography.caption,
-      'body': AppTypography.body,
+    final samples = <String, TextStyle>{
+      'resultLarge': context.type.resultLarge,
+      'expression': context.type.expression,
+      'screenTitle': context.type.screenTitle,
+      'subtitle': context.type.subtitle,
+      'sectionHeader': context.type.sectionHeader,
+      'rowTitle': context.type.rowTitle,
+      'rowSubtitle': context.type.rowSubtitle,
+      'historyExpression': context.type.historyExpression,
+      'historyResult': context.type.historyResult,
+      'buttonLabel': context.type.buttonLabel,
+      'bottomAction': context.type.bottomAction,
+      'caption': context.type.caption,
+      'body': context.type.body,
     };
 
     return [
@@ -206,7 +209,7 @@ class _ComponentCatalogScreenState extends State<ComponentCatalogScreen> {
                       width: 132,
                       child: Text(
                         '${entry.key} ${entry.value.fontSize!.toStringAsFixed(0)}',
-                        style: AppTypography.caption,
+                        style: context.type.caption,
                       ),
                     ),
                     Expanded(
@@ -275,14 +278,14 @@ class _ComponentCatalogScreenState extends State<ComponentCatalogScreen> {
   }
 
   Widget _icons() {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppSpacing.screenHorizontal),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           AppIcon(Icons.menu),
           AppIcon(Icons.history),
-          AppIcon(Icons.delete_outline, color: AppColors.accent),
+          AppIcon(Icons.delete_outline, color: context.appColors.accent),
           AppIcon(Icons.star_outline),
           AppIcon(Icons.calculate_outlined, size: AppIconSize.small),
         ],
@@ -310,12 +313,12 @@ class _Swatch extends StatelessWidget {
             decoration: BoxDecoration(
               color: color,
               borderRadius: BorderRadius.circular(AppRadius.tile),
-              border: Border.all(color: AppColors.divider),
+              border: Border.all(color: context.appColors.divider),
             ),
           ),
           const SizedBox(height: AppSpacing.sm / 2),
-          Text(name, style: AppTypography.caption),
-          Text('#${hex.toUpperCase()}', style: AppTypography.caption),
+          Text(name, style: context.type.caption),
+          Text('#${hex.toUpperCase()}', style: context.type.caption),
         ],
       ),
     );

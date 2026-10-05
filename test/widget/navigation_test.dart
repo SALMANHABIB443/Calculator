@@ -21,7 +21,7 @@ void main() {
 
     // The root screen is identified by its display area; the app title is not
     // painted on the calculator itself (desing.md §6.1).
-    expect(find.byKey(const Key('calculator-result')), findsOneWidget);
+    expect(find.byKey(const Key('calculator-display-line')), findsOneWidget);
     expect(find.byType(Scaffold), findsOneWidget);
     expect(find.text('0'), findsWidgets);
   });
@@ -51,7 +51,7 @@ void main() {
 
     await tester.tap(find.byIcon(Icons.arrow_back));
     await tester.pumpAndSettle();
-    expect(find.byKey(const Key('calculator-result')), findsOneWidget);
+    expect(find.byKey(const Key('calculator-display-line')), findsOneWidget);
   });
 
   testWidgets('history clock opens History, and back returns to Calculator', (
@@ -65,7 +65,7 @@ void main() {
 
     await tester.tap(find.byIcon(Icons.arrow_back));
     await tester.pumpAndSettle();
-    expect(find.byKey(const Key('calculator-result')), findsOneWidget);
+    expect(find.byKey(const Key('calculator-display-line')), findsOneWidget);
   });
 
   testWidgets('Settings reaches About, Privacy, and Terms (D-20)', (
@@ -93,7 +93,7 @@ void main() {
 
     // And one more pop returns to the root route.
     await goBack(tester);
-    expect(find.byKey(const Key('calculator-result')), findsOneWidget);
+    expect(find.byKey(const Key('calculator-display-line')), findsOneWidget);
   });
 
   testWidgets('About shows the version and the developer name (D-11, D-12)', (

@@ -36,7 +36,7 @@ class AppPageHeader extends StatelessWidget {
   /// Right-hand actions, laid out in order against the right margin.
   final List<Widget> actions;
 
-  /// The title's style, defaulting to [AppTypography.screenTitle].
+  /// The title's style, defaulting to [context.type.screenTitle].
   ///
   /// A named token at the call site rather than a `copyWith`, so a reduction
   /// stays scoped to the screen that asked for it (D-71).
@@ -57,7 +57,7 @@ class AppPageHeader extends StatelessWidget {
               ),
               child: Text(
                 title!,
-                style: titleStyle ?? AppTypography.screenTitle,
+                style: titleStyle ?? context.type.screenTitle,
                 // One line, ellipsised. A title the wrap let onto a second line
                 // would make this bar taller than the 56 px the page is laid out
                 // around, and every screen's top spacing is measured from it.

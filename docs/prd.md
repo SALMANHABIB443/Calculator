@@ -118,6 +118,10 @@ Many built-in or basic calculators lack history, customization of feedback, and 
 Supporting screens: **Privacy Policy** and **Terms of Service** (in-app text, D-07),
 reached from Settings and About.
 
+Hidden screens: **Secret Mode** — the PIN entry screen, the blank secret screen, its one-row
+Settings, and the Change PIN flow (FR-007). These are not part of the four main screens, have no
+mockup, and are reachable only through a five-second hold on one specific button (D-82).
+
 ---
 
 ## 7. Functional Requirements
@@ -181,6 +185,27 @@ reached from Settings and About.
 
 **Source:** All mockups (explicit navigation affordances).
 
+### FR-007 — Secret Unlock & PIN Management
+- Holding the History screen's **bottom** "Clear History" action for **five seconds** opens a
+  hidden PIN entry screen (D-82). A tap on that same button is unchanged and still clears
+  history behind its confirmation (D-05).
+- The hold carries **no visible feedback of any kind** — no progress indicator, sound, or
+  haptic. It is not discoverable except by prior knowledge, which is the intent.
+- A **four-digit** PIN guards the secret area. It defaults to **`0000`** and is stored under the
+  `'secretPin'` key in `shared_preferences` (D-83).
+- Entering the correct code reveals a **blank** secret screen carrying a single overflow button
+  in the top-left — no title, no copy, no illustration (D-84).
+- That button opens a minimal settings page holding exactly one row, "Change PIN". The full
+  Settings page is **not** duplicated inside the secret area.
+- Changing the PIN requires the current PIN, then the new code, then a confirmation of the new
+  code. The new code persists across sessions.
+- A wrong code clears the entry and shakes the indicator; the user may retry immediately.
+  There is **no attempt limit and no lockout** (D-85), and a forgotten PIN has **no in-app
+  recovery** — both are recorded as known limitations.
+
+**Source:** Inferred — no mockup covers this area (D-13), so it is specified from the app's own
+tokens rather than from source material.
+
 ---
 
 ## 8. Non-Functional Requirements
@@ -226,6 +251,12 @@ reached from Settings and About.
 2. Taps “Privacy Policy” or “Terms of Service”.
 3. In-app text screen renders the policy (D-07).
 
+**Journey 6 — Reach Secret Mode**
+1. User opens History and presses and holds the bottom “Clear History” for five seconds.
+2. Nothing appears to happen (D-82).
+3. A blank PIN screen opens; the user enters `0000`.
+4. A blank screen appears with a single top-left overflow button → Settings → “Change PIN” (D-84).
+
 ---
 
 ## 10. Navigation and Screen Relationships
@@ -246,6 +277,16 @@ App Launch
                     ├── Share App → system share sheet
                     ├── Terms of Service → Terms of Service screen
                     └── Back → Settings
+
+Hidden (reachable only by holding History's bottom "Clear History" for five seconds — D-82):
+    History ──5s hold──→ Secret PIN Entry (/secret/unlock)
+                            ├── wrong code → clear + shake, retry (no lockout, D-85)
+                            └── correct code → Secret Screen (/secret)
+                                                └── top-left overflow → Secret Settings (/secret/settings)
+                                                        └── "Change PIN" → Change PIN (/secret/change-pin)
+                                                                ├── step 1: verify current PIN
+                                                                ├── step 2: enter new PIN
+                                                                └── step 3: confirm new PIN
 ```
 
 ---
@@ -258,6 +299,12 @@ App Launch
   **200 entries** with oldest-first eviction (D-02).
 - **Settings**: Boolean flags (sound, vibration, historyEnabled), integer (decimalPlaces),
   theme identifier. Stored in `shared_preferences` (D-02).
+- **Secret PIN**: a four-digit decimal string under the single key `'secretPin'`, defaulting to
+  `'0000'` when absent (D-83). Stored in `shared_preferences` **in plaintext** — that store is not
+  encrypted, so the code is readable on a rooted device. This is the same exposure every other
+  value in the app carries and is recorded as a known limitation in `phases.md`, not as a security
+  guarantee. A corrupt or non-four-digit stored value degrades to the default rather than erroring
+  (D-42's contract).
 - No user accounts or cloud storage required for v1.0.
 - The in-flight calculator expression is **not** persisted; the app restores settings
   and history on cold start, and the calculator opens cleared.
@@ -287,6 +334,10 @@ App Launch
 | Very large / small numbers  | Scientific notation once the display would overflow     | Specified        |
 | Decimal places changed mid-calculation | Current result re-renders; in-flight expression untouched (D-14) | D-14 |
 | Clear History tapped        | Confirmation dialog shown; nothing deleted until confirmed (D-05) | D-05 |
+| Clear History held 5 seconds | Secret PIN screen opens; the tap path and its dialog are untouched (D-82) | D-82 |
+| Wrong secret code entered    | Dots clear and the indicator shakes; retry is immediate, nothing is locked (D-85) | D-85 |
+| Stored secret code corrupt   | Falls back to the default `0000` rather than raising (D-83)          | D-83 |
+| Change PIN with a wrong current code | The flow does not advance; retry is immediate (D-85)    | D-85 |
 
 ---
 
@@ -336,6 +387,12 @@ precedence (D-17).
 | AC-014 | History is capped at 200 entries, evicting oldest first (D-02).         | Must     |
 | AC-015 | App is locked to portrait and the keypad scales without clipping on small and large phones (D-09). | Must |
 | AC-016 | Calculated colors match the measured palette in `desing.md` §2 (D-03).   | Must     |
+| AC-017 | Holding History's bottom Clear History for five seconds opens the Secret PIN screen; releasing earlier does nothing, and a tap still clears history normally (D-82). | Must |
+| AC-018 | The secret code is exactly four digits and defaults to `0000` on a fresh install (D-83). | Must     |
+| AC-019 | A wrong secret code clears the entry, shakes the indicator, and permits an immediate retry — no lockout (D-85). | Must     |
+| AC-020 | A correct code reveals a blank screen whose controls are a top-left overflow button leading to a settings page holding "Change PIN" and "Reset PIN" rows, plus a floating white home button in the bottom-right that returns to the calculator (D-84, **D-86**). | Must |
+| AC-022 | Resetting the PIN, from the secret settings page or the PIN screen's "Forgot PIN?" link, asks for confirmation, then erases the stored code so the next unlock requires `0000` — across a restart. Anyone who reaches the screen can wipe the PIN, which is accepted in D-86 against the alternative of a reinstall (D-85, D-86). | Must |
+| AC-021 | A changed PIN is persisted, survives a restart, and is the code the next unlock requires; changing it requires the current PIN (D-83, D-85). | Must |
 
 ---
 

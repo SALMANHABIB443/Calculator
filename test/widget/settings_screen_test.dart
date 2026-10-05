@@ -4,6 +4,7 @@ import 'package:calculator/core/design/app_typography.dart';
 import 'package:calculator/core/widgets/core_widgets.dart';
 import 'package:calculator/features/settings/domain/app_settings.dart';
 import 'package:calculator/features/settings/presentation/decimal_places_sheet.dart';
+import 'package:calculator/features/settings/presentation/theme_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -110,13 +111,63 @@ void main() {
       await openSettings(tester);
 
       expect(
-        tester.widget<ColoredBox>(
-          find.descendant(
-            of: find.byType(SettingsGroup).first,
-            matching: find.byType(ColoredBox),
-          ),
+        SettingsGroup.decoration(
+          tester.element(find.byType(SettingsGroup).first),
         ).color,
         AppColors.surface,
+      );
+    });
+
+    // D-91: the card is no longer a fill and a clip. It carries Ethar's 1 px
+    // outline, and that outline is what makes a near-black card an object on a
+    // black page rather than a slightly lighter patch.
+    testWidgets('the group card carries the 1 px outline (D-91)', (
+      tester,
+    ) async {
+      await pumpApp(tester);
+      await openSettings(tester);
+
+      final decoration = SettingsGroup.decoration(
+        tester.element(find.byType(SettingsGroup).first),
+      );
+      expect(
+        decoration.border,
+        Border.all(color: AppColors.cardBorder),
+        reason: 'Ethar draws Border.all(colors.border) on every settings card',
+      );
+    });
+
+    // D-91: the white theme lifts the card; the dark one must not. Ethar drops
+    // its shadow in dark for the same reason, and a shadow on black is a smudge.
+    testWidgets('no shadow in the dark theme, one in the white theme (D-91)', (
+      tester,
+    ) async {
+      await pumpApp(tester);
+      await openSettings(tester);
+
+      expect(
+        SettingsGroup.decoration(
+          tester.element(find.byType(SettingsGroup).first),
+        ).boxShadow,
+        isEmpty,
+        reason: 'a card on a black page casts nothing',
+      );
+
+      // Through the real picker rather than by seeding the store: the point is
+      // that the *card* follows the theme, and the theme is what the user
+      // changes. `ThemeSheet.optionKey` is used because the option's label
+      // ("White") is not the row's subtitle and a text finder would be at the
+      // mercy of the sheet's own copy.
+      await tapSettingsRow(tester, 'Theme');
+      await tester.tap(find.byKey(ThemeSheet.optionKey(AppThemeName.light)));
+      await tester.pumpAndSettle();
+
+      expect(
+        SettingsGroup.decoration(
+          tester.element(find.byType(SettingsGroup).first),
+        ).boxShadow,
+        hasLength(1),
+        reason: 'the white theme has to lift the card off the page',
       );
     });
 
@@ -145,6 +196,66 @@ void main() {
             .first,
       );
       expect(box.constraints.minHeight, AppSizes.rowMinHeight);
+    });
+
+    // D-92. The screen-level version of the fix, asserted where the user sees
+    // it: the Theme arrow and the three switches must all land on the same
+    // right-hand edge, and that edge is the row's own padding rather than
+    // wherever a flex split happened to leave them.
+    testWidgets('every trailing control lines up on one right edge (D-92)', (
+      tester,
+    ) async {
+      await pumpApp(tester);
+      await openSettings(tester);
+
+      final themeChevron = tester.getRect(
+        find.descendant(
+          of: find.widgetWithText(SettingsRow, 'Theme'),
+          matching: find.byIcon(Icons.chevron_right),
+        ),
+      );
+
+      // The About group is below the fold, so it is scrolled to before its
+      // chevron can be measured — a `ListView` builds lazily.
+      await tester.scrollUntilVisible(
+        find.widgetWithText(SettingsRow, 'Privacy Policy'),
+        120,
+        scrollable: find.byType(Scrollable).last,
+      );
+      await tester.pumpAndSettle();
+
+      final privacyChevron = tester.getRect(
+        find.descendant(
+          of: find.widgetWithText(SettingsRow, 'Privacy Policy'),
+          matching: find.byIcon(Icons.chevron_right),
+        ),
+      );
+
+      expect(
+        themeChevron.right,
+        moreOrLessEquals(privacyChevron.right, epsilon: 0.5),
+        reason:
+            'Theme used to hand SettingsRow an explicit chevron, which skips '
+            'the 8 px gap the drawn one gets',
+      );
+
+      // And the switches share that same edge. Re-measured after the scroll
+      // because the rows have moved on screen, only their right edge is fixed.
+      for (final title in ['Sound', 'Vibration', 'History']) {
+        final row = find.widgetWithText(ToggleRow, title);
+        await tester.ensureVisible(row);
+        await tester.pumpAndSettle();
+
+        expect(
+          tester
+              .getRect(
+                find.descendant(of: row, matching: find.byType(Switch)),
+              )
+              .right,
+          moreOrLessEquals(privacyChevron.right, epsilon: 0.5),
+          reason: '$title switch floated short of the row edge before D-92',
+        );
+      }
     });
   });
 

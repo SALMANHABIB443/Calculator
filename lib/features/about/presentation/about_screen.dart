@@ -1,9 +1,9 @@
+import '../../../../core/design/app_palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/config/app_info.dart';
-import '../../../core/design/app_colors.dart';
 import '../../../core/design/app_spacing.dart';
 import '../../../core/design/app_typography.dart';
 import '../../../core/services/review_service.dart';
@@ -59,7 +59,7 @@ class AboutScreen extends ConsumerWidget {
                 title: 'App Name',
                 trailing: Text(
                   AppInfo.name,
-                  style: AppTypography.rowValue,
+                  style: context.type.rowValue,
                 ),
               ),
               SettingsRow(
@@ -67,7 +67,7 @@ class AboutScreen extends ConsumerWidget {
                 title: 'Version',
                 trailing: Text(
                   AppInfo.version.split('+').first,
-                  style: AppTypography.rowValue,
+                  style: context.type.rowValue,
                 ),
               ),
               SettingsRow(
@@ -75,7 +75,7 @@ class AboutScreen extends ConsumerWidget {
                 title: 'Developer',
                 trailing: Text(
                   AppInfo.developer,
-                  style: AppTypography.rowValue,
+                  style: context.type.rowValue,
                 ),
               ),
             ],
@@ -115,8 +115,8 @@ class AboutScreen extends ConsumerWidget {
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          backgroundColor: AppColors.surface,
-          content: Text('This action is unavailable right now', style: AppTypography.body),
+          backgroundColor: context.appColors.surface,
+          content: Text('This action is unavailable right now', style: context.type.body),
         ),
       );
   }
@@ -137,24 +137,24 @@ class _HeroCard extends StatelessWidget {
         horizontal: AppSpacing.cardPadding,
       ),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: context.appColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.dialog),
       ),
       child: Column(
         children: [
           const AppBrandIcon(size: AppSizes.brandIcon),
           const SizedBox(height: AppSpacing.lg),
-          Text(AppInfo.name, style: AppTypography.screenTitle),
+          Text(AppInfo.name, style: context.type.screenTitle),
           const SizedBox(height: 4),
           Text(
             'Version ${AppInfo.version.split('+').first}',
-            style: AppTypography.subtitle,
+            style: context.type.subtitle,
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
             AppInfo.description,
             textAlign: TextAlign.center,
-            style: AppTypography.body,
+            style: context.type.body,
           ),
         ],
       ),

@@ -1,3 +1,39 @@
+/// The themes a user can choose between (D-90).
+///
+/// Names rather than `ThemeMode` values because `AppSettings` is persisted as a
+/// `String` and a stored name must survive a reordering of any enum. Dark comes
+/// first so it is the default: the app shipped dark-only, so an install that
+/// upgrades must not change appearance on its own.
+enum AppThemeName {
+  /// The original black theme, measured from the mockup pixels.
+  dark('Dark'),
+
+  /// The white theme, matched to the sibling Ethar app.
+  light('White');
+
+  const AppThemeName(this.label);
+
+  /// What the Settings row and the theme picker call it.
+  final String label;
+
+  /// The stored name, identical to [label] today.
+  String get storageValue => name;
+
+  /// Resolves a stored name, falling back to [dark].
+  ///
+  /// A hand-edited or future-version store can hold a name this build does not
+  /// know. `ThemeMode.values.byName` would throw and take the whole settings
+  /// load with it; this returns the default so one bad value costs one
+  /// preference, which is the same contract the repository follows for a value
+  /// of the wrong type (D-42).
+  static AppThemeName from(String? stored) {
+    for (final theme in AppThemeName.values) {
+      if (theme.name == stored) return theme;
+    }
+    return AppThemeName.dark;
+  }
+}
+
 /// User-adjustable preferences (struction.md §10, desing.md §6.3).
 ///
 /// Dark is the only supported theme in v1.0, so [theme] exists as a stored
@@ -68,7 +104,13 @@ class AppSettings {
   /// Whether successful calculations are recorded to history.
   final bool historyEnabled;
 
-  /// Theme name. Only `dark` in v1.0.
+  /// Which theme the app paints with (D-90).
+  ///
+  /// One of [AppThemeName]'s values, stored as that name so a future third
+  /// theme is a new constant rather than a new storage key, and so a corrupt or
+  /// hand-edited value can be resolved to a default instead of crashing
+  /// (`ThemeMode.values.byName` would throw on an unknown name; [AppThemeName.from]
+  /// falls back).
   final String theme;
 
   AppSettings copyWith({
@@ -125,4 +167,3 @@ class AppSettings {
       'historyEnabled: $historyEnabled, '
       'theme: $theme)';
 }
-
