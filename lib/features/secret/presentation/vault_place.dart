@@ -1,6 +1,8 @@
 import '../../../core/widgets/core_widgets.dart';
 import 'package:flutter/material.dart';
 
+import '../images/presentation/vault_images_screen.dart';
+
 /// One place inside the hidden area, and the wording its page is built from
 /// (FEAT-SEC-007, D-114).
 ///
@@ -235,6 +237,10 @@ class VaultPlaceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final place = vaultPlaceById(placeId) ?? _unknownPlace;
+
+    // The Images place owns a full gallery; every other place keeps the
+    // honest empty state until its own storage lands.
+    if (placeId == 'images') return const VaultImagesScreen();
 
     return SecondaryPageScaffold(
       header: SecondaryPageHeader(title: place.title),

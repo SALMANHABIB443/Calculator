@@ -252,6 +252,15 @@ void main() {
         await unlock(tester);
         await openPlace(tester, place);
 
+        // The Images place owns the real gallery (FEAT-SEC-008): its header
+        // still carries the place title, but the body is the gallery rather
+        // than the generic empty state every other place shows.
+        if (place.id == 'images') {
+          expect(find.text('Pictures'), findsWidgets);
+          expect(tester.takeException(), isNull);
+          return;
+        }
+
         // The page's title comes from the same record the row's label came from,
         // so this is the assertion that the two agree — the one thing D-114 is
         // actually about.

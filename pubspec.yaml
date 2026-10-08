@@ -31,6 +31,8 @@ dependencies:
   # Key-press sound and haptics use Flutter's built-in services APIs, so no
   # audio or haptics package is used (D-16).
   cupertino_icons: ^1.0.8
+  image_picker: ^1.2.4
+  path_provider: ^2.1.6
 
 dev_dependencies:
   flutter_test:
