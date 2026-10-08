@@ -14,9 +14,10 @@ import 'calculator_keypad.dart';
 
 /// Root screen of the app (desing.md §6.1, prd.md §7).
 ///
-/// The top bar carries the two navigation entry points: a hamburger on the
+/// The top bar carries the two navigation entry points: a gear button on the
 /// left that opens Settings, and a history clock on the right that opens the
-/// History screen (prd.md §7, D-20 — About is reached only from Settings).
+/// History screen (prd.md §7, D-20, D-117 — About is reached only from
+/// Settings).
 ///
 /// **One column, capped** (**D-69**). The header, the display, and the keypad
 /// are laid out inside a single [ConstrainedBox] and therefore share their left
@@ -123,12 +124,7 @@ class CalculatorScreen extends ConsumerWidget {
                     // up with, extended to the header.
                     AppPageHeader(
                       horizontalPadding: AppSpacing.calculatorSideMargin,
-                      leading: AppIconButton(
-                        icon: Icons.menu,
-                        tooltip: 'Settings',
-                        size: AppSizes.calculatorHeaderAction,
-                        onPressed: () => context.push(AppRoutes.settings),
-                      ),
+                      leading: const _SettingsGearButton(),
                       actions: <Widget>[
                         AppIconButton(
                           icon: Icons.history,
@@ -248,6 +244,108 @@ class _BackspaceButton extends ConsumerWidget {
       // actions wear. The 48 px target and the disabled state are unchanged.
       bordered: false,
       onPressed: enabled ? controller.backspace : null,
+    );
+  }
+}
+
+/// The gear that opens Settings, which turns one slow clockwise revolution
+/// before the screen it names is pushed (**D-118**).
+///
+/// The turn is on the *glyph* rather than on the whole [AppIconButton]: the
+/// bordered square (D-74) has to keep riding the margin the keypad rides, and
+/// a tumbling border would read as the button moving rather than the gear
+/// turning. An [AppIconButton.iconWidget] caller owns its own glyph size, so
+/// the icon spells the arithmetic the button would otherwise do —
+/// `calculatorHeaderAction * calculatorHeaderGlyphRatio` keeps it pinned to
+/// the token it came from.
+///
+/// The push waits for the revolution to land: [spinDuration] is 700 ms of
+/// [Curves.easeInOutCubic], slow enough to read and eased at both ends so it
+/// does not snap into or out of the turn. No route gets a slower transition to
+/// match it — D-56 keeps every push on the platform's own animation and
+/// `navigation_graph_test` asserts that, so delaying the *push* is what puts
+/// the whole gear turn on screen before Settings arrives.
+///
+/// Navigation runs from the controller's status listener rather than a
+/// `Timer`: the controller schedules the frames `pumpAndSettle` needs, while a
+/// timer would let the harness settle on the frame the tap landed and then
+/// fire mid-test.
+class _SettingsGearButton extends StatefulWidget {
+  const _SettingsGearButton();
+
+  /// One full clockwise revolution, in radians (**D-118**).
+  static const double turn = 2 * math.pi;
+
+  /// How long [turn] takes — slow enough that the turn is readable.
+  static const Duration spinDuration = Duration(milliseconds: 700);
+
+  @override
+  State<_SettingsGearButton> createState() => _SettingsGearButtonState();
+}
+
+class _SettingsGearButtonState extends State<_SettingsGearButton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _spin = AnimationController(
+    vsync: this,
+    duration: _SettingsGearButton.spinDuration,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _spin.addStatusListener(_onSpinStatus);
+  }
+
+  @override
+  void dispose() {
+    _spin.removeStatusListener(_onSpinStatus);
+    _spin.dispose();
+    super.dispose();
+  }
+
+  void _onSpinStatus(AnimationStatus status) {
+    if (status != AnimationStatus.completed || !mounted) return;
+    // The history clock can be tapped mid-revolution; pushing Settings on top
+    // of History would be a route the gear does not own, so a spin that lands
+    // off the root screen rewinds instead of navigating.
+    if (ModalRoute.of(context)?.isCurrent != true) {
+      _spin.value = 0;
+      return;
+    }
+    context.push(AppRoutes.settings);
+    // 360° paints exactly as 0°, so rewinding under the incoming route is
+    // pixel-identical — the next tap starts from the top with no snap.
+    _spin.value = 0;
+  }
+
+  void _spinThenOpenSettings() {
+    // A second tap mid-turn would restart the controller and could starve
+    // the completed status the push hangs on.
+    if (_spin.isAnimating) return;
+    _spin.forward();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AppIconButton(
+      tooltip: 'Settings',
+      size: AppSizes.calculatorHeaderAction,
+      onPressed: _spinThenOpenSettings,
+      iconWidget: AnimatedBuilder(
+        animation: _spin,
+        builder: (context, glyph) => Transform.rotate(
+          key: const Key('settings-gear-spin'),
+          angle:
+              Curves.easeInOutCubic.transform(_spin.value) *
+              _SettingsGearButton.turn,
+          child: glyph,
+        ),
+        child: const Icon(
+          Icons.settings,
+          size: AppSizes.calculatorHeaderAction *
+              AppSizes.calculatorHeaderGlyphRatio,
+        ),
+      ),
     );
   }
 }

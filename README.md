@@ -235,7 +235,7 @@ deliberate and recorded exception: the number formatter reads the engine's
 ```
 Calculator (Root /)
   ├── push → History    /history      (clock icon, top right)
-  └── push → Settings   /settings     (hamburger, top left)
+  └── push → Settings   /settings     (gear button, top left)
         ├── push → About     /about
         ├── push → Privacy   /privacy
         └── push → Terms     /terms

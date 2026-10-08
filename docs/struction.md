@@ -144,12 +144,12 @@ because the keypad specification has no ⌫ key (**D-19**).
 - History, Settings, About, Privacy, and Terms are pushed on the stack.
 - Back gestures / buttons pop the stack.
 
-**Navigation Map** (D-20 — the hamburger opens Settings directly; there is no
+**Navigation Map** (D-20, D-117 — the gear button opens Settings directly; there is no
 drawer, and About / Privacy / Terms hang off Settings rather than the root)
 ```
 Calculator (Root /)
   ├── push → History      /history      # clock icon, top right
-  └── push → Settings     /settings     # hamburger icon, top left
+  └── push → Settings     /settings     # gear button, top left
         ├── push → About     /about
         ├── push → Privacy   /privacy
         └── push → Terms     /terms
@@ -167,6 +167,10 @@ History /history
                     ├── push → Change PIN  /secret/change-pin   # pops back here
                     └── Reset PIN → confirm → replace → /secret  # the code is gone
 ```
+The unlocked Secret screen's overflow opens the shared Ethar-style menu panel
+(D-115) rather than a drawer; its single row, Settings, is the route above. The
+panel is a dialog, so the D-56 platform-transition rule for *router* routes is
+untouched.
 The unlock screen is entered **only** by the five-second hold, so it is pushed rather than
 reached by a deep link, and a correct code **replaces** it rather than pushing on top — leaving
 the entry screen on the stack under the secret screen would put a back gesture that returns to a

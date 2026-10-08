@@ -34,6 +34,30 @@ abstract final class AppRoutes {
   /// The three-step Change PIN flow (FEAT-SEC-005).
   static const String secretChangePin = '/secret/change-pin';
 
+  /// The hidden area's browsing page, parameterised by place (FEAT-SEC-007).
+  ///
+  /// **One path for the eleven places the Vault screen leads to** rather than
+  /// eleven paths and eleven screen classes, because the eleven pages are the
+  /// same three parts — a title, the app's back button, an empty list — and
+  /// differ only in the three strings the `:place` segment resolves to
+  /// (`VaultPlaceScreen`, D-114).
+  ///
+  /// Held apart from [secretBrowse] below so the prefix is written once: a
+  /// `'/secret/browse/:place'` pattern and a `'/secret/browse/$id'` call site that
+  /// each spelled their own copy of the middle segment is exactly how the two
+  /// drift and every push 404s into the fallback page.
+  static const String _secretBrowsePrefix = '/secret/browse';
+
+  /// The route [VaultPlaceScreen] is registered at (FEAT-SEC-007, D-114).
+  static const String secretBrowse = '$_secretBrowsePrefix/:place';
+
+  /// [secretBrowse] with [place] filled in — what the rows call `context.push`.
+  ///
+  /// **A function rather than a template constant** because the segment is
+  /// interpolated: `'/secret/browse/$place'` cannot be a `const`, and a
+  /// non-const template invites a row to hand-write its own path instead.
+  static String secretBrowseTo(String place) => '$_secretBrowsePrefix/$place';
+
   /// Debug-only component catalogue (phases.md §Phase 3). Registered in
   /// `app_router.dart` behind `kDebugMode`, so this path exists in a debug
   /// build and in no release build.

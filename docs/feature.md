@@ -511,7 +511,7 @@ Movement between the four main screens.
 
 **Entry Points**  
 - Calculator → History (clock icon)  
-- Calculator → Settings (hamburger menu — inferred)  
+- Calculator → Settings (gear button)  
 - Settings → About (via App Version)  
 - Settings / About → Privacy Policy, Terms of Service  
 - Back arrows on History, Settings, About, and the legal screens  
@@ -789,11 +789,60 @@ secret settings page only (**D-86**, narrowed by **D-88**).
 
 ---
 
+### FEAT-SEC-007 - Place Pages Inside the Hidden Area
+**Priority:** Must Have
+
+**Description**
+The eleven pages the Vault screen's rows open. Each is named after the row that
+leads to it, carries the app's own back button, and shows an honest empty state
+(**D-114**). This is the file-manager pass finished: FEAT-SEC-003 built the screen
+and the rows, and left every one of those rows inert.
+
+**User Interaction**
+- Inside Secret Mode, tap any of the eleven rows on the Vault screen - "Recent
+  files", the six Categories cells (Images, Videos, Audio files, Documents,
+  Downloads, Installation files), "Internal storage", "SD card", "Recycle bin",
+  "Analyse storage" - and land on that place's page.
+- Read the place's name in the header, and what it has (nothing) below.
+- Tap the back arrow or use the system gesture to return to the Vault screen.
+
+**Expected Behavior**
+- **Every page is headed with the name of the row that opened it**, because both
+  read it from one record. A cell labelled "Videos" cannot open a page called
+  something else.
+- **Exactly one back button per page**, and it is the app's shared one: it *pops*,
+  so it returns to whichever screen was tapped to arrive. The Vault screen's
+  floating home button does not travel down - one page, one way out, as everywhere
+  else in the app.
+- **Every page currently shows an empty state.** Nothing is read, listed, moved, or
+  deleted, and no file is invented to fill the list: "No images yet" is a fact,
+  where a row of sample filenames would be a lie the app cannot keep.
+- **The Search button on the Vault screen still does nothing.** It is the one
+  control left enabled-looking and inert, because a search page over a set of files
+  that does not exist would claim something untrue. It arrives with the file list.
+- **An unrecognised `:place` renders a generic page rather than crashing.** A path
+  parameter can arrive from a stale bookmark or a hand-typed URL, and the fallback
+  names no category, so a wrong segment lands on a page that says nothing wrong.
+- **Nothing here names the feature, the area, or the code** (§6.8). Every title is
+  phone vocabulary a user already has on their own device; `vault_place_pages_test`
+  asserts this for all eleven, on top of the check `secret_flow_test` makes on the
+  Vault screen itself.
+
+**UI Components**
+- `SecondaryPageScaffold` + `SecondaryPageHeader`, shared with History, Settings,
+  About, and both legal documents - no bespoke frame (D-74).
+- The shared `EmptyState`, as the empty History list uses it.
+- One route, `/secret/browse/:place`, and one screen, rather than eleven of each.
+
+**Related:** FEAT-SEC-003, FEAT-SEC-006, FR-007, AC-020, AC-022
+
+---
+
 ## Feature Priority Summary
 
 | Priority    | Count | Key Features                                      |
 |-------------|-------|---------------------------------------------------|
-| Must Have   | 25    | All core calculator, history, settings, about, legal pages, feedback, and the five Secret Mode features (Section G) |
+| Must Have   | 26    | All core calculator, history, settings, about, legal pages, feedback, and the six Secret Mode features (Section G) |
 | Should Have | 1     | Polished empty states (state messages are specified; illustration is not) |
 | Could Have  | 3     | Light theme, individual history item deletion (D-15), scientific mode |
 

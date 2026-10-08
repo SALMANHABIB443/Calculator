@@ -208,16 +208,16 @@ void main() {
       });
     });
 
-    testWidgets('the Theme row is not announced as a button', (tester) async {
+    testWidgets('the Theme row is announced as a button', (tester) async {
       await withSemantics(tester, () async {
         await pumpApp(tester);
         await openSettings(tester);
 
-        // D-45: the Theme row shows a chevron but is knowingly inert.
-        // Announcing it as a button would promise a tap that does nothing.
-        final row = nodesLabelled(tester, 'Theme, Dark mode');
+        // D-90: the row opens the theme sheet, so announcing it as a button
+        // promises exactly the tap it honours.
+        final row = nodesLabelled(tester, 'Theme, Dark');
         expect(row, hasLength(1));
-        expect(hasFlag(row.single, SemanticsFlag.isButton), isFalse);
+        expect(hasFlag(row.single, SemanticsFlag.isButton), isTrue);
       });
     });
 

@@ -10,7 +10,9 @@ import 'package:calculator/features/secret/domain/secret_code.dart';
 import 'package:calculator/features/secret/presentation/change_pin_screen.dart';
 import 'package:calculator/features/secret/presentation/secret_controller.dart';
 import 'package:calculator/features/secret/presentation/secret_lockout_controller.dart';
+import 'package:calculator/features/secret/presentation/secret_menu.dart';
 import 'package:calculator/features/secret/presentation/secret_screens.dart';
+import 'package:calculator/features/secret/presentation/secret_settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -94,12 +96,12 @@ void main() {
       .length;
 
   /// The outline colour of each PIN dot, in order.
-///
-/// Read off the painted `Container`s for the same reason [filledDots] reads
-/// those: the dot's colour is the thing under test, so a helper that inferred it
-/// from the state that produced it would be asserting the implementation back at
-/// itself.
-List<Color> dotBorders(WidgetTester tester) => tester
+  ///
+  /// Read off the painted `Container`s for the same reason [filledDots] reads
+  /// those: the dot's colour is the thing under test, so a helper that inferred it
+  /// from the state that produced it would be asserting the implementation back at
+  /// itself.
+  List<Color> dotBorders(WidgetTester tester) => tester
       .widgetList<Container>(
         find.descendant(
           of: find.byKey(const Key('secret-pin-dots')),
@@ -138,11 +140,10 @@ List<Color> dotBorders(WidgetTester tester) => tester
   /// would assert the implementation back at itself. The screen hands a **null**
   /// callback when locked, and a null is the shared [CalculatorButton]'s own
   /// existing signal for "disabled", so this is the real thing being checked.
-  bool keypadEnabled(WidgetTester tester) => tester
-      .widget<CalculatorButton>(
-        find.widgetWithText(CalculatorButton, '5'),
-      )
-      .onPressed !=
+  bool keypadEnabled(WidgetTester tester) =>
+      tester
+          .widget<CalculatorButton>(find.widgetWithText(CalculatorButton, '5'))
+          .onPressed !=
       null;
 
   /// The instant [secretClockProvider] reports while a test runs.
@@ -186,16 +187,17 @@ List<Color> dotBorders(WidgetTester tester) => tester
   /// `CalculatorButton`s, which build `InkWell`s of their own, so "the last one"
   /// is whichever key happened to be built last and says nothing about the
   /// backspace.
-  bool backspaceEnabled(WidgetTester tester) => tester
-      .widget<InkWell>(
-        find
-            .ancestor(
-              of: find.byType(AppBackspaceIcon),
-              matching: find.byType(InkWell),
-            )
-            .first,
-      )
-      .onTap !=
+  bool backspaceEnabled(WidgetTester tester) =>
+      tester
+          .widget<InkWell>(
+            find
+                .ancestor(
+                  of: find.byType(AppBackspaceIcon),
+                  matching: find.byType(InkWell),
+                )
+                .first,
+          )
+          .onTap !=
       null;
 
   /// The lockout controller's state as the running app holds it (D-88).
@@ -247,7 +249,9 @@ List<Color> dotBorders(WidgetTester tester) => tester
       expect(find.text('Clear history?'), findsNothing);
     });
 
-    testWidgets('two short holds do not add up to five seconds', (tester) async {
+    testWidgets('two short holds do not add up to five seconds', (
+      tester,
+    ) async {
       await pumpApp(tester, history: seeded());
       await openHistory(tester);
       final button = find.byKey(const Key('history-clear-button'));
@@ -265,8 +269,9 @@ List<Color> dotBorders(WidgetTester tester) => tester
       expect(find.byType(SecretUnlockScreen), findsNothing);
     });
 
-    testWidgets('a tap still opens the Clear History confirmation',
-        (tester) async {
+    testWidgets('a tap still opens the Clear History confirmation', (
+      tester,
+    ) async {
       await pumpApp(tester, history: seeded());
       await openHistory(tester);
 
@@ -303,37 +308,39 @@ List<Color> dotBorders(WidgetTester tester) => tester
     });
   });
 
-group('the unlock screen (FEAT-SEC-002, AC-018, AC-019)', () {
-    testWidgets('shows four dots and still names neither the feature nor the code',
-        (tester) async {
-      await pumpApp(tester, history: seeded());
-      await holdForShippedDuration(tester);
+  group('the unlock screen (FEAT-SEC-002, AC-018, AC-019)', () {
+    testWidgets(
+      'shows four dots and still names neither the feature nor the code',
+      (tester) async {
+        await pumpApp(tester, history: seeded());
+        await holdForShippedDuration(tester);
 
-      // **Revised by D-86.** This used to assert *no text of any kind*, which was
-      // §6.8's rule and D-84's protection: a screen that names itself confirms it
-      // is real. D-86 keeps the half of that rule that matters — the screen never
-      // names the feature and never names the code — and drops the blanket ban,
-      // because a user who reaches this screen with no idea what the dots are for
-      // gets nothing from the privacy.
-      expect(find.textContaining('Secret'), findsNothing);
+        // **Revised by D-86.** This used to assert *no text of any kind*, which was
+        // §6.8's rule and D-84's protection: a screen that names itself confirms it
+        // is real. D-86 keeps the half of that rule that matters — the screen never
+        // names the feature and never names the code — and drops the blanket ban,
+        // because a user who reaches this screen with no idea what the dots are for
+        // gets nothing from the privacy.
+        expect(find.textContaining('Secret'), findsNothing);
 
-      // The code itself, in any wording. This is the assertion the old test was
-      // really making, and the only one that must never be relaxed: a prompt
-      // reading "Enter your PIN" is fine, one reading "Default 0000" is the
-      // feature over.
-      expect(find.textContaining('0000'), findsNothing);
-      expect(find.textContaining('default'), findsNothing);
+        // The code itself, in any wording. This is the assertion the old test was
+        // really making, and the only one that must never be relaxed: a prompt
+        // reading "Enter your PIN" is fine, one reading "Default 0000" is the
+        // feature over.
+        expect(find.textContaining('0000'), findsNothing);
+        expect(find.textContaining('default'), findsNothing);
 
-      // Guidance is allowed, and is required — this is the complaint D-86
-      // answers.
-      expect(find.text('Enter your PIN'), findsOneWidget);
-      expect(filledDots(tester), 0);
-      expect(
-        tester.takeException(),
-        isNull,
-        reason: 'the unlock screen must render without error',
-      );
-    });
+        // Guidance is allowed, and is required — this is the complaint D-86
+        // answers.
+        expect(find.text('Enter your PIN'), findsOneWidget);
+        expect(filledDots(tester), 0);
+        expect(
+          tester.takeException(),
+          isNull,
+          reason: 'the unlock screen must render without error',
+        );
+      },
+    );
 
     testWidgets('has no "Forgot PIN?" link (D-88)', (tester) async {
       await pumpApp(tester, history: seeded());
@@ -348,8 +355,9 @@ group('the unlock screen (FEAT-SEC-002, AC-018, AC-019)', () {
       expect(find.byKey(const Key('secret-forgot-pin')), findsNothing);
     });
 
-    testWidgets('never displays the entered digits as characters',
-        (tester) async {
+    testWidgets('never displays the entered digits as characters', (
+      tester,
+    ) async {
       await pumpSecretApp(tester);
       await holdForShippedDuration(tester);
       await typeCode(tester, '12');
@@ -359,8 +367,9 @@ group('the unlock screen (FEAT-SEC-002, AC-018, AC-019)', () {
       expect(filledDots(tester), 2);
     });
 
-    testWidgets('backspace removes the last digit and checks nothing',
-        (tester) async {
+    testWidgets('backspace removes the last digit and checks nothing', (
+      tester,
+    ) async {
       await pumpSecretApp(tester);
       await holdForShippedDuration(tester);
       await typeCode(tester, '129');
@@ -371,8 +380,9 @@ group('the unlock screen (FEAT-SEC-002, AC-018, AC-019)', () {
       expect(find.byType(SecretUnlockScreen), findsOneWidget);
     });
 
-    testWidgets('the default 0000 opens the secret screen (AC-018)',
-        (tester) async {
+    testWidgets('the default 0000 opens the secret screen (AC-018)', (
+      tester,
+    ) async {
       await pumpApp(tester, history: seeded());
       await holdForShippedDuration(tester);
       await typeCode(tester, '0000');
@@ -384,8 +394,9 @@ group('the unlock screen (FEAT-SEC-002, AC-018, AC-019)', () {
       expect(find.byType(SecretUnlockScreen), findsNothing);
     });
 
-    testWidgets('a wrong code clears the dots and permits an immediate retry',
-        (tester) async {
+    testWidgets('a wrong code clears the dots and permits an immediate retry', (
+      tester,
+    ) async {
       await pumpSecretApp(tester);
       await holdForShippedDuration(tester);
 
@@ -407,42 +418,49 @@ group('the unlock screen (FEAT-SEC-002, AC-018, AC-019)', () {
       expect(find.byType(SecretScreen), findsOneWidget);
     });
 
-    testWidgets('the indicator and the message turn red on a wrong code (D-88)',
-        (tester) async {
-      await pumpSecretApp(tester);
-      await holdForShippedDuration(tester);
+    testWidgets(
+      'the indicator and the message turn red on a wrong code (D-88)',
+      (tester) async {
+        await pumpSecretApp(tester);
+        await holdForShippedDuration(tester);
 
-      // Nothing is red before the first attempt — the error describes a *judged*
-      // code, so a screen the user has not yet answered is not in an error state.
-      expect(find.text('Wrong PIN'), findsNothing);
-      expect(dotBorders(tester).toSet(), isNot(contains(danger)));
+        // Nothing is red before the first attempt — the error describes a *judged*
+        // code, so a screen the user has not yet answered is not in an error state.
+        expect(find.text('Wrong PIN'), findsNothing);
+        expect(dotBorders(tester).toSet(), isNot(contains(danger)));
 
-      await typeCode(tester, '9999');
-      await tester.pumpAndSettle();
+        await typeCode(tester, '9999');
+        await tester.pumpAndSettle();
 
-      // Every outline red, not just the filled ones — the entry clears on the
-      // same frame, so a fill-only treatment would have nothing left to paint.
-      expect(dotBorders(tester), everyElement(danger));
-      expect(
-        tester.widget<Text>(find.byKey(const Key('secret-pin-status'))).style
-            ?.color,
-        danger,
-      );
+        // Every outline red, not just the filled ones — the entry clears on the
+        // same frame, so a fill-only treatment would have nothing left to paint.
+        expect(dotBorders(tester), everyElement(danger));
+        expect(
+          tester
+              .widget<Text>(find.byKey(const Key('secret-pin-status')))
+              .style
+              ?.color,
+          danger,
+        );
 
-      // And the page itself does not turn: only the PIN and the message do.
-      expect(
-        tester.widget<Scaffold>(
-          find.descendant(
-            of: find.byType(SecretUnlockScreen),
-            matching: find.byType(Scaffold),
-          ),
-        ).backgroundColor,
-        AppColors.background,
-      );
-    });
+        // And the page itself does not turn: only the PIN and the message do.
+        expect(
+          tester
+              .widget<Scaffold>(
+                find.descendant(
+                  of: find.byType(SecretUnlockScreen),
+                  matching: find.byType(Scaffold),
+                ),
+              )
+              .backgroundColor,
+          AppColors.background,
+        );
+      },
+    );
 
-    testWidgets('typing again clears the error before the code is complete',
-        (tester) async {
+    testWidgets('typing again clears the error before the code is complete', (
+      tester,
+    ) async {
       await pumpSecretApp(tester);
       await holdForShippedDuration(tester);
       await typeCode(tester, '9999');
@@ -491,7 +509,7 @@ group('the unlock screen (FEAT-SEC-002, AC-018, AC-019)', () {
       );
     });
 
-// ===========================================================================
+    // ===========================================================================
     // The 3-strike lockout (D-88). This group *reverses* the single test that
     // stood here before it, which asserted that wrong codes never lock out — a
     // direct statement of D-85. D-88 supersedes it: 10^4 unguarded guesses were
@@ -546,9 +564,11 @@ group('the unlock screen (FEAT-SEC-002, AC-018, AC-019)', () {
         // callback, which is the disabled signal.
         expect(keypadEnabled(tester), isFalse);
         expect(
-          tester.widget<CalculatorButton>(
-            find.widgetWithText(CalculatorButton, '5'),
-          ).onPressed,
+          tester
+              .widget<CalculatorButton>(
+                find.widgetWithText(CalculatorButton, '5'),
+              )
+              .onPressed,
           isNull,
         );
         expect(backspaceEnabled(tester), isFalse);
@@ -575,7 +595,10 @@ group('the unlock screen (FEAT-SEC-002, AC-018, AC-019)', () {
         await holdForShippedDuration(tester);
         await failTimes(tester, 3);
 
-        expect(find.text('Too many attempts. Try again in 30s'), findsOneWidget);
+        expect(
+          find.text('Too many attempts. Try again in 30s'),
+          findsOneWidget,
+        );
 
         // Each second is one step down. [elapse] moves the injected clock and the
         // ticker together, so the message is read in a state the app can
@@ -616,7 +639,9 @@ group('the unlock screen (FEAT-SEC-002, AC-018, AC-019)', () {
         expect(find.byType(SecretScreen), findsOneWidget);
       });
 
-      testWidgets('leaving the screen does not end the lockout', (tester) async {
+      testWidgets('leaving the screen does not end the lockout', (
+        tester,
+      ) async {
         await pumpSecretApp(tester);
         await holdForShippedDuration(tester);
         await failTimes(tester, 3);
@@ -713,53 +738,8 @@ group('the unlock screen (FEAT-SEC-002, AC-018, AC-019)', () {
     });
   });
 
-  group('the secret screen (FEAT-SEC-003, AC-020, D-84)', () {
-    testWidgets('is blank apart from two controls, one of them a way out',
-        (tester) async {
-      await pumpApp(tester, history: seeded());
-      await holdForShippedDuration(tester);
-      await typeCode(tester, '0000');
-      await tester.pumpAndSettle();
-
-      // **Revised by D-86.** Still no title, no logo, no copy, no illustration,
-      // and still no back arrow — the screen keeps every part of D-84 that was
-      // about *content*. What changed is the control count: the floating home
-      // button is now the second thing on the page.
-      expect(find.byType(SettingsRow), findsNothing);
-      expect(find.byType(SectionHeader), findsNothing);
-      expect(find.byIcon(Icons.arrow_back), findsNothing);
-      expect(find.byType(CalculatorButton), findsNothing);
-
-      // Exactly two controls, asserted as a count so a third has to be argued
-      // for rather than arriving with a future change. The home button is
-      // counted by its key and the overflow by its type — one is a shared
-      // component found through [AppIconButton], the other is a bespoke
-      // `Material`/`InkWell` circle, so a single `byType` finder cannot see both.
-      expect(find.byKey(const Key('secret-home')), findsOneWidget);
-      expect(find.byType(AppIconButton), findsOneWidget);
-      expect(find.byKey(const Key('secret-overflow')), findsOneWidget);
-      expect(find.byIcon(Icons.more_vert), findsOneWidget);
-    });
-
-    testWidgets('the overflow button is the shared bordered AppIconButton',
-        (tester) async {
-      await pumpApp(tester, history: seeded());
-      await holdForShippedDuration(tester);
-      await typeCode(tester, '0000');
-      await tester.pumpAndSettle();
-
-      // D-74: the same 48 px bordered component every other header action
-      // wears, so it looks entirely ordinary.
-      final button = tester.widget<AppIconButton>(
-        find.byKey(const Key('secret-overflow')),
-      );
-      expect(button.bordered, isTrue);
-      expect(button.tooltip, 'Settings');
-    });
-  });
-
-  group('the way home (D-86)', () {
-    /// Unlocks and lands on the blank secret screen.
+  group('the secret screen (FEAT-SEC-003, D-84)', () {
+    /// Unlocks and lands on the secret screen itself.
     Future<void> unlock(WidgetTester tester) async {
       await pumpApp(tester, history: seeded());
       await holdForShippedDuration(tester);
@@ -767,8 +747,421 @@ group('the unlock screen (FEAT-SEC-002, AC-018, AC-019)', () {
       await tester.pumpAndSettle();
     }
 
-    testWidgets('the PIN screen has a back arrow, not a home button',
-        (tester) async {
+    /// The list the dashboard scrolls in, so a finder does not have to know that
+    /// the FAB is a `Stack` sibling of it rather than a child.
+    Finder homeList() => find.byKey(const Key('secret-home-list'));
+
+    /// Grows the test surface so the whole dashboard is inside the viewport.
+    ///
+    /// The default 800 × 600 canvas is *shorter* than the screen it is testing,
+    /// so a [ListView] never builds a tail it cannot show and every assertion
+    /// about the bottom card would fail for a viewport reason rather than for
+    /// the thing it was written about. The one test that cares about the short
+    /// case sets its own size instead, and the one that cares about scrolling
+    /// deliberately leaves the canvas short.
+    ///
+    /// Called before [unlock], because the app lays out at `pumpApp`.
+    void useTallView(WidgetTester tester) {
+      tester.view.physicalSize = const Size(800, 1200);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+    }
+
+    testWidgets('leads with Recent files and then a 3x2 grid of Categories', (
+      tester,
+    ) async {
+      useTallView(tester);
+      await unlock(tester);
+
+      // **Revised by the file-manager pass**, which reversed D-84's "blank". The
+      // screen is now the first draft of the hidden area's file manager: Recent
+      // files first, then a card per group. Every part of D-84 that was about
+      // *content* — no title, no logo, no illustration, no back arrow — still
+      // holds, and the "no back arrow" assertion below is the one that catches a
+      // later change that quietly reintroduces one.
+      expect(find.byKey(const Key('secret-recent-files')), findsOneWidget);
+      expect(find.byIcon(Icons.arrow_back), findsNothing);
+      expect(find.byType(CalculatorButton), findsNothing);
+
+      // Two group labels, and only two. "Recent files" is the page's own first
+      // action rather than a group, so a heading over it would be a label
+      // announcing a list of one.
+      expect(find.byType(SectionHeader), findsNWidgets(2));
+      expect(find.text('CATEGORIES'), findsOneWidget);
+      expect(find.text('STORAGE'), findsOneWidget);
+
+      // The grid: six cells, each its own keyed target rather than a `Text` a
+      // test has to match on wording. `3 * 2` is the shape the pass asked for, so
+      // it is asserted rather than left to whoever edits the data next.
+      for (final category in const <String>[
+        'images',
+        'videos',
+        'audio',
+        'documents',
+        'downloads',
+        'installation',
+      ]) {
+        expect(
+          find.byKey(Key('secret-category-$category')),
+          findsOneWidget,
+          reason: 'the grid must keep a cell for "$category"',
+        );
+      }
+      expect(find.byType(AppIconTile), findsWidgets);
+
+      // One cell per column on one row, three across: read back from the layout
+      // rather than from the source data, so a data edit that changed the order
+      // or the count of columns cannot pass.
+      final first = tester.getCenter(
+        find.byKey(const Key('secret-category-images')),
+      );
+      final second = tester.getCenter(
+        find.byKey(const Key('secret-category-videos')),
+      );
+      final fourth = tester.getCenter(
+        find.byKey(const Key('secret-category-documents')),
+      );
+      expect(second.dx, greaterThan(first.dx));
+      expect(fourth.dy, greaterThan(first.dy));
+      expect(fourth.dx, closeTo(first.dx, 1));
+    });
+
+    testWidgets(
+      'shows both storages with their figures, and two bottom actions',
+      (tester) async {
+        useTallView(tester);
+        await unlock(tester);
+
+        expect(
+          find.byKey(const Key('secret-storage-internal')),
+          findsOneWidget,
+        );
+        expect(find.text('Internal storage'), findsOneWidget);
+        expect(
+          find.text('28.35 GB / 32.00 GB · 3.65 GB free'),
+          findsOneWidget,
+        );
+
+        expect(find.byKey(const Key('secret-storage-sd')), findsOneWidget);
+        expect(find.text('SD card'), findsOneWidget);
+        expect(find.text('Not inserted'), findsOneWidget);
+
+        expect(find.byIcon(Icons.delete_outline), findsOneWidget);
+        expect(find.byKey(const Key('secret-recycle-bin')), findsOneWidget);
+        expect(find.text('Recycle bin'), findsOneWidget);
+        expect(find.byKey(const Key('secret-analyse-storage')), findsOneWidget);
+        expect(find.text('Analyse storage'), findsOneWidget);
+
+        // All five rows, in the order the screen stacks them — the count and the
+        // order in one assertion, so recycling and analysing cannot drift above
+        // Storage, and a sixth row cannot arrive unnoticed. Read off the widget
+        // list rather than off the rows' centres: a positional assertion can
+        // fail for a viewport reason, and this one is about the sequence.
+        expect(
+          tester
+              .widgetList<SettingsRow>(find.byType(SettingsRow))
+              .map((row) => row.title),
+          <String>[
+            'Recent files',
+            'Internal storage',
+            'SD card',
+            'Recycle bin',
+            'Analyse storage',
+          ],
+        );
+      },
+    );
+
+    testWidgets('puts Search and the overflow together on the top-right', (
+      tester,
+    ) async {
+      await unlock(tester);
+
+      final screen = tester.getSize(find.byType(SecretScreen));
+      Rect box(Key key) => tester.getRect(
+        find.descendant(of: find.byKey(key), matching: find.byType(IconButton)),
+      );
+      final search = box(const Key('secret-search'));
+      final overflow = box(const Key('secret-overflow'));
+
+      // **The move the pass asked for.** The overflow used to sit alone in the
+      // top-*left*, which was defensible on a page with one control on it and is
+      // not now that the header carries a second action. Both sit against the
+      // app's own 24 px margin — the same line the cards below them end on, which
+      // is why the numbers are read off the token rather than retyped.
+      expect(
+        overflow.right,
+        closeTo(screen.width - AppSpacing.screenHorizontal, 1),
+      );
+      expect(search.right, closeTo(overflow.left - AppSpacing.md, 1));
+
+      // "Top-right", as a corner rather than as two measurements: the exact
+      // insets are the app's business.
+      expect(overflow.center.dx, greaterThan(screen.width / 2));
+      expect(search.center.dy, lessThan(screen.height / 2));
+      expect(overflow.center.dy, closeTo(search.center.dy, 1));
+    });
+
+    testWidgets('titles the bar "Vault", on the top-left', (tester) async {
+      useTallView(tester);
+      await unlock(tester);
+
+      final screen = tester.getSize(find.byType(SecretScreen));
+      final title = tester.getRect(find.text('Vault'));
+      final search = tester.getRect(
+        find.descendant(
+          of: find.byKey(const Key('secret-search')),
+          matching: find.byType(IconButton),
+        ),
+      );
+
+      // A first line that says what you are looking at, before the grid. The
+      // header was titleless while the bar carried nothing but two actions; the
+      // left half has a word in it now, and this is the assertion that it stays
+      // there.
+      expect(find.text('Vault'), findsOneWidget);
+
+      // On the header's own margin, on the same 24 px the cards below end on, so
+      // the word does not start where the cards start by accident.
+      expect(title.left, closeTo(AppSpacing.screenHorizontal, 1));
+
+      // "Top-left", as a corner rather than as a measurement.
+      expect(title.center.dx, lessThan(screen.width / 2));
+      expect(title.center.dy, lessThan(screen.height / 2));
+
+      // And it stays *left* of the actions, so the two do not collide.
+      //
+      // Equality, not `lessThan`: [AppPageHeader] gives the title an `Expanded`,
+      // and an `Expanded` takes all the slack, so the title's box ends exactly
+      // where the first action begins. The word "Vault" is far narrower than
+      // that box — measuring the *glyphs* would need a `RenderParagraph`, and
+      // what the layout guarantees is the box. The bar is the thing that is
+      // measured, and the assertion is that the bar did not have to reflow to fit
+      // both.
+      expect(title.right, lessThanOrEqualTo(search.left));
+
+      // One line, not two, so the bar is still the height every screen's top
+      // spacing is measured from. Read off the token rather than typed as a
+      // magic number: a wrapped title would add a second line's height to this.
+      expect(
+        tester.getSize(find.byType(AppPageHeader)).height,
+        closeTo(AppSpacing.headerTopGap + AppSizes.headerHeight, 1),
+        reason:
+            'a second title line would make this bar taller than every '
+            'other screen in the app',
+      );
+    });
+
+    testWidgets('the title stays one line beside the actions when narrow', (
+      tester,
+    ) async {
+      // The width where a longer title *would* want a second line, and where a
+      // title wide enough to press against the actions would show it.
+      tester.view.physicalSize = const Size(360, 640);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+
+      await unlock(tester);
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Vault'), findsOneWidget);
+
+      final search = tester.getRect(
+        find.descendant(
+          of: find.byKey(const Key('secret-search')),
+          matching: find.byType(IconButton),
+        ),
+      );
+
+      // Ellipsised rather than wrapped, and the bar is still one line tall at the
+      // width where a second would have wanted to happen. Measured off the bar
+      // rather than off the text: [AppPageHeader] caps the title at one line, so
+      // the guarantee is that the bar did not grow, not that the glyphs shrank.
+      expect(
+        tester.getSize(find.byType(AppPageHeader)).height,
+        closeTo(AppSpacing.headerTopGap + AppSizes.headerHeight, 1),
+      );
+      expect(
+        tester.getRect(find.text('Vault')).right,
+        lessThanOrEqualTo(search.left),
+        reason: 'the title must yield to the actions, not overlap them',
+      );
+    });
+
+    testWidgets('names no part of the feature and no code (§6.8)', (
+      tester,
+    ) async {
+      useTallView(tester);
+      await unlock(tester);
+
+      // **The part of §6.8 that survived the reversal.** The pass added eleven
+      // strings to a page whose whole privacy argument was that it had none, so
+      // the burden sits on this one assertion. The words are phone vocabulary —
+      // Images, Downloads, Internal storage — and none of them is the *code*.
+      //
+      // **The naming rule is withdrawn here, not relaxed.** "Vault" in the header
+      // is now a name for the feature, which desing.md §6.8 and D-84 forbade, so
+      // the line that asserted it is gone rather than weakened. What this test
+      // still protects is the thing §6.8 was ultimately about: a screenshot of
+      // this screen must never carry the four digits that open it. Someone who
+      // wants the area deniable by name does not have it any more; that cost is
+      // accepted in `SecretScreen`'s doc comment, where it belongs.
+      expect(find.textContaining('Secret'), findsNothing);
+      expect(find.textContaining('0000'), findsNothing);
+      expect(find.textContaining('default'), findsNothing);
+      expect(find.textContaining('PIN'), findsNothing);
+
+      // And the title that replaced that rule is asserted by name, so a later
+      // rename cannot quietly re-break the doc comment above.
+      expect(find.text('Vault'), findsOneWidget);
+    });
+
+    testWidgets('every control is enabled-looking, and only Search is inert', (
+      tester,
+    ) async {
+      useTallView(tester);
+      await unlock(tester);
+
+      // **Reversed by D-114**, which wired the eleven rows to the eleven browsing
+      // pages. The old version of this test tapped `secret-search`,
+      // `secret-recent-files`, and `secret-category-images` and asserted the screen
+      // was still on `SecretScreen` afterwards — the *correct* assertion at the
+      // time, and the thing that would have caught the wiring going in if it had
+      // not been replaced first.
+      //
+      // So this test now asserts the half of the old decision that survived and
+      // hands the other half to `vault_place_pages_test.dart`, which drives all
+      // eleven rows rather than three.
+      //
+      // Enabled-looking **on purpose**: a disabled or absent control renders the
+      // page as grey text on dark cards, which reads as a layout bug rather than
+      // as a first draft. So every control is enabled — and now, unlike before,
+      // eleven of the twelve open something.
+      expect(
+        tester
+            .widget<AppIconButton>(find.byKey(const Key('secret-search')))
+            .onPressed,
+        isNotNull,
+      );
+      expect(
+        tester
+            .widget<SettingsRow>(find.byKey(const Key('secret-recent-files')))
+            .onTap,
+        isNotNull,
+      );
+
+      // The one control still wired to a no-op, and it stays here: search has no
+      // destination and no honest empty page to open. A row that opens a page
+      // saying "No images yet" states a fact; a search page over a set of files
+      // that does not exist would not.
+      await tester.tap(find.byKey(const Key('secret-search')));
+      await tester.pumpAndSettle();
+
+      // Still here, and still intact: nothing pushed, nothing popped, and no
+      // rebuild threw on the way.
+      expect(find.byType(SecretScreen), findsOneWidget);
+      expect(find.text('CATEGORIES'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('the overflow button is the shared bordered AppIconButton', (
+      tester,
+    ) async {
+      useTallView(tester);
+      await unlock(tester);
+
+      // D-74: the same 48 px bordered component every other header action wears,
+      // so it looks entirely ordinary. Search shares it too, which is the other
+      // half of "reads as furniture".
+      final button = tester.widget<AppIconButton>(
+        find.byKey(const Key('secret-overflow')),
+      );
+      expect(button.bordered, isTrue);
+      expect(button.tooltip, 'Menu');
+
+      final search = tester.widget<AppIconButton>(
+        find.byKey(const Key('secret-search')),
+      );
+      expect(search.bordered, isTrue);
+      expect(search.icon, Icons.search);
+    });
+
+    testWidgets('the last card clears the floating home button', (
+      tester,
+    ) async {
+      await unlock(tester);
+
+      // The FAB became a `Stack` sibling of the scrolling column, so it now
+      // floats *over* content that used to be a page with nothing on it. Without
+      // the list's bottom padding the last action would be unreachable behind it.
+      final list = tester.widget<ListView>(homeList());
+      expect(
+        list.padding!.resolve(TextDirection.ltr).bottom,
+        closeTo(
+          AppSizes.secretHomeButton +
+              AppSecretSpacing.homeButtonInset +
+              AppSpacing.md,
+          0.01,
+        ),
+        reason: 'the list must reserve the FAB plus the inset it is padded by',
+      );
+
+      // And proved on screen rather than only in the padding: scrolled to the
+      // end, nothing overlaps the button.
+      await tester.drag(homeList(), const Offset(0, -400));
+      await tester.pumpAndSettle();
+
+      final fab = tester.getRect(find.byKey(const Key('secret-home')));
+      final last = tester.getRect(
+        find.byKey(const Key('secret-analyse-storage')),
+      );
+      expect(
+        last.bottom,
+        lessThanOrEqualTo(fab.top),
+        reason: 'the last row must not sit underneath the home button',
+      );
+    });
+
+    testWidgets('scrolls, so nothing is unreachable on a short screen', (
+      tester,
+    ) async {
+      // A 360 x 640 phone: the narrowest and shortest this pass has to survive,
+      // and the case where a non-scrolling column would have overflowed outright.
+      tester.view.physicalSize = const Size(360, 640);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+
+      await unlock(tester);
+
+      expect(tester.takeException(), isNull);
+      expect(find.byType(SecretScreen), findsOneWidget);
+
+      // The categories card holds its three columns at this width rather than
+      // overflowing: the labels are the thing at risk, and the long one wraps
+      // instead of being ellipsised away.
+      final install = tester.getSize(
+        find.byKey(const Key('secret-category-installation')),
+      );
+      final images = tester.getSize(
+        find.byKey(const Key('secret-category-images')),
+      );
+      expect(install.width, closeTo(images.width, 0.5));
+      expect(tester.takeException(), isNull);
+    });
+  });
+
+  group('the way home (D-86)', () {
+    /// Unlocks and lands on the secret screen.
+    Future<void> unlock(WidgetTester tester) async {
+      await pumpApp(tester, history: seeded());
+      await holdForShippedDuration(tester);
+      await typeCode(tester, '0000');
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('the PIN screen has a back arrow, not a home button', (
+      tester,
+    ) async {
       await pumpApp(tester, history: seeded());
       await holdForShippedDuration(tester);
 
@@ -785,8 +1178,9 @@ group('the unlock screen (FEAT-SEC-002, AC-018, AC-019)', () {
       expect(find.byIcon(Icons.home_outlined), findsNothing);
     });
 
-    testWidgets('the back arrow is the shared bordered AppIconButton',
-        (tester) async {
+    testWidgets('the back arrow is the shared bordered AppIconButton', (
+      tester,
+    ) async {
       await pumpApp(tester, history: seeded());
       await holdForShippedDuration(tester);
 
@@ -802,8 +1196,9 @@ group('the unlock screen (FEAT-SEC-002, AC-018, AC-019)', () {
       expect(button.tooltip, 'Back to calculator');
     });
 
-    testWidgets('it sits in the top-left corner, on the header margin',
-        (tester) async {
+    testWidgets('it sits in the top-left corner, on the header margin', (
+      tester,
+    ) async {
       await pumpApp(tester, history: seeded());
       await holdForShippedDuration(tester);
 
@@ -846,8 +1241,9 @@ group('the unlock screen (FEAT-SEC-002, AC-018, AC-019)', () {
       expect(size.height, greaterThanOrEqualTo(44));
     });
 
-    testWidgets('the unlocked secret screen keeps its floating home button',
-        (tester) async {
+    testWidgets('the unlocked secret screen keeps its floating home button', (
+      tester,
+    ) async {
       await unlock(tester);
 
       // D-87 narrowed D-86 rather than reversing it: the blank screen has no
@@ -942,6 +1338,9 @@ group('the unlock screen (FEAT-SEC-002, AC-018, AC-019)', () {
 
   group('the secret settings page (FEAT-SEC-004, AC-020, D-84)', () {
     /// Unlocks and opens the one-row page.
+    ///
+    /// Two taps rather than one as of D-115: the overflow opens [SecretMenu],
+    /// and the panel's single row is what opens the page.
     Future<void> openSecretSettings(WidgetTester tester) async {
       await pumpApp(tester, history: seeded());
       await holdForShippedDuration(tester);
@@ -949,10 +1348,13 @@ group('the unlock screen (FEAT-SEC-002, AC-018, AC-019)', () {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('secret-overflow')));
       await tester.pumpAndSettle();
+      await tester.tap(find.byKey(SecretMenu.settingsRowKey));
+      await tester.pumpAndSettle();
     }
 
-    testWidgets('holds two rows: "Change PIN" first, "Reset PIN" second',
-        (tester) async {
+    testWidgets('holds two rows: "Change PIN" first, "Reset PIN" second', (
+      tester,
+    ) async {
       await openSecretSettings(tester);
 
       expect(find.byType(SecretSettingsScreen), findsOneWidget);
@@ -982,14 +1384,17 @@ group('the unlock screen (FEAT-SEC-002, AC-018, AC-019)', () {
     });
   });
 
-group('changing the PIN (FEAT-SEC-005, AC-021, D-113)', () {
-    /// Opens the Change PIN flow, already past the unlock and the overflow.
+  group('changing the PIN (FEAT-SEC-005, AC-021, D-113)', () {
+    /// Opens the Change PIN flow, already past the unlock, the overflow and the
+    /// panel that sits between them (D-115).
     Future<void> openChangePin(WidgetTester tester, SecretCode current) async {
       await pumpApp(tester, history: seeded(), secretPin: current);
       await holdForShippedDuration(tester);
       await typeCode(tester, current.value);
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('secret-overflow')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(SecretMenu.settingsRowKey));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Change PIN'));
       await tester.pumpAndSettle();
@@ -1132,7 +1537,9 @@ group('changing the PIN (FEAT-SEC-005, AC-021, D-113)', () {
       // frame, so a fill-only treatment would have nothing left to paint.
       expect(dotBorders(tester), everyElement(danger));
       expect(
-        tester.widget<Text>(find.byKey(const Key('secret-pin-status'))).style
+        tester
+            .widget<Text>(find.byKey(const Key('secret-pin-status')))
+            .style
             ?.color,
         danger,
       );
@@ -1153,22 +1560,24 @@ group('changing the PIN (FEAT-SEC-005, AC-021, D-113)', () {
       );
     });
 
-    testWidgets('typing again clears "Incorrect PIN" before the code is complete',
-        (tester) async {
-      await openChangePin(tester, SecretCode('1234'));
-      await typeCode(tester, '9999');
-      await tester.pumpAndSettle();
-      expect(find.text('Incorrect PIN'), findsOneWidget);
+    testWidgets(
+      'typing again clears "Incorrect PIN" before the code is complete',
+      (tester) async {
+        await openChangePin(tester, SecretCode('1234'));
+        await typeCode(tester, '9999');
+        await tester.pumpAndSettle();
+        expect(find.text('Incorrect PIN'), findsOneWidget);
 
-      // One digit, not four: the message describes the code just rejected and is
-      // stale the moment a new one is started.
-      await typeCode(tester, '1');
-      await tester.pumpAndSettle();
+        // One digit, not four: the message describes the code just rejected and is
+        // stale the moment a new one is started.
+        await typeCode(tester, '1');
+        await tester.pumpAndSettle();
 
-      expect(find.text('Incorrect PIN'), findsNothing);
-      expect(dotBorders(tester).toSet(), isNot(contains(danger)));
-      expect(filledDots(tester), 1);
-    });
+        expect(find.text('Incorrect PIN'), findsNothing);
+        expect(dotBorders(tester).toSet(), isNot(contains(danger)));
+        expect(filledDots(tester), 1);
+      },
+    );
 
     testWidgets('the correct current PIN advances to entering a new one', (
       tester,
@@ -1253,41 +1662,43 @@ group('changing the PIN (FEAT-SEC-005, AC-021, D-113)', () {
       expect(find.byType(SecretSettingsScreen), findsOneWidget);
     });
 
-    testWidgets('a mismatched confirmation stays on step three and keeps the code',
-        (tester) async {
-      await openChangePin(tester, SecretCode('1234'));
-      await typeCode(tester, '1234');
-      await tester.pumpAndSettle();
-      await typeCode(tester, '5678');
-      await tester.pumpAndSettle();
+    testWidgets(
+      'a mismatched confirmation stays on step three and keeps the code',
+      (tester) async {
+        await openChangePin(tester, SecretCode('1234'));
+        await typeCode(tester, '1234');
+        await tester.pumpAndSettle();
+        await typeCode(tester, '5678');
+        await tester.pumpAndSettle();
 
-      await typeCode(tester, '9999');
-      await tester.pumpAndSettle();
+        await typeCode(tester, '9999');
+        await tester.pumpAndSettle();
 
-      // **Reverses the old "a mismatch returns to step two"** (D-113). Still
-      // step three, asking the same question: the user mistyped the confirmation,
-      // not their choice of PIN, and being sent back to re-choose it makes a
-      // third attempt of a code they already settled on.
-      expect(find.text('Confirm new PIN'), findsOneWidget);
-      expect(find.text('PINs do not match'), findsOneWidget);
-      expect(dotBorders(tester), everyElement(danger));
-      // Only the confirmation is cleared; the new code is still held in memory
-      // and is proven held by the next test step.
-      expect(filledDots(tester), 0);
-      expect(await storedPin(), SecretCode('1234'));
+        // **Reverses the old "a mismatch returns to step two"** (D-113). Still
+        // step three, asking the same question: the user mistyped the confirmation,
+        // not their choice of PIN, and being sent back to re-choose it makes a
+        // third attempt of a code they already settled on.
+        expect(find.text('Confirm new PIN'), findsOneWidget);
+        expect(find.text('PINs do not match'), findsOneWidget);
+        expect(dotBorders(tester), everyElement(danger));
+        // Only the confirmation is cleared; the new code is still held in memory
+        // and is proven held by the next test step.
+        expect(filledDots(tester), 0);
+        expect(await storedPin(), SecretCode('1234'));
 
-      // Retrying the confirmation with the code they chose the first time saves
-      // it — which is only possible if the mismatch did not discard it.
-      await typeCode(tester, '5678');
-      await tester.pumpAndSettle();
-      expect(await storedPin(), SecretCode('5678'));
+        // Retrying the confirmation with the code they chose the first time saves
+        // it — which is only possible if the mismatch did not discard it.
+        await typeCode(tester, '5678');
+        await tester.pumpAndSettle();
+        expect(await storedPin(), SecretCode('5678'));
 
-      // Left here rather than at the end of the first half: the save starts the
-      // success pause, and a test that ends with a pending timer is a test that
-      // failed for a reason nobody wrote.
-      await settleSuccess(tester);
-      expect(find.byType(SecretSettingsScreen), findsOneWidget);
-    });
+        // Left here rather than at the end of the first half: the save starts the
+        // success pause, and a test that ends with a pending timer is a test that
+        // failed for a reason nobody wrote.
+        await settleSuccess(tester);
+        expect(find.byType(SecretSettingsScreen), findsOneWidget);
+      },
+    );
 
     testWidgets('a mismatched confirmation does not turn step two red', (
       tester,
@@ -1328,7 +1739,9 @@ group('changing the PIN (FEAT-SEC-005, AC-021, D-113)', () {
       // In the app's own neutral label colour: the palette has no success token
       // (D-84) and red under an accepted code would be a false claim.
       expect(
-        tester.widget<Text>(find.byKey(const Key('secret-pin-status'))).style
+        tester
+            .widget<Text>(find.byKey(const Key('secret-pin-status')))
+            .style
             ?.color,
         isNot(danger),
       );
@@ -1341,71 +1754,75 @@ group('changing the PIN (FEAT-SEC-005, AC-021, D-113)', () {
       expect(await storedPin(), SecretCode('5678'));
     });
 
-    testWidgets('nothing can be entered or navigated while the success line is up',
-        (tester) async {
-      await openChangePin(tester, SecretCode('1234'));
-      await typeCode(tester, '1234');
-      await tester.pumpAndSettle();
-      await typeCode(tester, '5678');
-      await tester.pumpAndSettle();
-      await typeCode(tester, '5678');
-      await tester.pumpAndSettle();
+    testWidgets(
+      'nothing can be entered or navigated while the success line is up',
+      (tester) async {
+        await openChangePin(tester, SecretCode('1234'));
+        await typeCode(tester, '1234');
+        await tester.pumpAndSettle();
+        await typeCode(tester, '5678');
+        await tester.pumpAndSettle();
+        await typeCode(tester, '5678');
+        await tester.pumpAndSettle();
 
-      expect(find.text('PIN changed successfully'), findsOneWidget);
-      expect(keypadEnabled(tester), isFalse);
-      expect(backspaceEnabled(tester), isFalse);
-      // The arrow is disabled rather than removed: a control that vanished
-      // mid-flow would move the layout the user was looking at.
-      final back = tester.widget<AppIconButton>(find.byType(AppIconButton));
-      expect(back.onPressed, isNull);
+        expect(find.text('PIN changed successfully'), findsOneWidget);
+        expect(keypadEnabled(tester), isFalse);
+        expect(backspaceEnabled(tester), isFalse);
+        // The arrow is disabled rather than removed: a control that vanished
+        // mid-flow would move the layout the user was looking at.
+        final back = tester.widget<AppIconButton>(find.byType(AppIconButton));
+        expect(back.onPressed, isNull);
 
-      // Taps that land anyway change nothing. **`pump`, not `pumpAndSettle`**, and the
-      // reason is the whole point of the assertion: `pumpAndSettle` advances the
-      // test clock 100 ms a frame until nothing is scheduled, which walks the
-      // confirmation pause straight past its end and pops the screen the test is
-      // trying to inspect. A bare `pump` advances nothing, so the pause cannot
-      // expire underneath it.
-      await tester.tap(find.widgetWithText(CalculatorButton, '1'));
-      await tester.pump();
-      expect(find.text('PIN changed successfully'), findsOneWidget);
-      expect(filledDots(tester), 4);
+        // Taps that land anyway change nothing. **`pump`, not `pumpAndSettle`**, and the
+        // reason is the whole point of the assertion: `pumpAndSettle` advances the
+        // test clock 100 ms a frame until nothing is scheduled, which walks the
+        // confirmation pause straight past its end and pops the screen the test is
+        // trying to inspect. A bare `pump` advances nothing, so the pause cannot
+        // expire underneath it.
+        await tester.tap(find.widgetWithText(CalculatorButton, '1'));
+        await tester.pump();
+        expect(find.text('PIN changed successfully'), findsOneWidget);
+        expect(filledDots(tester), 4);
 
-      await tester.tap(find.byIcon(Icons.arrow_back));
-      await tester.pump();
-      expect(find.text('PIN changed successfully'), findsOneWidget);
+        await tester.tap(find.byIcon(Icons.arrow_back));
+        await tester.pump();
+        expect(find.text('PIN changed successfully'), findsOneWidget);
 
-      // Only when the pause is deliberately pumped out does the flow end.
-      await settleSuccess(tester);
-      expect(find.byType(ChangePinScreen), findsNothing);
-      expect(await storedPin(), SecretCode('5678'));
-    });
+        // Only when the pause is deliberately pumped out does the flow end.
+        await settleSuccess(tester);
+        expect(find.byType(ChangePinScreen), findsNothing);
+        expect(await storedPin(), SecretCode('5678'));
+      },
+    );
 
-    testWidgets('the changed PIN is the one that opens the screen, and the old is not',
-        (tester) async {
-      await changeTo(tester, current: '1234', next: '5678');
+    testWidgets(
+      'the changed PIN is the one that opens the screen, and the old is not',
+      (tester) async {
+        await changeTo(tester, current: '1234', next: '5678');
 
-      // Out of the settings page to the blank screen, then out of the hidden
-      // area entirely — so the claim below is about the *store* answering a fresh
-      // unlock prompt rather than about a provider's opinion of it.
-      await goBack(tester);
-      expect(find.byType(SecretScreen), findsOneWidget);
+        // Out of the settings page to the blank screen, then out of the hidden
+        // area entirely — so the claim below is about the *store* answering a fresh
+        // unlock prompt rather than about a provider's opinion of it.
+        await goBack(tester);
+        expect(find.byType(SecretScreen), findsOneWidget);
 
-      await tester.tap(find.byKey(const Key('secret-home')));
-      await tester.pumpAndSettle();
-      await holdForShippedDuration(tester);
+        await tester.tap(find.byKey(const Key('secret-home')));
+        await tester.pumpAndSettle();
+        await holdForShippedDuration(tester);
 
-      // The old code is refused and opens nothing.
-      await typeCode(tester, '1234');
-      await tester.pumpAndSettle();
-      expect(find.byType(SecretScreen), findsNothing);
-      expect(find.text('Wrong PIN'), findsOneWidget);
+        // The old code is refused and opens nothing.
+        await typeCode(tester, '1234');
+        await tester.pumpAndSettle();
+        expect(find.byType(SecretScreen), findsNothing);
+        expect(find.text('Wrong PIN'), findsOneWidget);
 
-      // The new one is accepted, which is what "changed" means. Typed straight
-      // after the rejection, so this is also the immediate-retry path.
-      await typeCode(tester, '5678');
-      await tester.pumpAndSettle();
-      expect(find.byType(SecretScreen), findsOneWidget);
-    });
+        // The new one is accepted, which is what "changed" means. Typed straight
+        // after the rejection, so this is also the immediate-retry path.
+        await typeCode(tester, '5678');
+        await tester.pumpAndSettle();
+        expect(find.byType(SecretScreen), findsOneWidget);
+      },
+    );
 
     testWidgets('a PIN with leading zeroes survives as four digits', (
       tester,
@@ -1454,35 +1871,36 @@ group('changing the PIN (FEAT-SEC-005, AC-021, D-113)', () {
       expect(filledDots(tester), 0);
     });
 
-    testWidgets('back on step three returns to step two and keeps the new PIN', (
-      tester,
-    ) async {
-      await openChangePin(tester, SecretCode('1234'));
-      await typeCode(tester, '1234');
-      await tester.pumpAndSettle();
-      await typeCode(tester, '5678');
-      await tester.pumpAndSettle();
+    testWidgets(
+      'back on step three returns to step two and keeps the new PIN',
+      (tester) async {
+        await openChangePin(tester, SecretCode('1234'));
+        await typeCode(tester, '1234');
+        await tester.pumpAndSettle();
+        await typeCode(tester, '5678');
+        await tester.pumpAndSettle();
 
-      await pressBack(tester);
+        await pressBack(tester);
 
-      // Step two again, asking for the new code — which the user is about to type
-      // a second time. Throwing it away would be the same mistake the
-      // confirmation mismatch used to make.
-      expect(find.text('Enter new PIN'), findsOneWidget);
-      expect(filledDots(tester), 0);
-      // Unconfirmed means unwritten: going back must never save anything.
-      expect(await storedPin(), SecretCode('1234'));
+        // Step two again, asking for the new code — which the user is about to type
+        // a second time. Throwing it away would be the same mistake the
+        // confirmation mismatch used to make.
+        expect(find.text('Enter new PIN'), findsOneWidget);
+        expect(filledDots(tester), 0);
+        // Unconfirmed means unwritten: going back must never save anything.
+        expect(await storedPin(), SecretCode('1234'));
 
-      // And the whole flow still completes afterwards.
-      await typeCode(tester, '5678');
-      await tester.pumpAndSettle();
-      await typeCode(tester, '5678');
-      await tester.pumpAndSettle();
-      expect(await storedPin(), SecretCode('5678'));
+        // And the whole flow still completes afterwards.
+        await typeCode(tester, '5678');
+        await tester.pumpAndSettle();
+        await typeCode(tester, '5678');
+        await tester.pumpAndSettle();
+        expect(await storedPin(), SecretCode('5678'));
 
-      await settleSuccess(tester);
-      expect(find.byType(SecretSettingsScreen), findsOneWidget);
-    });
+        await settleSuccess(tester);
+        expect(find.byType(SecretSettingsScreen), findsOneWidget);
+      },
+    );
 
     testWidgets('backspace works on all three steps', (tester) async {
       await openChangePin(tester, SecretCode('1234'));
@@ -1542,8 +1960,9 @@ group('changing the PIN (FEAT-SEC-005, AC-021, D-113)', () {
   });
 
   group('the controller (D-83, D-85)', () {
-    testWidgets('verify accepts the stored code and rejects any other',
-        (tester) async {
+    testWidgets('verify accepts the stored code and rejects any other', (
+      tester,
+    ) async {
       await pumpApp(tester, history: seeded());
       final container = ProviderScope.containerOf(
         tester.element(find.byType(Scaffold).first),
@@ -1555,8 +1974,9 @@ group('changing the PIN (FEAT-SEC-005, AC-021, D-113)', () {
       expect(await notifier.verify(SecretCode('0001')), isFalse);
     });
 
-    testWidgets('change updates the code the notifier publishes',
-        (tester) async {
+    testWidgets('change updates the code the notifier publishes', (
+      tester,
+    ) async {
       await pumpApp(tester, history: seeded());
       final container = ProviderScope.containerOf(
         tester.element(find.byType(Scaffold).first),
@@ -1581,8 +2001,9 @@ group('changing the PIN (FEAT-SEC-005, AC-021, D-113)', () {
       );
     });
 
-    testWidgets('reset returns the published code to the default (AC-022)',
-        (tester) async {
+    testWidgets('reset returns the published code to the default (AC-022)', (
+      tester,
+    ) async {
       await pumpApp(tester, history: seeded());
       final container = ProviderScope.containerOf(
         tester.element(find.byType(Scaffold).first),
@@ -1628,13 +2049,15 @@ group('changing the PIN (FEAT-SEC-005, AC-021, D-113)', () {
   // ===========================================================================
 
   group('forgetting the PIN (FEAT-SEC-006, AC-022)', () {
-    /// Unlocks, then opens the Secret settings page.
+    /// Unlocks, then opens the Secret settings page through the panel.
     Future<void> openSecretSettings(WidgetTester tester) async {
       await pumpSecretApp(tester);
       await holdForShippedDuration(tester);
       await typeCode(tester, '1234');
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('secret-overflow')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(SecretMenu.settingsRowKey));
       await tester.pumpAndSettle();
     }
 
@@ -1659,8 +2082,9 @@ group('changing the PIN (FEAT-SEC-005, AC-021, D-113)', () {
       expect(find.text('Enter your PIN'), findsOneWidget);
     });
 
-    testWidgets('the row opens a confirmation that names the default',
-        (tester) async {
+    testWidgets('the row opens a confirmation that names the default', (
+      tester,
+    ) async {
       await openSecretSettings(tester);
 
       await tester.tap(find.byKey(const Key('secret-reset-pin')));
@@ -1686,8 +2110,9 @@ group('changing the PIN (FEAT-SEC-005, AC-021, D-113)', () {
       expect(find.text('Reset PIN?'), findsNothing);
     });
 
-    testWidgets('confirming makes 0000 the code that opens the screen',
-        (tester) async {
+    testWidgets('confirming makes 0000 the code that opens the screen', (
+      tester,
+    ) async {
       await openSecretSettings(tester);
       await confirmReset(tester);
 
@@ -1740,10 +2165,7 @@ group('changing the PIN (FEAT-SEC-005, AC-021, D-113)', () {
         // on the PIN screen, with no History icon to tap. A distinct key forces a
         // genuinely new router, which is what "restart" has to mean for this
         // assertion to be about the disk rather than about the first app.
-        ProviderScope(
-          key: UniqueKey(),
-          child: const CalculatorApp(),
-        ),
+        ProviderScope(key: UniqueKey(), child: const CalculatorApp()),
       );
       await tester.pumpAndSettle();
       await holdForShippedDuration(tester);

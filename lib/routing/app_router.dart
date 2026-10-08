@@ -9,6 +9,8 @@ import '../features/history/presentation/history_screen.dart';
 import '../features/legal/presentation/legal_screens.dart';
 import '../features/secret/presentation/change_pin_screen.dart';
 import '../features/secret/presentation/secret_screens.dart';
+import '../features/secret/presentation/secret_settings_screen.dart';
+import '../features/secret/presentation/vault_place.dart';
 import '../features/settings/presentation/settings_screen.dart';
 import 'app_routes.dart';
 
@@ -17,7 +19,7 @@ import 'app_routes.dart';
 /// The Calculator is the root route; History, Settings, About, Privacy, and
 /// Terms are pushed onto the stack so the system back gesture pops them
 /// (prd.md §7). About, Privacy, and Terms are reached from Settings, which is
-/// the only route the hamburger opens (D-20).
+/// the only route the gear button opens (D-20).
 ///
 /// The [ComponentCatalogScreen] is appended **only in debug builds**. It is a
 /// design-system tool (phases.md §Phase 3), not part of the product, and no
@@ -70,6 +72,20 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.secretChangePin,
         builder: (context, state) => const ChangePinScreen(),
+      ),
+      // The one parameterised route in the app (D-114). The `:place` segment is
+      // read here and handed over as a plain string, so the router performs no
+      // lookup that could fail on a segment it did not recognise — an unknown one
+      // is the screen's problem, and it renders a generic page for it.
+      //
+      // `builder`, not `pageBuilder`, like every other route above: D-56 keeps
+      // the platform's own push transition, and a `pageBuilder` here would be the
+      // only place in the app that chose its own animation.
+      GoRoute(
+        path: AppRoutes.secretBrowse,
+        builder: (context, state) => VaultPlaceScreen(
+          placeId: state.pathParameters['place'] ?? '',
+        ),
       ),
       if (kDebugMode)
         GoRoute(

@@ -233,7 +233,7 @@ abstract final class AppSizes {
   /// Side of the touch target an icon-only action occupies (prd.md §12, ~44–48).
   static const double iconTouchTarget = 48;
 
-  /// Side of the calculator's two header actions — the Settings hamburger and
+  /// Side of the calculator's two header actions — the Settings gear button and
   /// the History clock (**D-110**).
   ///
   /// **56, not [iconTouchTarget]'s 48.** Every key on that screen grew when the

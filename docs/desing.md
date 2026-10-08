@@ -486,7 +486,7 @@ Seven routes exist (`app_router.dart`); six ship, and `/catalog` is debug-only (
 SafeArea (black)
 └── Column, capped at 480 and centred          (D-69)
     ├── AppPageHeader
-    │   ├── Left:  bordered box — hamburger   → Settings
+    │   ├── Left:  bordered box — gear (settings) → Settings
     │   └── Right: bordered box — history clock → History
     ├── Expanded: CalculatorDisplay                       (D-78)
     │   ├── upper half: expression  20 w400 secondary, right-aligned, ellipsised

@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:calculator/app.dart';
 import 'package:calculator/core/design/app_colors.dart';
 import 'package:calculator/routing/app_router.dart';
@@ -36,22 +38,59 @@ void main() {
   ) async {
     await pumpApp(tester);
 
-    expect(find.byIcon(Icons.menu), findsOneWidget);
+    expect(find.byIcon(Icons.settings), findsOneWidget);
     expect(find.byIcon(Icons.history), findsOneWidget);
   });
 
-  testWidgets('hamburger opens Settings, and back returns to Calculator', (
+  testWidgets('the gear button opens Settings, and back returns to Calculator', (
     tester,
   ) async {
     await pumpApp(tester);
 
-    await tester.tap(find.byIcon(Icons.menu));
+    await tester.tap(find.byIcon(Icons.settings));
     await tester.pumpAndSettle();
     expect(find.text('Settings'), findsWidgets);
 
     await tester.tap(find.byIcon(Icons.arrow_back));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('calculator-display-line')), findsOneWidget);
+  });
+
+  testWidgets('the gear spins a full turn before Settings is pushed (D-118)', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+
+    double gearAngle() {
+      final transform = tester.widget<Transform>(
+        find.byKey(const Key('settings-gear-spin')),
+      );
+      final m = transform.transform;
+      // atan2 wraps into (-π, π], so a turn at or past the half reads as a
+      // negative angle; unfolding it back keeps the value in [0, 2π) and
+      // leaves the resting 0 untouched.
+      final wrapped = math.atan2(m.storage[1], m.storage[0]);
+      return wrapped < 0 ? wrapped + 2 * math.pi : wrapped;
+    }
+
+    await tester.tap(find.byIcon(Icons.settings));
+    // One frame starts the controller; the revolution is under way and the
+    // root screen is still the one on top — Settings waits for the turn.
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 350));
+    expect(find.byKey(const Key('calculator-display-line')), findsOneWidget);
+    expect(find.text('Decimal Places'), findsNothing);
+    expect(gearAngle(), greaterThan(0.1));
+    expect(gearAngle(), lessThan(2 * math.pi - 0.1));
+
+    // The turn lands, then the push runs.
+    await tester.pumpAndSettle();
+    expect(find.text('Decimal Places'), findsWidgets);
+
+    // The spin is rewound under the pushed screen, so the gear is back at
+    // rest when the user returns.
+    await goBack(tester);
+    expect(gearAngle(), closeTo(0, 0.001));
   });
 
   testWidgets('history clock opens History, and back returns to Calculator', (
@@ -114,7 +153,7 @@ void main() {
 
     Scaffold scaffoldOf() => tester.widget<Scaffold>(find.byType(Scaffold));
 
-    for (final icon in [Icons.menu, Icons.history]) {
+    for (final icon in [Icons.settings, Icons.history]) {
       await tester.tap(find.byIcon(icon));
       await tester.pumpAndSettle();
       expect(scaffoldOf().backgroundColor, AppColors.background);

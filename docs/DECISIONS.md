@@ -327,6 +327,10 @@ impossible for that element.
 **Closes:** Ambiguity between `prd.md:174` / `feature.md:504` (hamburger → Settings)
 and a reading of `struction.md` §7 in which About hangs off the root route.
 
+**Amended by D-117:** the Settings entry point's glyph is now the gear button, not
+the hamburger; the direct-push behaviour, the tooltip, and this decision's
+About / Privacy / Terms single-path rule are unchanged.
+
 ### D-21 — Decimal Places Controls Rounding, Not Padding
 **Decision:** The `decimalPlaces` setting sets the **rounding precision** of a computed
 result and never pads the output. `2 + 2` displays `4`, not `4.00`; `1 ÷ 3` with the
@@ -1985,9 +1989,151 @@ published rather than private, for the reason D-82's hold duration is: a test mu
 pump the duration that ships.
 
 **Unchanged by it:** the shared pad, its dots, the shake, the D-89 bottom anchor,
-the `SecretCode.length` cap, `_checking`, backspace, `secretController.dart`, and
+the `SecretCode.length` cap, `_checking`, backspace, `secret_controller.dart`, and
 every non-Secret screen. The system back gesture still pops the route from any
 step (D-56), which is safe precisely because nothing unconfirmed is ever written.
+
+---
+
+### D-114 - Every Vault Row Opens a Page, and the Eleven Pages Are One Screen
+
+**Reverses** the file-manager pass's "nothing on this screen does anything", and
+resolves the shape it raised: eleven rows that all drew a chevron, rippled on
+press, and went nowhere.
+
+**The rows navigate.** All eleven — Recent files, the six Categories cells, both
+storages, Recycle bin, Analyse storage — push `/secret/browse/:place`. This is the
+reversal the old test (`every control is enabled-looking and does nothing`) was
+written to catch, which is why that test is **replaced rather than loosened**: it
+tapped three rows and asserted the screen had not moved, and a passing suite is
+what made this change safe to make.
+
+**One route, one screen, eleven records.** The pages are the same three parts — a
+title, the app's back button, an empty state — so eleven screen classes would have
+differed only in three strings. Instead `vaultPlaces` holds the eleven records and
+`VaultPlaceScreen` resolves `:place` against it. The app's own preference for a
+named constant over a derived value applies to the *ids* (spelled out, because a
+slug derived from a title could disagree with itself in two files) and not to the
+titles and icons, which are shared.
+
+**The rows read their place from the registry.** Both the grid cells and the five
+`SettingsRow`s resolve a `VaultPlace` and take their label and glyph from it. This
+is what makes "the row says the same thing as the page" structural: the old code
+wrote `title: 'Images'` and `icon: Icons.image_outlined` next to a page that would
+have had to repeat both, and nothing stopped a later edit moving one.
+
+**Which header.** `SecondaryPageScaffold` + `SecondaryPageHeader`, so the back
+button is the app's own and **pops** rather than `go`-ing to `/secret`. This is why
+there is no `_SecretBackButton` here the way the PIN screen needed one: that screen
+has no header, so it had to invent somewhere to put an exit. Here the header is
+shared, the title is centred by the geometry D-74 established, and the button
+returns to whichever screen was tapped to arrive — which is the ordinary meaning
+of "one back button". The floating home button does **not** travel down; it belongs
+to the Vault screen, and a 56 px circle over an empty page is a second exit the
+rest of the app does not have.
+
+**Search stays inert, and this is the surviving half of the old decision.** It is
+now the only control on the Vault screen that is enabled-looking and does nothing.
+A row can open a page saying "No images yet" because that is a fact; a search page
+over a set of files that does not exist would be a claim the app cannot make. It
+ships as furniture and arrives with the file list it searches.
+
+**An unknown `:place` renders, and claims nothing.** `vaultPlaceById` returns
+`null` and the screen falls back to a generic "Files". A path parameter can arrive
+from a stale bookmark or a hand-typed URL, and on Android a throw there is a crash
+on a visible screen. "Files" names no category, so a wrong segment lands on a page
+that says nothing wrong rather than on whichever place happened to be first.
+
+**Consequence:** `navigation_graph_test`'s path count goes 11 → 12, and the twelfth
+is the app's only parameterised route. That suite pushes the *pattern*, so the
+literal `:place` reaches `VaultPlaceScreen` from it — which is a second, independent
+reason the fallback has to exist. `secret_flow_test` keeps its structural
+assertions (keys, order, grid geometry, §6.8) and loses only the "does nothing"
+half; `vault_place_pages_test.dart` drives all eleven rows through real taps and
+adds the §6.8 naming check for the eleven pages.
+
+**Unchanged by it:** the PIN screen, the overflow and Reset PIN, `SecretScreen`'s
+own layout and keys, the storage figures on the rows, the D-56 platform transition,
+and every non-Secret screen. **No file is read, listed, moved, or deleted** — the
+pages are an honest empty state each, which is the same standard the old `_noop`
+served and the reason the rows are enabled rather than grey.
+
+---
+
+### D-115 - The Vault's Overflow Opens the Shared Ethar Menu, Not a Drawer
+
+**Decision:** The overflow button on the unlocked Secret screen opens a slide-in
+panel from the left — the shared `MenuSlider`, configured here for the hidden
+area — copied verbatim from Ethar's profile drawer (`Ethar/.../profile_drawer.dart`).
+The panel is a general dialog (`MenuSlider.show` → `showGeneralDialog`), **not** a
+`Scaffold.drawer`, and its single row, "Settings", leads to the hidden area's own
+settings page (FEAT-SEC-004). The overflow's tooltip became 'Menu' because the
+button no longer navigates; it opens a panel.
+
+**Rationale — and what it reverses.** The first draft of this panel hand-rolled a
+second copy of Ethar's geometry, the 340 ms animation, and eight colour getters
+beside a `_SecretMenuDrawerTile` that was never defined — a compile error that no
+test reached, because the screen mounted the drawer anyway
+(`drawer: const SecretMenu()`, whose `build` returned `SizedBox.shrink()`). A
+`Scaffold.drawer` could not have been the fix: the framework slides drawers at its
+own speed under its own scrim, while Ethar's panel dims with a flat 54 % black,
+animates 340 ms with `easeOutQuart`/`easeInCubic`, measures `(screenWidth × .86)
+.clamp(300, 380)`, rounds the right edge at 18, and casts the 10/0/28 shadow.
+`showGeneralDialog` is the call that makes the two apps' menus animate as the same
+object — which is the point of the request, and why the numbers are *identical*
+rather than *close*: a menu that is almost the same reads as a bug.
+
+**Consequence:** `SecretScreen` drops its `drawer:` slot and its `Builder` (which
+existed only to reach `Scaffold.of(context).openDrawer`); the overflow calls
+`SecretMenu.show(context)` directly. Tests reach the panel's row through
+`SecretMenu.settingsRowKey`, unchanged. The shared widget replaces the panel's
+eight colour getters with `MenuColors`, which maps them onto the app's palette and
+holds the two non-derivable decisions (the `softOrange` fill, the accent) in one
+place.
+
+**Unchanged by it:** the PIN screen and its exit, the Search inertness (D-114), the
+storage rows and their figures, every key, and D-56 — this is a dialog route, not a
+router page, so the no-custom-transition rule for *router* routes is untouched.
+
+---
+
+### D-117 - The Calculator's Settings Entry Is a Gear Button
+
+**Decision:** The Calculator's top bar carries a **gear (settings) button** on the left
+instead of a hamburger. It still opens Settings directly, keeps the tooltip 'Settings',
+and the history clock still opens History on the right (D-20 unchanged).
+
+**Rationale:** The user asked for the hamburger to be replaced with a gear, so the two
+header controls read as what they do — a gear for Settings, a clock for History —
+rather than a hamburger whose rows the app has never had.
+
+**Consequence:** The header icon tests (`navigation_test`, `header_alignment_test`,
+`calculator_layout_test`, and the `openSettings` harness) and every doc that named the
+hamburger now name the gear button.
+
+**Unchanged by it:** D-20's About / Privacy / Terms single-path rule, the root's
+exactly-two-entry-points shape, and the AppPageHeader / AppSpacing / router internals.
+
+### D-118 - The Gear Button Spins One Slow Turn Before Settings Opens
+
+**Decision:** Tapping the Calculator's gear button turns the glyph one full
+clockwise revolution over 700 ms (`Curves.easeInOutCubic`), and the push to
+Settings happens only once the turn lands. The spin is on the glyph; the
+bordered header box does not move.
+
+**Rationale:** The user asked for a smooth, readable gear animation before the
+screen changes. D-56 keeps every route on the platform's own transition, so the
+*push* is not slowed to fit the animation — the push is delayed instead, which
+puts the whole turn on screen without touching the router or the D-56 assertion
+in `navigation_graph_test`.
+
+**Consequence:** `navigation_test` gains a mid-spin case (still on the
+calculator at 350 ms, Settings after settle, angle back at rest on return).
+The gear is reached through the same `find.byIcon(Icons.settings)` /
+`byTooltip('Settings')` handles as before, so `openSettings` and the header and
+layout tests are unchanged. A tap that lands while the turn is running is
+ignored, and a turn that lands with another route on top rewinds without
+navigating.
 
 ---
 

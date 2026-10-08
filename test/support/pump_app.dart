@@ -14,6 +14,7 @@ import 'package:calculator/features/history/data/shared_preferences_history_repo
 import 'package:calculator/features/history/domain/history_entry.dart';
 import 'package:calculator/features/history/presentation/history_controller.dart';
 import 'package:calculator/features/history/presentation/history_screen.dart';
+import 'package:calculator/features/secret/data/device_storage_repository.dart';
 import 'package:calculator/features/secret/data/shared_preferences_secret_repository.dart';
 import 'package:calculator/features/secret/domain/secret_code.dart';
 import 'package:calculator/features/settings/data/shared_preferences_settings_repository.dart';
@@ -125,19 +126,50 @@ HistoryEntry seededEntry({
   timestamp: timestamp,
 );
 
-/// Pumps the whole app and settles, starting from an empty history unless
+/// The storage figures every pumped app reports unless a test says otherwise.
+///
+/// Chosen so the formatted subtitle reads `28.35 GB / 32.00 GB · 3.65 GB free`
+/// — the same numbers the row carried when they were hardcoded, now produced by
+/// the real formatter from bytes. Keeping the display identical means the
+/// harness change is visible only to a test that asserts the *format*, not to
+/// every assertion that merely reads the row.
+///
+/// No SD card: `sdCard: null` is what the platform answers for an empty slot,
+/// so the default state of the row stays the state the suite already asserts.
+const VaultStorage harnessVaultStorage = VaultStorage(
+  internal: DeviceStorage(
+    totalBytes: 34359738368, // 32 GB
+    freeBytes: 3918657658, // 3.65 GB
+  ),
+  sdCard: null,
+);
+
+/// Pump the whole app and settles, starting from an empty history unless
 /// [history] says otherwise.
+///
+/// [fakeStorage] replaces [vaultStorageProvider] with [harnessVaultStorage].
+/// It is on by default because the real provider reaches a `MethodChannel`
+/// that no test host answers: the read fails fast and the Vault renders
+/// `Unavailable`, which is honest but makes every storage assertion about the
+/// failure path rather than the figures. A test that *wants* that path — or
+/// wants to drive the channel itself — passes `fakeStorage: false` and owns
+/// the provider (or the channel mock) in its own [overrides].
 Future<void> pumpApp(
   WidgetTester tester, {
   List<Override> overrides = const <Override>[],
   List<HistoryEntry> history = const <HistoryEntry>[],
   AppSettings? settings,
   SecretCode? secretPin,
+  bool fakeStorage = true,
 }) async {
   mockHistoryStore(history, settings: settings, secretPin: secretPin);
   await tester.pumpWidget(
     ProviderScope(
-      overrides: overrides,
+      overrides: <Override>[
+        if (fakeStorage)
+          vaultStorageProvider.overrideWith((ref) async => harnessVaultStorage),
+        ...overrides,
+      ],
       child: const CalculatorApp(),
     ),
   );
@@ -159,10 +191,10 @@ Future<void> openHistory(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
-/// Opens the Calculator screen's hamburger, which is the only entry point to
-/// Settings (D-20).
+/// Opens the Calculator screen's gear button, which is the only entry point to
+/// Settings (D-20, D-117).
 Future<void> openSettings(WidgetTester tester) async {
-  await tester.tap(find.byIcon(Icons.menu));
+  await tester.tap(find.byIcon(Icons.settings));
   await tester.pumpAndSettle();
 }
 

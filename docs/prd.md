@@ -177,7 +177,7 @@ mockup, and are reachable only through a five-second hold on one specific button
 **Source:** Inferred (destination and content unprovided — `prd.md` §14).
 
 ### FR-006 — Navigation
-- From Calculator: hamburger menu (left) opens navigation or Settings; history icon (right) opens History.
+- From Calculator: gear button (left) opens Settings; history icon (right) opens History.
 - Back arrows return to previous screen.
 - History uses a back arrow (left), title “History”, and trash icon (right) (D-10).
 - Settings contains links to App Version, Privacy Policy, and Terms of Service, which open

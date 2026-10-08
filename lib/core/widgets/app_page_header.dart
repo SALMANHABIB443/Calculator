@@ -31,7 +31,7 @@ class AppPageHeader extends StatelessWidget {
   /// Page name, or `null` for a bar that is only actions.
   final String? title;
 
-  /// Left-hand action, e.g. the calculator's Settings hamburger.
+  /// Left-hand action, e.g. the calculator's Settings gear button.
   final Widget? leading;
 
   /// Right-hand actions, laid out in order against the right margin.

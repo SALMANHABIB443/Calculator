@@ -59,7 +59,7 @@ void main() {
 
       // The Appearance and Preferences groups are built on open.
       expect(find.text('Theme'), findsOneWidget);
-      expect(find.text('Dark mode'), findsOneWidget);
+      expect(find.text('Dark'), findsOneWidget);
       expect(find.text('Sound'), findsOneWidget);
       expect(find.text('Key press sound'), findsOneWidget);
       expect(find.text('Vibration'), findsOneWidget);
@@ -259,8 +259,8 @@ void main() {
     });
   });
 
-  group('Theme row (D-45)', () {
-    testWidgets('shows a chevron but is not a tap target', (tester) async {
+  group('Theme row (D-45, D-90)', () {
+    testWidgets('shows a chevron and is a tap target', (tester) async {
       await pumpApp(tester);
       await openSettings(tester);
 
@@ -271,25 +271,28 @@ void main() {
         ),
         findsOneWidget,
       );
-      // No InkWell means no ripple and no navigation: v1.0 has one theme.
+      // D-90: the row is a real choice now, so the chevron's tap opens the
+      // theme sheet — an InkWell is what gives it the ripple and the target.
       expect(
         find.descendant(
           of: find.widgetWithText(SettingsRow, 'Theme'),
           matching: find.byType(InkWell),
         ),
-        findsNothing,
+        findsOneWidget,
       );
     });
 
-    testWidgets('tapping it does not navigate anywhere', (tester) async {
+    testWidgets('tapping it opens the theme sheet', (tester) async {
       await pumpApp(tester);
       await openSettings(tester);
 
       await tester.tap(find.text('Theme'));
       await tester.pumpAndSettle();
 
-      expect(find.text('APPEARANCE'), findsOneWidget);
-      expect(find.byType(Scaffold), findsOneWidget);
+      expect(
+        find.byKey(ThemeSheet.optionKey(AppThemeName.dark)),
+        findsOneWidget,
+      );
     });
   });
 

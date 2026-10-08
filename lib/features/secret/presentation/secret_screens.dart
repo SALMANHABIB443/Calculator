@@ -1,14 +1,19 @@
 import '../../../../core/design/app_palette.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/design/app_spacing.dart';
+import '../../../core/design/app_typography.dart';
 import '../../../core/widgets/core_widgets.dart';
 import '../../../routing/app_routes.dart';
+import '../data/device_storage_repository.dart';
 import 'secret_controller.dart';
 import 'secret_lockout_controller.dart';
+import 'secret_menu.dart';
 import 'secret_pin_field.dart';
+import 'vault_place.dart';
 
 /// The way out of the PIN screen: one back arrow in the **top-left** corner,
 /// going home (D-87).
@@ -177,8 +182,7 @@ class SecretUnlockScreen extends ConsumerStatefulWidget {
   const SecretUnlockScreen({super.key});
 
   @override
-  ConsumerState<SecretUnlockScreen> createState() =>
-      _SecretUnlockScreenState();
+  ConsumerState<SecretUnlockScreen> createState() => _SecretUnlockScreenState();
 }
 
 class _SecretUnlockScreenState extends ConsumerState<SecretUnlockScreen> {
@@ -283,44 +287,439 @@ class _SecretUnlockScreenState extends ConsumerState<SecretUnlockScreen> {
   }
 }
 
-/// The unlocked secret screen: **blank** (FEAT-SEC-003, AC-020, D-84).
+/// One cell of the Categories grid, resolved from its [VaultPlace].
 ///
-/// One button and nothing else. No title, no logo, no empty-state illustration,
-/// and no back arrow of its own — the system back gesture is the only exit, and
-/// a second exit would be an affordance telling the user this page is somewhere
-/// they arrived at.
-class SecretScreen extends StatelessWidget {
-  const SecretScreen({super.key});
+/// **The record holds a place rather than a label and a glyph** because both of
+/// those now live in [vaultPlaces] (`vault_place.dart`), and the reason that
+/// list is the single source is the reason this cell cannot drift from the page
+/// it leads to: a grid cell labelled "Videos" over a film icon must push a page
+/// that says "Videos" under the same icon, and holding the place — rather than a
+/// copy of two of its fields plus a slug — makes that structural instead of a
+/// convention somebody has to remember.
+typedef _SecretCategory = ({Key key, VaultPlace place});
+
+/// The six cells of the Categories grid, in reading order.
+///
+/// **Built from [vaultCategoryIds] rather than written out**, which reverses the
+/// decision the previous version of this file recorded. It spelled all six
+/// `{key, label, icon}` records by hand on the grounds that a hand-written key
+/// cannot drift from the test that matches it — and that argument is still true
+/// of the `Key`s, so they are still spelled out, one per id, below. What it did
+/// not account for is what the FEAT-SEC-007 pass added: every cell now carries a
+/// slug that has to match an entry in [vaultPlaces] *and* an icon that has to
+/// match that entry's. Three hand-written fields that must agree with a fourth
+/// place is worse than one hand-written field that resolves the other three.
+///
+/// So the id is the single literal per cell, and the key is still derived from
+/// it rather than invented — a test matching `Key('secret-category-videos')` and
+/// a cell written `'videos'` still cannot disagree, because both come from the
+/// same word, and both are asserted against [vaultCategoryIds] in
+/// `vault_place_pages_test.dart`.
+///
+/// A `List` getter rather than a `const` list because resolving an id is a
+/// function call. The grid is six entries and is rebuilt on layout, not on every
+/// frame, so the lookup is not on a path that shows up in a profile.
+List<_SecretCategory> get _secretCategories => <_SecretCategory>[
+  for (final id in vaultCategoryIds)
+    (
+      key: Key('secret-category-$id'),
+      place: vaultPlaceById(id)!,
+    ),
+];
+
+/// One cell of the Categories grid: the shared [AppIconTile] above its label.
+///
+/// **Icon over label, not beside it.** Three columns across a 442 px canvas leave
+/// roughly 112 px a cell, and "Installation files" sitting beside a 44 px tile
+/// would be ellipsised down to "Installa…" — and that label is the one a user
+/// cannot guess the meaning of from its first four letters. Stacking hands the
+/// label the full cell width and lets it take two lines instead.
+///
+/// [AppIconTile] rather than a bare glyph for the reason D-91 gives: it is the
+/// app's own icon container, so these six cells match the leading tiles on every
+/// settings row instead of looking like a second, smaller style invented here.
+class _SecretCategoryTile extends StatelessWidget {
+  const _SecretCategoryTile({required this.category, super.key});
+
+  /// Which place of [_secretCategories] this cell is.
+  final _SecretCategory category;
 
   @override
   Widget build(BuildContext context) {
+    final place = category.place;
+
+    // D-59 applied to a grid: one stop per category, not two. The tile and the
+    // label are both dropped from the semantics tree, exactly as [SettingsRow]
+    // drops its own. The one node that survives is labelled with the place's own
+    // title, which is also what the page it pushes will call itself.
+    return Semantics(
+      container: true,
+      button: true,
+      label: place.title,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => context.push(AppRoutes.secretBrowseTo(place.id)),
+          borderRadius: BorderRadius.circular(AppIconTile.radius),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                ExcludeSemantics(child: AppIconTile(icon: place.icon)),
+                const SizedBox(height: AppSpacing.sm),
+                ExcludeSemantics(
+                  child: Text(
+                    place.title,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.type.rowSubtitle,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The rounded card holding the 3 × 2 Categories grid.
+///
+/// **Private here rather than a new core card widget.** [SettingsGroup] stacks
+/// rows vertically and cannot hold a grid — but the card the grid sits in must not
+/// be a *lookalike*, and re-deriving the fill, border, radius, and shadow in a
+/// second place is how those four values start to disagree. Reusing
+/// [SettingsGroup.decoration] keeps every card on this screen the same recipe.
+class _SecretCategoryCard extends StatelessWidget {
+  const _SecretCategoryCard();
+
+  /// Columns, and therefore the `_secretCategories` index of each cell.
+  static const int columns = 3;
+
+  @override
+  Widget build(BuildContext context) {
+    // Read once into a local: [vaultCategoryIds] resolves six ids through
+    // [vaultPlaceById] every time it is called, and this build reads the list
+    // once per row in the loop condition plus twice per cell in the cell itself.
+    // The list is six entries, so this is a nanosecond either way — it is stated
+    // because a getter called inside a loop bound is the shape that later grows
+    // into a lookup that runs per frame.
+    final categories = _secretCategories;
+
+    return Padding(
+      // The 24 px [SettingsGroup] puts on its own rows, restated so this card's
+      // edges line up with the cards above and below it by construction rather
+      // than by arithmetic.
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.screenHorizontal,
+      ),
+      child: DecoratedBox(
+        decoration: SettingsGroup.decoration(context),
+        // The card's radius, not the tile's — [SettingsGroup] clips its own rows
+        // exactly this way, and a ripple escaping past the corner is how a card
+        // starts to look like a rounded rectangle with a notch in it.
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(AppRadius.card),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.cardPadding),
+            child: Column(
+              children: <Widget>[
+                for (
+                  var row = 0;
+                  row * columns < categories.length;
+                  row++
+                ) ...[
+                  if (row > 0) const SizedBox(height: AppSpacing.md),
+                  Row(
+                    // Start, not centre: the cells are of unequal height once a
+                    // label wraps to two lines, and a centre alignment would
+                    // leave the row's icons at different heights.
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      for (var column = 0; column < columns; column++) ...[
+                        if (column > 0) const SizedBox(width: AppSpacing.md),
+                        Expanded(
+                          child: _SecretCategoryTile(
+                            key: categories[row * columns + column].key,
+                            category: categories[row * columns + column],
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The unlocked secret screen: the hidden area's file manager (FEAT-SEC-003).
+///
+/// **Reverses D-84's "blank"**, which held that this page showed one button and
+/// nothing else so a screenshot of it would give nothing away. The reason it is
+/// reversed is that the page could not be *used* as anything: a file manager that
+/// lists nothing, opens nothing, and stores nothing is not a private area, it is a
+/// wall — and a user who has already proved they know the PIN is exactly the user
+/// least served by one.
+///
+/// **What this costs, on the record.** D-84's argument was not wrong about the
+/// copy: every string below names a category a phone already knows (Images,
+/// Downloads) and none of them names the feature, the area, or the code, so §6.8
+/// still holds and a screenshot still does not hand over the PIN. What a
+/// screenshot now shows is that a file manager exists — which was already true the
+/// moment [_SecretHomeButton] shipped, and was accepted for the same reason.
+///
+/// **Titled "Vault", in the top-left.** The bar was titleless because it carried
+/// nothing but two actions, and a [Spacer] put both boxes on the right margin
+/// with nothing invented in the gap — which is still what happens to the right
+/// side now that the left has a word in it.
+///
+/// **This title withdraws §6.8's naming rule for this screen, on purpose.** The
+/// rule (desing.md §6.8, D-84) was that nothing here names the feature, the
+/// area, or the code, on the grounds that a screen which names itself is a screen
+/// a screenshot spoils. "Vault" is exactly such a name, so the honest reading is
+/// that the screen now tells a screenshot reader what it is.
+///
+/// What is *not* withdrawn: the rule was never about the code. `0000`, "PIN",
+/// "default", and "Secret" are still forbidden, and the §6.8 test still enforces
+/// those four — a screenshot of this page hands over the *name* of a private
+/// storage area and never the four digits that open it. The cost is recorded
+/// rather than argued away: someone who wanted the area to be deniable now has a
+/// title on it, and that is a weaker guarantee than the one D-84 described.
+///
+/// [AppPageHeader.title] takes the slack, so the actions still land on the right
+/// margin by construction rather than by a `Spacer` that a title would have
+/// replaced.
+///
+/// **Every row on this screen now leads somewhere** (FEAT-SEC-007, D-114). This
+/// used to read "nothing on this screen does anything", which was true when all
+/// eleven were wired to [_noop]; it was never a general licence to leave them
+/// dead, and the eleven [VaultPlaceScreen]s it describes are why it is gone
+/// rather than narrowed. What survives of the original reasoning is narrower and
+/// still enforced: the *pages* those rows lead to have no behaviour either, so
+/// nothing here is pretending to store, search, or delete a file — a row that
+/// opens a page which honestly says "No images yet" is a first draft a user can
+/// walk around in, where a row that opened nothing was a control that lied.
+///
+/// [_noop] survives for the Search button alone, and it is now the only control
+/// on the screen that is enabled-looking and inert. That asymmetry is
+/// deliberate: search has no destination and no honest empty page to open,
+/// whereas every other control here names a category a phone already has. The
+/// overflow opens [SecretMenu] (D-115), which holds one row and leads to the
+/// hidden area's own settings (FEAT-SEC-004).
+class SecretScreen extends ConsumerWidget {
+  const SecretScreen({super.key});
+
+  // The five non-grid rows resolve their [VaultPlace] from [vaultPlaces] rather
+  // than repeating its title and icon, for the same reason the Categories grid
+  // does (`_secretCategories` above): the row and the page it opens must agree
+  // about what they are called, and holding the place makes that structural.
+  //
+  // **Resolved once, statically, and not in `build`.** They are `late final`
+  // rather than locals because the whole `ListView` was `const` while these rows
+  // were hand-written, and the alternative — five `vaultPlaceById(...)!` calls
+  // inline in a widget list — cannot be const at all. Late finals keep the tree
+  // const-constructible wherever it still has no closures, and the `!` is
+  // unreachable in practice: each id below is asserted against `vaultPlaces` by
+  // `vault_place_pages_test.dart`, so a rename that broke one fails that suite
+  // rather than throwing on the user's screen.
+  static final VaultPlace _recent = vaultPlaceById('recent')!;
+  static final VaultPlace _internalStorage = vaultPlaceById('internal-storage')!;
+  static final VaultPlace _sdCard = vaultPlaceById('sd-card')!;
+  static final VaultPlace _recycleBin = vaultPlaceById('recycle-bin')!;
+  static final VaultPlace _analyseStorage = vaultPlaceById('analyse-storage')!;
+
+  /// Opens [place]'s page.
+  ///
+  /// **A named method rather than the same `context.push` closure five times**,
+  /// so the push — and the route helper it names — appears once. It is also what
+  /// lets every row's `onTap` share a single shape, which is what makes a
+  /// reviewer able to confirm by eye that no row pushes somewhere unintended.
+  static void _browse(BuildContext context, VaultPlace place) {
+    context.push(AppRoutes.secretBrowseTo(place.id));
+  }
+
+  /// The Internal storage row's subtitle, read from [vaultStorageProvider].
+  ///
+  /// `'…'` while the channel answers and `'Unavailable'` if it never does —
+  /// the two states a real read has, neither of which is a made-up number.
+  /// The figures themselves come from [formatStorageSubtitle], so the row and
+  /// the SD row cannot drift into two formats.
+  static String _internalSubtitle(WidgetRef ref) => ref
+      .watch(vaultStorageProvider)
+      .when(
+        data: (storage) => formatStorageSubtitle(storage.internal),
+        loading: () => '…',
+        error: (_, _) => 'Unavailable',
+      );
+
+  /// The SD card row's subtitle.
+  ///
+  /// `'Not inserted'` for an absent card — the same words the row carried when
+  /// the value was hardcoded, because that string was already true and is now
+  /// true because the platform said so rather than because a constant did.
+  static String _sdSubtitle(WidgetRef ref) => ref
+      .watch(vaultStorageProvider)
+      .when(
+        data: (storage) =>
+            storage.sdCard == null
+                ? 'Not inserted'
+                : formatStorageSubtitle(storage.sdCard),
+        loading: () => '…',
+        error: (_, _) => 'Unavailable',
+      );
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: context.appColors.background,
       body: SafeArea(
         child: Stack(
           children: <Widget>[
-            // The same header inset every other screen's header rides, so the
-            // button sits on the app's 24 px margin and reads as an ordinary
-            // header action rather than as something placed by hand (D-74).
-            Padding(
-              padding: const EdgeInsets.only(
-                left: AppSpacing.screenHorizontal,
-                right: AppSpacing.screenHorizontal,
-                top: AppSpacing.headerTopGap,
-              ),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: AppIconButton(
-                  key: const Key('secret-overflow'),
-                  icon: Icons.more_vert,
-                  tooltip: 'Settings',
-                  onPressed: () => context.push(AppRoutes.secretSettings),
+            Column(
+              children: <Widget>[
+                AppPageHeader(
+                  title: 'Vault',
+                  actions: <Widget>[
+                    AppIconButton(
+                      key: const Key('secret-search'),
+                      icon: Icons.search,
+                      tooltip: 'Search',
+                      // **The last control on the screen that does nothing**
+                      // (D-114), and the reason it is left that way is not
+                      // sloppiness: search is the one affordance here with no
+                      // destination and no honest page to open. Every other row
+                      // names a category, so it has a [VaultPlace] whose empty
+                      // state can be written truthfully — "No images yet" is a
+                      // fact, whereas a search page with an empty state would be
+                      // claiming to search a set of files that does not exist.
+                      // Search arrives with the file list it searches.
+                      onPressed: _noop,
+                    ),
+                    // `AppPageHeader` spreads its actions with no gap of its own,
+                    // because the calculator only ever passes one. 12 px is the
+                    // gap the app already uses between the back box and a title,
+                    // so these two read as a pair rather than as a wall.
+                    const SizedBox(width: AppSpacing.md),
+                    // **Moved to the top-right.** It sat alone on the far side of
+                    // a page that had nothing on it, which was defensible then and
+                    // is not now that the header carries a second action. The key
+                    // is unchanged, so nothing that finds this button by it stops
+                    // working; the tooltip became 'Menu' with D-115 because the
+                    // button no longer navigates to Settings, it opens a panel.
+                    //
+                    // **The panel is a dialog, not a drawer (D-115).** `show`
+                    // opens [SecretMenu] through the shared [MenuSlider], which
+                    // brings Ethar's slide, fade, 340 ms timing, and 54 % scrim.
+                    // A `Scaffold.drawer` was dropped because it could not be the
+                    // same animation: the framework's drawer slides at its own
+                    // speed under its own scrim, and this panel is *the* Ethar
+                    // menu, not a Material clone of it.
+                    AppIconButton(
+                      key: const Key('secret-overflow'),
+                      icon: Icons.more_vert,
+                      tooltip: 'Menu',
+                      onPressed: () => SecretMenu.show(context),
+                    ),
+                  ],
                 ),
-              ),
+                // Scrollable because the content stopped fitting: a 360 × 640
+                // screen runs past the bottom, and so does this one at D-54's 1.3×
+                // text scale. A page that cannot scroll is a page whose last card
+                // cannot be reached.
+                Expanded(
+                  child: ListView(
+                    key: const Key('secret-home-list'),
+                    padding: const EdgeInsets.only(
+                      // Clears the floating home button instead of sitting under
+                      // it: the 56 px circle plus the 24 px inset it is padded by
+                      // plus the 12 px that keeps the last card off the button's
+                      // own optical edge. Written from the two tokens that size
+                      // it, so moving either moves this.
+                      bottom:
+                          AppSizes.secretHomeButton +
+                          AppSecretSpacing.homeButtonInset +
+                          AppSpacing.md,
+                    ),
+                    children: <Widget>[
+                      SizedBox(height: AppSpacing.lg),
+                      // **No [SectionHeader] above this one**, unlike the two
+                      // groups below it. "Recent files" is the only row on the
+                      // page, so a label over it would be a heading announcing a
+                      // list of one; it is the page's own first action instead,
+                      // and the [AppSpacing.lg] above it matches History's.
+                      SettingsGroup(
+                        children: <Widget>[
+                          SettingsRow(
+                            key: const Key('secret-recent-files'),
+                            icon: _recent.icon,
+                            title: _recent.title,
+                            onTap: () => _browse(context, _recent),
+                          ),
+                        ],
+                      ),
+                      const SectionHeader('Categories'),
+                      const _SecretCategoryCard(),
+                      const SectionHeader('Storage'),
+                      SettingsGroup(
+                        children: <Widget>[
+                          SettingsRow(
+                            key: const Key('secret-storage-internal'),
+                            // `smartphone`, not the `phone_iphone` the Vibration
+                            // row uses — same glyph in two places reads as a bug
+                            // rather than as a theme.
+                            icon: _internalStorage.icon,
+                            title: _internalStorage.title,
+                            subtitle: _internalSubtitle(ref),
+                            onTap: () => _browse(context, _internalStorage),
+                          ),
+                          SettingsRow(
+                            key: const Key('secret-storage-sd'),
+                            icon: _sdCard.icon,
+                            title: _sdCard.title,
+                            subtitle: _sdSubtitle(ref),
+                            onTap: () => _browse(context, _sdCard),
+                          ),
+                        ],
+                      ),
+                      // A [SizedBox] rather than a [SectionHeader], because these
+                      // two rows are actions and not a group — 24 px is the gap
+                      // [SectionHeader.topPadding] leaves between two groups, so
+                      // the rhythm matches without inventing a heading for them.
+                      const SizedBox(height: AppSpacing.xl),
+                      SettingsGroup(
+                        children: <Widget>[
+                          SettingsRow(
+                            key: const Key('secret-recycle-bin'),
+                            icon: _recycleBin.icon,
+                            title: _recycleBin.title,
+                            onTap: () => _browse(context, _recycleBin),
+                          ),
+                          SettingsRow(
+                            key: const Key('secret-analyse-storage'),
+                            icon: _analyseStorage.icon,
+                            title: _analyseStorage.title,
+                            onTap: () => _browse(context, _analyseStorage),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
             // The second control D-84 ruled out, kept for the same reason as on
             // the PIN screen: a user in a hidden area needs one obvious way to
-            // return to the app they came from (D-86).
+            // return to the app they came from (D-86). Now a sibling of the
+            // scrolling column rather than of a [Stack] holding one button, so it
+            // floats over the cards — which is why the list above pads for it.
             const _SecretHomeButton(),
           ],
         ),
@@ -329,90 +728,16 @@ class SecretScreen extends StatelessWidget {
   }
 }
 
-/// The settings page inside the hidden area (FEAT-SEC-004, D-84, D-86).
+/// The callback the Search button is wired to (FEAT-SEC-007, D-114).
 ///
-/// **Two rows as of D-86**, where D-84 specified exactly one. "Change PIN" is
-/// unchanged and keeps its place first; "Reset PIN" is added after it because
-/// the two are not peers — one sets a code, the other destroys one, and the
-/// destructive action reading last is what keeps it off the row a thumb lands on
-/// while browsing.
+/// **A no-op rather than `null`, and that is the entire point of it.**
+/// [AppIconButton] draws its box and [Material]-backed ripple regardless, so
+/// leaving the callback off would render the header as a greyed control, which
+/// reads as a layout bug rather than as a search that has not shipped.
 ///
-/// The full Settings page is **not** duplicated here: it would be a second place
-/// to maintain four settings that no user who found this screen would come back
-/// to, and the screen's only job is the PIN.
-class SecretSettingsScreen extends ConsumerWidget {
-  const SecretSettingsScreen({super.key});
-
-  /// Confirmation copy for the reset.
-  ///
-  /// **Public** so a test can assert the wording without reaching through a
-  /// private field. It used to be reachable from a "Forgot PIN?" link on the lock
-  /// screen as well; **D-88 removed that link**, because with the 30-second lockout
-  /// in place it was an unlimited bypass of it.
-  ///
-  /// The message **names the default** on purpose, unlike everywhere else in
-  /// this feature. §6.8 withholds the code so a screenshot cannot spoil it, but a
-  /// user who has *forgotten* their PIN has no way to act on the withholding —
-  /// the information is what they need, and by this point they are already
-  /// standing inside the area holding a code they set. Naming it turns a dead end
-  /// into a two-tap recovery.
-  static const String resetTitle = 'Reset PIN?';
-  static const String resetMessage =
-      'Your PIN will return to the default, 0000. '
-      'You will need 0000 to get back in.';
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return SecondaryPageScaffold(
-      header: const SecondaryPageHeader(title: 'Settings'),
-      body: ListView(
-        padding: const EdgeInsets.only(top: AppSpacing.lg),
-        children: <Widget>[
-          SettingsGroup(
-            children: <Widget>[
-              SettingsRow(
-                icon: Icons.lock_outline,
-                title: 'Change PIN',
-                onTap: () => context.push(AppRoutes.secretChangePin),
-              ),
-              SettingsRow(
-                key: const Key('secret-reset-pin'),
-                icon: Icons.restart_alt,
-                title: 'Reset PIN',
-                // Red rather than the default white: this row destroys a
-                // credential, and the app already reserves orange for
-                // destructive confirms in the Clear History dialog. The glyph is
-                // the only red ink here — the label stays [textPrimary], so the
-                // row still reads as a row in the app's own type.
-                iconColor: context.appColors.accent,
-                onTap: () => _confirmReset(context, ref),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Confirms, then resets, and takes the user somewhere useful afterwards.
-  ///
-  /// The navigation back to `/secret` is part of the fix, not a flourish: a
-  /// reset performed from this page leaves the user staring at a Settings list
-  /// offering "Change PIN", which requires the *old* PIN to do anything — the one
-  /// they have just said they do not have. Dropping them onto the blank secret
-  /// screen puts them somewhere they can reach the calculator from, which is the
-  /// entire reason they reset.
-  Future<void> _confirmReset(BuildContext context, WidgetRef ref) async {
-    final confirmed = await AppConfirmationDialog.show(
-      context,
-      title: resetTitle,
-      message: resetMessage,
-      confirmLabel: 'Reset',
-    );
-    if (!confirmed || !context.mounted) return;
-
-    await ref.read(secretControllerProvider.notifier).reset();
-    if (!context.mounted) return;
-    context.go(AppRoutes.secret);
-  }
-}
+/// **It used to be the callback of all eleven rows.** They now open a
+/// [VaultPlaceScreen] each, and the search box is the last control on the screen
+/// that is enabled-looking and inert — the reason is recorded at its call site.
+/// The function itself is unchanged: a control that cannot do its job yet should
+/// still look like the control it is going to be, and should never be a trap.
+void _noop() {}

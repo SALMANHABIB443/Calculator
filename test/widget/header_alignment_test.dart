@@ -240,7 +240,7 @@ void main() {
       // Asserting the bare 16 px would pass on a bar floating inboard of
       // everything else on the screen, which is the drift this file exists for.
       const margin = AppSpacing.calculatorSideMargin;
-      expect(actionBox(tester, Icons.menu).left, closeTo(margin, _slack));
+      expect(actionBox(tester, Icons.settings).left, closeTo(margin, _slack));
       expect(
         surfaceWidth(tester) - actionBox(tester, Icons.history).right,
         closeTo(margin, _slack),
@@ -249,7 +249,7 @@ void main() {
       // The header rides the *same* edge as the column it heads: the leading
       // `AC` key and the leading button box, one right of the other.
       expect(
-        actionBox(tester, Icons.menu).left,
+        actionBox(tester, Icons.settings).left,
         closeTo(rectOfKey(tester, CalculatorKey.ac).left, _slack),
       );
 
@@ -257,7 +257,7 @@ void main() {
       // A 48 px box above a 90 px key reads as a header drawn for a smaller
       // calculator than the one underneath it.
       expect(
-        tester.getSize(actionFinder(Icons.menu)),
+        tester.getSize(actionFinder(Icons.settings)),
         Size.square(AppSizes.calculatorHeaderAction),
       );
       expect(

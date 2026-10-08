@@ -1049,6 +1049,7 @@ a settings page that now holds two rows, "Change PIN" and "Reset PIN" (D-86).
 | 30-second lockout on the third wrong code | D-88, FEAT-SEC-002 | Yes (D-85 reversed) |
 | Reset that erases the stored code | D-86, FEAT-SEC-006 | Yes (no lock-screen link, D-88) |
 | Per-step prompts, stated errors, intelligent back, success line | D-113, FEAT-SEC-005 | Yes |
+| Eleven rows open eleven named, empty place pages | D-114, FEAT-SEC-007 | Yes (Search stays inert) |
 
 **Four decisions carry the design, and three of them are refusals:**
 
@@ -1151,6 +1152,7 @@ All features marked Must Have in feature.md and all AC-xxx in prd.md.
 | Secret PIN read from a compromised device | Accepted and stated, not hidden: the store is plaintext, the threat is the same one the history already carries, and no package was added to hide it (D-83) |
 | A user locks themselves out with a wrong PIN | **No lockout**, by design — the alternative's only recovery is a reinstall that loses the history (D-85) |
 | Secret Mode mistaken for authentication | Framed in the docs as a **privacy affordance against casual browsing**; both exposures are listed in Phase 11's known limitations |
+| A Vault row that opens a page listing nothing | Accepted and stated, not hidden: the pages carry honest empty states and **no file is invented to fill them** (D-114). Search is the one control left inert, because a search over files that do not exist would claim something untrue |
 
 ---
 

@@ -456,7 +456,7 @@ void main() {
         ).bordered,
         isFalse,
       );
-      for (final icon in <IconData>[Icons.menu, Icons.history]) {
+      for (final icon in <IconData>[Icons.settings, Icons.history]) {
         expect(
           tester
               .widget<AppIconButton>(
