@@ -678,12 +678,29 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
     final name = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
+        // 24 px insets instead of the framework's 40 px default, so the
+        // dialog spans the same 312 dp as the page's cards and its edges
+        // line up with the header gutters rather than looking squeezed.
+        insetPadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.screenHorizontal,
+        ),
         title: const Text('New album'),
         content: TextField(
           controller: controller,
           autofocus: true,
           maxLength: 40,
-          decoration: const InputDecoration(hintText: 'Album name'),
+          // White caret and white focus underline instead of the theme's
+          // orange accent — the gallery's interactive lines are white.
+          cursorColor: context.appColors.textPrimary,
+          decoration: InputDecoration(
+            hintText: 'Album name',
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: context.appColors.textPrimary),
+            ),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: context.appColors.divider),
+            ),
+          ),
           onSubmitted: (_) =>
               Navigator.of(context).pop(controller.text.trim()),
         ),
