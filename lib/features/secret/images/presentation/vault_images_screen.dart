@@ -838,8 +838,6 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
 
     return ListView(
       padding: const EdgeInsets.only(
-        left: AppSpacing.screenHorizontal,
-        right: AppSpacing.screenHorizontal,
         top: AppSpacing.sm,
         bottom: AppSpacing.xl,
       ),
