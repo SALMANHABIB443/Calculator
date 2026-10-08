@@ -173,7 +173,7 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
       body: Column(
         children: [
           if (_searching) _searchField(),
-          if (!_selecting) _tabRow(gallery),
+          if (!_selecting) _tabRow(),
           Expanded(child: _content(context, gallery, list)),
           if (!_selecting) _bottomTabs(),
           if (_selecting) _selectionBar(gallery, list),
@@ -217,8 +217,11 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
     );
   }
 
-  Widget _tabRow(VaultImagesState gallery) {
-    Widget tab(_VaultTab tab, String label, int count) {
+  /// Top text tabs. No numeric counters — the active tab is marked by a
+  /// small white underline pill instead of a filled background, which keeps
+  /// the row calm while still making the current tab unmistakable.
+  Widget _tabRow() {
+    Widget tab(_VaultTab tab, String label) {
       final active = _tab == tab;
       return Expanded(
         child: InkWell(
@@ -234,14 +237,28 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
               children: [
                 Text(
                   label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: context.type.rowTitle.copyWith(
                     color: active
                         ? context.appColors.textPrimary
                         : context.appColors.textSecondary,
-                    fontWeight: active ? FontWeight.w700 : FontWeight.w500,
+                    fontWeight: active ? FontWeight.w600 : FontWeight.w500,
                   ),
                 ),
-                Text('$count', style: context.type.caption),
+                const SizedBox(height: 6),
+                // Reserved transparent slot for inactive tabs so selecting
+                // one never shifts the row.
+                Container(
+                  width: 24,
+                  height: 2.5,
+                  decoration: BoxDecoration(
+                    color: active
+                        ? context.appColors.textPrimary
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
               ],
             ),
           ),
@@ -256,10 +273,10 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
       ),
       child: Row(
         children: [
-          tab(_VaultTab.pictures, 'Pictures', gallery.visible.length),
-          tab(_VaultTab.albums, 'Albums', gallery.albums.length + 3),
-          tab(_VaultTab.favorites, 'Favorites', gallery.favorites.length),
-          tab(_VaultTab.trash, 'Trash', gallery.trash.length),
+          tab(_VaultTab.pictures, 'Pictures'),
+          tab(_VaultTab.albums, 'Albums'),
+          tab(_VaultTab.favorites, 'Favorites'),
+          tab(_VaultTab.trash, 'Trash'),
         ],
       ),
     );
@@ -371,6 +388,10 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
     );
   }
 
+  /// Bottom navigation. Minimal: 22 px glyphs, caption labels, and a small
+  /// white bar under the active item instead of a filled background. The bar
+  /// slot is reserved for every item so switching never shifts the row, and
+  /// [SafeArea] keeps it clear of gesture insets on any screen size.
   Widget _bottomTabs() {
     Widget item(_VaultTab tab, IconData icon, String label) {
       final active = _tab == tab;
@@ -384,13 +405,33 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
             _selected.clear();
           }),
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+            padding: const EdgeInsets.only(
+              top: AppSpacing.md,
+              bottom: AppSpacing.sm,
+            ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(icon, color: color, size: 22),
-                const SizedBox(height: 2),
-                Text(label, style: context.type.caption.copyWith(color: color)),
+                const SizedBox(height: 4),
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: context.type.caption.copyWith(
+                    color: color,
+                    fontWeight: active ? FontWeight.w600 : FontWeight.w400,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Container(
+                  width: 16,
+                  height: 2.5,
+                  decoration: BoxDecoration(
+                    color: active ? color : Colors.transparent,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
               ],
             ),
           ),
@@ -782,6 +823,9 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
     }
   }
 
+  /// The Albums landing view: one compact Quick Access card, then the
+  /// My Albums header with a small NEW action, and either the album list or
+  /// an intentional empty-state card.
   Widget _albumsList(VaultImagesState gallery) {
     Widget row(String id, String name, int count, IconData icon) {
       return SettingsRow(
@@ -796,7 +840,7 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
       padding: const EdgeInsets.only(
         left: AppSpacing.screenHorizontal,
         right: AppSpacing.screenHorizontal,
-        top: AppSpacing.md,
+        top: AppSpacing.sm,
         bottom: AppSpacing.xl,
       ),
       children: [
@@ -822,32 +866,129 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
             ),
           ],
         ),
-        const SizedBox(height: AppSpacing.lg),
-        SectionHeader(
-          'My Albums',
-          trailing: TextButton(
-            onPressed: _createAlbumDialog,
-            child: const Text('New'),
+        SectionHeader('My Albums', trailing: _newAlbumBadge()),
+        if (gallery.albums.isEmpty)
+          _emptyAlbumsCard()
+        else
+          SettingsGroup(
+            children: [
+              for (final album in gallery.albums)
+                SettingsRow(
+                  icon: Icons.photo_album_outlined,
+                  title: album.name,
+                  subtitle:
+                      '${gallery.visible.where((e) => e.albumIds.contains(album.id)).length} photos',
+                  onTap: () => setState(() => _albumId = album.id),
+                ),
+            ],
+          ),
+      ],
+    );
+  }
+
+  /// Small NEW badge that opens the create-album dialog. A bordered pill
+  /// rather than a filled button so it reads as a quiet action inside the
+  /// section header, not as a primary call to action.
+  Widget _newAlbumBadge() {
+    final colors = context.appColors;
+    return Semantics(
+      button: true,
+      label: 'New album',
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: _createAlbumDialog,
+          borderRadius: BorderRadius.circular(AppRadius.iconButton),
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(AppRadius.iconButton),
+              border: Border.all(color: colors.cardBorder),
+            ),
+            child: Text(
+              'NEW',
+              style: context.type.caption.copyWith(
+                color: colors.textPrimary,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.2,
+              ),
+            ),
           ),
         ),
-        SettingsGroup(
-          children: [
-            if (gallery.albums.isEmpty)
-              const SettingsRow(
-                icon: Icons.photo_album_outlined,
-                title: 'No albums yet',
+      ),
+    );
+  }
+
+  /// Empty-state card for My Albums: album glyph, headline, guidance, and a
+  /// small add affordance. The whole card opens the create-album dialog so
+  /// the state is a starting point rather than a dead end. It reuses
+  /// [SettingsGroup.decoration] so it is the same object as the cards above
+  /// it — not a card inside a card.
+  Widget _emptyAlbumsCard() {
+    final colors = context.appColors;
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.screenHorizontal,
+      ),
+      child: DecoratedBox(
+        decoration: SettingsGroup.decoration(context),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(AppRadius.card),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: _createAlbumDialog,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: AppSpacing.xl,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 56,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        color: colors.surfaceSoft,
+                        borderRadius: BorderRadius.circular(AppRadius.tile),
+                      ),
+                      child: Icon(
+                        Icons.photo_album_outlined,
+                        size: AppIconSize.large.value,
+                        color: colors.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    Text('No albums yet', style: context.type.rowTitle),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Create your first album',
+                      style: context.type.rowSubtitle,
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: colors.surfaceSoft,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.add,
+                        size: AppIconSize.small.value,
+                        color: colors.textPrimary,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            for (final album in gallery.albums)
-              SettingsRow(
-                icon: Icons.photo_album_outlined,
-                title: album.name,
-                subtitle:
-                    '${gallery.visible.where((e) => e.albumIds.contains(album.id)).length} photos',
-                onTap: () => setState(() => _albumId = album.id),
-              ),
-          ],
+            ),
+          ),
         ),
-      ],
+      ),
     );
   }
 }
