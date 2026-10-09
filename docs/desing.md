@@ -408,6 +408,11 @@ which reads as a missing asset rather than as "nothing here yet".
   and the plugins it actually needs; flattening the path into IconFont codepoints makes the
   drawing unreadable once generated. It mirrors `AppIcon`'s API exactly — same defaults, same
   `semanticLabel` escape hatch — so swapping one for the other changes only the widget name.
+- **`AppTrashIcon` is the app's only delete glyph** (D-119). Every place the app can delete
+  from — the History header and bottom action, the selection bars, the image viewer, the
+  Vault's Recycle bin row and its empty page, the gallery's Trash tab, its empty illustration,
+  and the delete action inside the Trash — paints this widget. Material's `delete_outline` and
+  `delete_forever` are **not** used anywhere, so no two screens can show two different trashes.
 - Icons sitting beside a text label are **decorative** and carry no semantic label, so a
   screen reader does not announce the row twice.
 
@@ -883,7 +888,7 @@ place and a rename moves one import instead of six.
 | `SecondaryPageScaffold` | `secondary_page_scaffold.dart` | The black page + safe area + header-above-body frame every pushed screen uses |
 | `AppIconButton` | `app_icon_button.dart` | A header action: the bordered 48 px square |
 | `AppIcon` | `app_icon.dart` | Any Material glyph, sized from a named bucket |
-| `AppTrashIcon` | `app_trash_icon.dart` | The painted delete glyph (History header and bottom action) |
+| `AppTrashIcon` | `app_trash_icon.dart` | The painted delete glyph — **every** delete affordance in the app (D-73, D-119) |
 | `AppBrandIcon` | `app_brand_icon.dart` | The About hero brand mark, drawn from tokens |
 | `AppToggle` | `app_toggle.dart` | The switch; owns the theme's track colours |
 | `ToggleRow` | `toggle_row.dart` | A `SettingsRow` whose control is a toggle — the whole row is the target |

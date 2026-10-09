@@ -5,6 +5,7 @@ import '../../../../core/storage/preferences_provider.dart';
 import '../data/shared_preferences_vault_image_repository.dart';
 import '../data/vault_image_repository.dart';
 import '../data/vault_image_store.dart';
+import '../data/vault_image_store_factory.dart';
 
 /// Where vault metadata comes from: `shared_preferences`, in-memory fallback.
 final vaultImageRepositoryProvider =
@@ -18,7 +19,7 @@ final vaultImageRepositoryProvider =
     });
 
 final vaultImageStoreProvider = Provider<VaultImageStore>(
-  (ref) => const VaultImageStore(),
+  (ref) => createVaultImageStore(),
 );
 
 /// Opens the Android system image picker (no manifest permission needed).

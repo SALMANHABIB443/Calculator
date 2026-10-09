@@ -238,7 +238,14 @@ void main() {
       for (final place in vaultPlaces) {
         expect(place.emptyTitle.trim(), isNotEmpty);
         expect(place.title.trim(), isNotEmpty);
-        expect(place.icon, isNotNull);
+        // The Recycle bin is the one place with no Material icon: it wears the
+        // design's painted trash instead (D-119), so a null icon is expected
+        // there and only there.
+        expect(
+          place.icon != null || place.id == 'recycle-bin',
+          isTrue,
+          reason: '${place.id} has no glyph at all',
+        );
       }
     });
   });

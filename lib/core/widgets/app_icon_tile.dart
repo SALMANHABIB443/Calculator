@@ -20,14 +20,30 @@ import 'package:flutter/material.dart';
 /// number, and one pixel is the difference between a glyph that fills its tile
 /// evenly and one that looks a shade large inside it.
 class AppIconTile extends StatelessWidget {
-  const AppIconTile({required this.icon, super.key, this.color});
+  const AppIconTile({super.key, this.icon, this.iconWidget, this.color})
+    : assert(
+        (icon == null) != (iconWidget == null),
+        'AppIconTile needs either an IconData or a widget to draw',
+      );
 
-  /// The glyph to place in the tile.
-  final IconData icon;
+  /// The glyph to place in the tile. Mutually exclusive with [iconWidget];
+  /// supply one of the two.
+  final IconData? icon;
+
+  /// A painted glyph instead of an [IconData] — the app's own trash
+  /// ([AppTrashIcon], D-73), which is a `CustomPainter` rather than an icon
+  /// font. Scaled to [glyphSize] whatever size the widget draws itself at, so
+  /// the tile keeps the 21 px glyph the recipe specifies.
+  ///
+  /// The mirror of [AppIconButton.iconWidget], and for the same reason: the
+  /// delete glyph is not in Material's set, so a tile that has to carry it
+  /// needs a way in that is not an [IconData].
+  final Widget? iconWidget;
 
   /// Glyph colour, defaulting to the theme's primary text — the same default
   /// [AppIcon] resolves for itself, restated here because the tile paints the
-  /// glyph itself rather than delegating to a bare icon widget.
+  /// glyph itself rather than delegating to a bare icon widget. It reaches only
+  /// [icon]; a painted [iconWidget] owns its own colour.
   final Color? color;
 
   /// Side of the square, in logical pixels.
@@ -47,10 +63,20 @@ class AppIconTile extends StatelessWidget {
       color: context.appColors.surfaceSoft,
       borderRadius: BorderRadius.circular(radius),
     ),
-    child: Icon(
-      icon,
-      color: color ?? context.appColors.textPrimary,
-      size: glyphSize,
-    ),
+    child: iconWidget == null
+        ? Icon(
+            icon,
+            color: color ?? context.appColors.textPrimary,
+            size: glyphSize,
+          )
+        // The tile is the component that owns the 21 px glyph, so a painted
+        // [iconWidget] is scaled to [glyphSize] rather than trusted to bring
+        // its own — the tile and a Material [Icon] then occupy the same box.
+        : Center(
+            child: SizedBox.square(
+              dimension: glyphSize,
+              child: FittedBox(fit: BoxFit.contain, child: iconWidget),
+            ),
+          ),
   );
 }

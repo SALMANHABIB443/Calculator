@@ -6,6 +6,7 @@ import '../design/app_typography.dart';
 import 'app_brand_icon.dart';
 import 'app_dialog.dart';
 import 'app_icon.dart';
+import 'app_trash_icon.dart';
 import 'calculator_button.dart';
 import 'empty_state.dart';
 import 'history_card.dart';
@@ -285,7 +286,7 @@ class _ComponentCatalogScreenState extends State<ComponentCatalogScreen> {
         children: [
           AppIcon(Icons.menu),
           AppIcon(Icons.history),
-          AppIcon(Icons.delete_outline, color: context.appColors.accent),
+          AppTrashIcon(color: context.appColors.accent),
           AppIcon(Icons.star_outline),
           AppIcon(Icons.calculate_outlined, size: AppIconSize.small),
         ],

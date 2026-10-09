@@ -3,7 +3,14 @@ import 'package:flutter/material.dart';
 
 import 'app_icon.dart';
 
-/// The trash glyph the History screen deletes with (**D-73**).
+/// The app's one delete glyph — the trash the History screen deletes with
+/// (**D-73**), and every other delete affordance in the app (**D-119**).
+///
+/// **Every place the app deletes from uses this widget, not Material's
+/// `delete*`.** The History header and bottom action, the selection bars, the
+/// image viewer, the Vault's Recycle bin row and its empty page, the gallery's
+/// Trash tab and its empty illustration, and the delete action inside the Trash
+/// all paint this one glyph, so the app never shows two different trashes.
 ///
 /// A painted icon rather than an [Icon] because the design calls for a specific
 /// glyph that Material's set does not contain, and the two alternatives were both

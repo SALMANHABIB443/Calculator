@@ -2137,4 +2137,33 @@ navigating.
 
 ---
 
+### D-119 - The History Screen's Painted Trash Is the App's One Delete Glyph
+
+**Decision:** every delete glyph in the app is `AppTrashIcon` (D-73), which the
+History screen already used. Material's `Icons.delete_outline` and
+`Icons.delete_forever_outlined` are no longer rendered anywhere. The four sites
+that still carried a Material glyph are replaced: the Vault screen's **Recycle
+bin** row and that place's empty page, the image gallery's **Trash** tab, its
+"Trash is empty" illustration, and the **Delete** action in the Trash selection
+bar (plus the debug-only component catalog's sample).
+
+**Rationale:** the user asked for one delete glyph. The app had two: the
+design's own solid trash (D-73) on History, the selection bar, and the image
+viewer, and Material's outline trash on the Vault and the gallery — so the same
+verb wore a different mark depending on which screen you were on. A single glyph
+is the design system's own rule read literally: a control that does the same
+thing should look the same everywhere.
+
+**Consequence:** the shared components that draw a leading or illustration glyph
+from an `IconData` — `AppIconTile`, `SettingsRow`, and `EmptyState` — gain an
+optional `iconWidget` (the same escape hatch `AppIconButton` and
+`AppSelectionAction` already have for the painted trash), and `VaultPlace.icon`
+becomes nullable so the Recycle bin can carry no Material icon at all. A new
+`vaultPlaceGlyph` resolves a place to the right glyph in one place, so the row
+and the page it opens cannot disagree — the guarantee `vaultPlaces` exists to
+make structural. `secret_flow_test` now asserts `AppTrashIcon` on the Vault
+screen and the absence of `Icons.delete_outline`.
+
+---
+
 **End of Decision Record**

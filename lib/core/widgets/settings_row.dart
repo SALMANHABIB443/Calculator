@@ -17,15 +17,19 @@ import 'app_icon_tile.dart';
 /// between them rather than as separate floating tiles.
 class SettingsRow extends StatelessWidget {
   const SettingsRow({
-    required this.icon,
     required this.title,
     super.key,
+    this.icon,
+    this.iconWidget,
     this.subtitle,
     this.trailing,
     this.onTap,
     this.iconColor,
     this.showDivider = false,
-  });
+  }) : assert(
+         (icon == null) != (iconWidget == null),
+         'SettingsRow needs either an IconData or a widget to draw',
+       );
 
   /// Widest the trailing slot is ever laid out at (D-92).
   ///
@@ -41,8 +45,15 @@ class SettingsRow extends StatelessWidget {
   /// reads, instead of restating 105 and hoping the two stay equal.
   static const double trailingMaxWidth = 105;
 
-  /// Leading glyph, e.g. the sun, speaker, or shield.
-  final IconData icon;
+  /// Leading glyph, e.g. the sun, speaker, or shield. Mutually exclusive with
+  /// [iconWidget]; supply one of the two.
+  final IconData? icon;
+
+  /// A painted leading glyph instead of an [IconData] — the app's own trash
+  /// ([AppTrashIcon], D-73). The mirror of [AppIconTile.iconWidget], and the
+  /// reason the Vault's Recycle bin row can wear the History screen's delete
+  /// glyph rather than a second, Material one.
+  final Widget? iconWidget;
 
   /// Primary label, e.g. `Sound`.
   final String title;
@@ -89,7 +100,11 @@ class SettingsRow extends StatelessWidget {
             // same `ExcludeSemantics` as before, because a screen reader still
             // gains nothing from the square.
             ExcludeSemantics(
-              child: AppIconTile(icon: icon, color: iconColor),
+              child: AppIconTile(
+                icon: icon,
+                iconWidget: iconWidget,
+                color: iconColor,
+              ),
             ),
             const SizedBox(width: AppSpacing.lg),
             Expanded(

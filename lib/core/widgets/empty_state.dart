@@ -14,17 +14,28 @@ import 'app_icon.dart';
 /// blank area.
 class EmptyState extends StatelessWidget {
   const EmptyState({
-    required this.icon,
     required this.title,
     super.key,
+    this.icon,
+    this.iconWidget,
     this.message,
     this.iconSize = AppIconSize.hero,
     this.action,
-  });
+  }) : assert(
+         (icon == null) != (iconWidget == null),
+         'EmptyState needs either an IconData or a widget to draw',
+       );
 
   /// Illustration glyph, drawn large and in the secondary colour so it reads
-  /// as decoration rather than as an actionable control.
-  final IconData icon;
+  /// as decoration rather than as an actionable control. Mutually exclusive
+  /// with [iconWidget]; supply one of the two.
+  final IconData? icon;
+
+  /// A painted illustration instead of an [IconData] — the app's own trash
+  /// ([AppTrashIcon], D-73). Scaled to [iconSize] whatever size the widget
+  /// draws itself at. A painted glyph owns its own colour, so the secondary
+  /// tint this widget applies to [icon] has to be supplied by the caller.
+  final Widget? iconWidget;
 
   /// The headline, e.g. `No calculations yet`.
   final String title;
@@ -68,11 +79,23 @@ class EmptyState extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  AppIcon(
-                    icon,
-                    size: iconSize,
-                    color: context.appColors.textSecondary,
-                  ),
+                  if (iconWidget == null)
+                    AppIcon(
+                      icon!,
+                      size: iconSize,
+                      color: context.appColors.textSecondary,
+                    )
+                  else
+                    // The empty state owns the illustration's bucket, so a
+                    // painted [iconWidget] is scaled to [iconSize] rather than
+                    // trusted to bring its own.
+                    SizedBox.square(
+                      dimension: iconSize.value,
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: iconWidget,
+                      ),
+                    ),
                   const SizedBox(height: AppSpacing.lg),
                   Text(
                     title,

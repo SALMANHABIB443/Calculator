@@ -7,6 +7,7 @@ analyzer:
     - build/**
     - android/**
     - docs/**
+    - web/**
 
 linter:
   # The house style for this app, on top of the flutter_lints baseline.

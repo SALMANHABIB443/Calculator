@@ -659,7 +659,7 @@ class SecretScreen extends ConsumerWidget {
                         children: <Widget>[
                           SettingsRow(
                             key: const Key('secret-recent-files'),
-                            icon: _recent.icon,
+                            iconWidget: vaultPlaceGlyph(_recent),
                             title: _recent.title,
                             onTap: () => _browse(context, _recent),
                           ),
@@ -675,14 +675,14 @@ class SecretScreen extends ConsumerWidget {
                             // `smartphone`, not the `phone_iphone` the Vibration
                             // row uses — same glyph in two places reads as a bug
                             // rather than as a theme.
-                            icon: _internalStorage.icon,
+                            iconWidget: vaultPlaceGlyph(_internalStorage),
                             title: _internalStorage.title,
                             subtitle: _internalSubtitle(ref),
                             onTap: () => _browse(context, _internalStorage),
                           ),
                           SettingsRow(
                             key: const Key('secret-storage-sd'),
-                            icon: _sdCard.icon,
+                            iconWidget: vaultPlaceGlyph(_sdCard),
                             title: _sdCard.title,
                             subtitle: _sdSubtitle(ref),
                             onTap: () => _browse(context, _sdCard),
@@ -698,13 +698,13 @@ class SecretScreen extends ConsumerWidget {
                         children: <Widget>[
                           SettingsRow(
                             key: const Key('secret-recycle-bin'),
-                            icon: _recycleBin.icon,
+                            iconWidget: vaultPlaceGlyph(_recycleBin),
                             title: _recycleBin.title,
                             onTap: () => _browse(context, _recycleBin),
                           ),
                           SettingsRow(
                             key: const Key('secret-analyse-storage'),
-                            icon: _analyseStorage.icon,
+                            iconWidget: vaultPlaceGlyph(_analyseStorage),
                             title: _analyseStorage.title,
                             onTap: () => _browse(context, _analyseStorage),
                           ),

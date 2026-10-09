@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -20,9 +19,21 @@ class VaultImagesNotifier extends AsyncNotifier<VaultImagesState> {
   @override
   Future<VaultImagesState> build() async {
     final repository = await ref.watch(vaultImageRepositoryProvider.future);
-    final images = await repository.loadImages();
-    final albums = await repository.loadAlbums();
+    var images = await repository.loadImages();
+    var albums = await repository.loadAlbums();
     final sort = await repository.loadSort();
+    if (kIsWeb && await ref.read(vaultImageStoreProvider).isEmpty) {
+      // A browser refresh drops the in-memory byte store but keeps the
+      // localStorage metadata. Without this self-heal, the gallery would list
+      // rows that no longer have pixels behind them. Albums ride along because
+      // they would otherwise reference missing pictures.
+      if (images.isNotEmpty || albums.isNotEmpty) {
+        await repository.saveImages(<VaultImage>[]);
+        await repository.saveAlbums(<VaultAlbum>[]);
+        images = <VaultImage>[];
+        albums = <VaultAlbum>[];
+      }
+    }
     await _purgeExpiredTrash(images, repository);
     return VaultImagesState(images: images, albums: albums, sort: sort);
   }
@@ -78,7 +89,9 @@ class VaultImagesNotifier extends AsyncNotifier<VaultImagesState> {
 
   /// Copies picked files into the private vault.
   ///
-  /// Each file is verified after copy; a failed copy never reaches metadata.
+  /// Reads bytes straight off the picker (a `blob:` URL on web), so the same
+  /// code path feeds both the on-device files and the web store. A file whose
+  /// bytes come back empty never reaches metadata.
   Future<VaultImportResult> importPickedFiles(List<XFile> picked) async {
     final repository = await _repository;
     final store = ref.read(vaultImageStoreProvider);
@@ -87,8 +100,8 @@ class VaultImagesNotifier extends AsyncNotifier<VaultImagesState> {
     var failed = 0;
     for (final pick in picked) {
       try {
-        final source = File(pick.path);
-        if (!await source.exists()) {
+        final bytes = await pick.readAsBytes();
+        if (bytes.isEmpty) {
           failed++;
           continue;
         }
@@ -96,19 +109,15 @@ class VaultImagesNotifier extends AsyncNotifier<VaultImagesState> {
           pick.name.isEmpty ? pick.path : pick.name,
         );
         final vaultName = '${uuidV4()}$ext';
-        final dest = await store.importFile(source, vaultName);
-        if (!await dest.exists()) {
-          failed++;
-          continue;
-        }
-        final stat = await dest.stat();
-        if (stat.size <= 0) {
-          await store.deletePermanently(vaultName);
-          failed++;
-          continue;
-        }
+        await store.importBytes(bytes, vaultName);
         final originalName = pick.name.isEmpty ? 'photo$ext' : pick.name;
         final now = DateTime.now();
+        DateTime modified;
+        try {
+          modified = await pick.lastModified();
+        } catch (_) {
+          modified = now;
+        }
         existing.insert(
           0,
           VaultImage(
@@ -116,9 +125,9 @@ class VaultImagesNotifier extends AsyncNotifier<VaultImagesState> {
             fileName: originalName,
             vaultFileName: vaultName,
             mimeType: pick.mimeType ?? _mimeOf(ext),
-            fileSize: stat.size,
+            fileSize: bytes.length,
             dateAdded: now,
-            dateModified: stat.modified,
+            dateModified: modified,
           ),
         );
         imported++;

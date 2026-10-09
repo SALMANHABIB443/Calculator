@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
@@ -121,7 +121,7 @@ class VaultGalleryHeader extends StatelessWidget {
 class VaultGridTile extends StatelessWidget {
   const VaultGridTile({
     required this.image,
-    required this.file,
+    required this.bytes,
     required this.selected,
     required this.selecting,
     required this.onTap,
@@ -130,7 +130,7 @@ class VaultGridTile extends StatelessWidget {
   });
 
   final VaultImage image;
-  final File file;
+  final Uint8List? bytes;
   final bool selected;
   final bool selecting;
   final VoidCallback onTap;
@@ -150,18 +150,26 @@ class VaultGridTile extends StatelessWidget {
             child: AnimatedOpacity(
               duration: const Duration(milliseconds: 150),
               opacity: selecting && !selected ? 0.55 : 1,
-              child: Image.file(
-                file,
-                fit: BoxFit.cover,
-                cacheWidth: 360,
-                errorBuilder: (_, _, _) => Container(
-                  color: colors.surface,
-                  child: Icon(
-                    Icons.broken_image_outlined,
-                    color: colors.textSecondary,
-                  ),
-                ),
-              ),
+              child: bytes == null
+                  ? Container(
+                      color: colors.surface,
+                      child: Icon(
+                        Icons.broken_image_outlined,
+                        color: colors.textSecondary,
+                      ),
+                    )
+                  : Image.memory(
+                      bytes!,
+                      fit: BoxFit.cover,
+                      cacheWidth: 360,
+                      errorBuilder: (_, _, _) => Container(
+                        color: colors.surface,
+                        child: Icon(
+                          Icons.broken_image_outlined,
+                          color: colors.textSecondary,
+                        ),
+                      ),
+                    ),
             ),
           ),
           if (image.isFavorite)

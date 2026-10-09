@@ -1,3 +1,4 @@
+import '../../../core/design/app_palette.dart';
 import '../../../core/widgets/core_widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -19,10 +20,16 @@ import '../images/presentation/vault_images_screen.dart';
 /// "Internal storage" could silently become `internal-storage` in one place and
 /// `internal_storage` in another, and the failure would be a page that pushes
 /// and lands on the fallback.
+///
+/// **[icon] is nullable for the one place whose glyph is not a Material icon.**
+/// The Recycle bin wears the design's own painted trash ([AppTrashIcon], D-73),
+/// so it carries `null` here and lets [vaultPlaceGlyph] resolve the glyph. That
+/// keeps [vaultPlaces] the *single* description of every place — the row and the
+/// page it opens cannot disagree about the glyph any more than about the title.
 typedef VaultPlace = ({
   String id,
   String title,
-  IconData icon,
+  IconData? icon,
   String emptyTitle,
 });
 
@@ -115,11 +122,14 @@ const List<VaultPlace> vaultPlaces = <VaultPlace>[
     emptyTitle: 'SD card not inserted',
   ),
   // The two bottom actions, which are not a group and so have no row icon to
-  // borrow — `delete_outline` and `manage_search` are what those rows wear.
+  // borrow — `manage_search` is what the Analyse row wears. The Recycle bin has
+  // **no Material glyph on purpose**: it paints the design's own trash
+  // ([AppTrashIcon], D-73) so the whole app deletes with one glyph (D-119), and
+  // [vaultPlaceGlyph] is what turns the `null` below into that widget.
   (
     id: 'recycle-bin',
     title: 'Recycle bin',
-    icon: Icons.delete_outline,
+    icon: null,
     emptyTitle: 'Recycle bin is empty',
   ),
   (
@@ -129,6 +139,25 @@ const List<VaultPlace> vaultPlaces = <VaultPlace>[
     emptyTitle: 'Nothing to analyse',
   ),
 ];
+
+/// The glyph a place's leading tile or empty state paints (D-119).
+///
+/// **One function rather than a `null`-check at each call site.** Material
+/// places resolve straight from [VaultPlace.icon]; the Recycle bin—whose icon is
+/// `null`—wears the design's painted trash ([AppTrashIcon], D-73). Both the row
+/// and the page it opens go through here, so they cannot drift into showing two
+/// different delete glyphs, and the size and colour stay each call site's to
+/// decide the way an [AppIcon] / [AppTrashIcon] call always is.
+Widget vaultPlaceGlyph(
+  VaultPlace place, {
+  AppIconSize size = AppIconSize.row,
+  Color? color,
+}) {
+  final icon = place.icon;
+  return icon == null
+      ? AppTrashIcon(size: size, color: color)
+      : AppIcon(icon, size: size, color: color);
+}
 
 /// The six [vaultPlaces] ids the Categories grid shows, in reading order.
 ///
@@ -246,11 +275,15 @@ class VaultPlaceScreen extends StatelessWidget {
       header: SecondaryPageHeader(title: place.title),
       body: EmptyState(
         key: bodyKey,
-        icon: place.icon,
+        iconWidget: vaultPlaceGlyph(
+          place,
+          // The illustration size, as History's empty list uses: this page is
+          // nothing but its empty state, so the glyph is the content rather than
+          // a decoration beside some.
+          size: AppIconSize.illustration,
+          color: context.appColors.textSecondary,
+        ),
         title: place.emptyTitle,
-        // The illustration size, as History's empty list uses: this page is
-        // nothing but its empty state, so the glyph is the content rather than a
-        // decoration beside some.
         iconSize: AppIconSize.illustration,
       ),
     );

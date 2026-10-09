@@ -846,7 +846,8 @@ void main() {
         expect(find.text('SD card'), findsOneWidget);
         expect(find.text('Not inserted'), findsOneWidget);
 
-        expect(find.byIcon(Icons.delete_outline), findsOneWidget);
+        expect(find.byType(AppTrashIcon), findsOneWidget);
+        expect(find.byIcon(Icons.delete_outline), findsNothing);
         expect(find.byKey(const Key('secret-recycle-bin')), findsOneWidget);
         expect(find.text('Recycle bin'), findsOneWidget);
         expect(find.byKey(const Key('secret-analyse-storage')), findsOneWidget);

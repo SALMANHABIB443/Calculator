@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/design/app_palette.dart';
@@ -290,11 +292,11 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
     if (_tab == _VaultTab.albums && _albumId == 'all' && _query.isEmpty) {
       return _albumsList(gallery);
     }
-    if (list.isEmpty) return _emptyContent();
+    if (list.isEmpty) return _emptyContent(context);
     return _photoGrid(list);
   }
 
-  Widget _emptyContent() {
+  Widget _emptyContent(BuildContext context) {
     if (_query.trim().isNotEmpty) {
       return const EmptyState(
         icon: Icons.search_off,
@@ -303,8 +305,10 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
       );
     }
     if (_tab == _VaultTab.trash) {
-      return const EmptyState(
-        icon: Icons.delete_outline,
+      // The design's own trash rather than Material's `delete_outline`, so the
+      // Trash tab wears the same delete glyph as the rest of the app (D-119).
+      return EmptyState(
+        iconWidget: AppTrashIcon(color: context.appColors.textSecondary),
         title: 'Trash is empty',
         message: 'Deleted photos rest here for 30 days.',
       );
@@ -345,16 +349,13 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
           itemBuilder: (context, index) {
             final image = list[index];
             final selected = _selected.contains(image.id);
-            return FutureBuilder<File>(
-              future: _vaultFile(image),
+            return FutureBuilder<Uint8List?>(
+              future: _vaultBytes(image),
               builder: (context, snapshot) {
-                final file = snapshot.data;
-                if (file == null) {
-                  return Container(color: context.appColors.surface);
-                }
+                final bytes = snapshot.data;
                 return VaultGridTile(
                   image: image,
-                  file: file,
+                  bytes: bytes,
                   selected: selected,
                   selecting: _selecting,
                   onTap: () {
@@ -393,7 +394,14 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
   /// slot is reserved for every item so switching never shifts the row, and
   /// [SafeArea] keeps it clear of gesture insets on any screen size.
   Widget _bottomTabs() {
-    Widget item(_VaultTab tab, IconData icon, String label) {
+    // [buildIcon] takes the active/inactive colour so the bar can carry the
+    // painted [AppTrashIcon] (the History screen's delete glyph, D-119) as well
+    // as Material [Icon]s — a painted glyph does not read `IconTheme`.
+    Widget item(
+      _VaultTab tab,
+      Widget Function(Color color) buildIcon,
+      String label,
+    ) {
       final active = _tab == tab;
       final color = active
           ? context.appColors.textPrimary
@@ -412,7 +420,7 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, color: color, size: 22),
+                buildIcon(color),
                 const SizedBox(height: 4),
                 Text(
                   label,
@@ -448,18 +456,37 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
         ),
         child: Row(
           children: [
-            item(_VaultTab.pictures, Icons.image_outlined, 'Pictures'),
-            item(_VaultTab.albums, Icons.photo_album_outlined, 'Albums'),
-            item(_VaultTab.favorites, Icons.favorite_border, 'Favorites'),
-            item(_VaultTab.trash, Icons.delete_outline, 'Trash'),
+            item(
+              _VaultTab.pictures,
+              (color) => Icon(Icons.image_outlined, color: color, size: 22),
+              'Pictures',
+            ),
+            item(
+              _VaultTab.albums,
+              (color) =>
+                  Icon(Icons.photo_album_outlined, color: color, size: 22),
+              'Albums',
+            ),
+            item(
+              _VaultTab.favorites,
+              (color) => Icon(Icons.favorite_border, color: color, size: 22),
+              'Favorites',
+            ),
+            item(
+              _VaultTab.trash,
+              (color) => AppTrashIcon(color: color),
+              'Trash',
+            ),
           ],
         ),
       ),
     );
   }
 
+  // [icon] is a widget so the bar can carry the painted [AppTrashIcon] (the
+  // History screen's delete glyph) as well as Material [Icon]s.
   Widget _selectionBar(VaultImagesState gallery, List<VaultImage> list) {
-    Widget action(IconData icon, String label, VoidCallback onTap) {
+    Widget action(Widget icon, String label, VoidCallback onTap) {
       return Expanded(
         child: InkWell(
           onTap: onTap,
@@ -468,7 +495,13 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, color: context.appColors.textPrimary, size: 22),
+                IconTheme(
+                  data: IconThemeData(
+                    color: context.appColors.textPrimary,
+                    size: AppSizes.rowIcon,
+                  ),
+                  child: icon,
+                ),
                 const SizedBox(height: 2),
                 Text(label, style: context.type.caption),
               ],
@@ -488,34 +521,54 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
         child: Row(
           children: [
             if (_tab == _VaultTab.trash) ...[
-              action(Icons.restore, 'Restore', _restoreSelected),
               action(
-                Icons.share_outlined,
+                const Icon(Icons.restore),
+                'Restore',
+                _restoreSelected,
+              ),
+              action(
+                const Icon(Icons.share_outlined),
                 'Share',
                 () => _shareSelected(list),
               ),
               action(
-                Icons.delete_forever_outlined,
+                const AppTrashIcon(),
                 'Delete',
                 _deletePermanentlyDialog,
               ),
             ] else ...[
-              action(Icons.create_new_folder_outlined, 'Create', () {
-                _addToAlbumSheet(gallery);
-              }),
-              action(Icons.share_outlined, 'Share', () => _shareSelected(list)),
-              action(Icons.delete_outline, 'Delete', _deleteDialog),
+              action(
+                const Icon(Icons.create_new_folder_outlined),
+                'Create',
+                () {
+                  _addToAlbumSheet(gallery);
+                },
+              ),
+              action(
+                const Icon(Icons.share_outlined),
+                'Share',
+                () => _shareSelected(list),
+              ),
+              action(
+                const AppTrashIcon(),
+                'Delete',
+                _deleteDialog,
+              ),
             ],
-            action(Icons.more_vert, 'More', () => _showMoreSheet(gallery)),
+            action(
+              const Icon(Icons.more_vert),
+              'More',
+              () => _showMoreSheet(gallery),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Future<File> _vaultFile(VaultImage image) {
+  Future<Uint8List?> _vaultBytes(VaultImage image) async {
     final store = ref.read(vaultImageStoreProvider);
-    return store.fileFor(image.vaultFileName, trashed: image.isTrashed);
+    return store.readBytes(image.vaultFileName, trashed: image.isTrashed);
   }
 
   void _openViewer(List<VaultImage> list, int index) {
@@ -568,20 +621,29 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
 
   Future<void> _shareSelected(List<VaultImage> list) async {
     final messenger = ScaffoldMessenger.of(context);
+    if (kIsWeb) {
+      messenger.showSnackBar(
+        const SnackBar(content: Text('Sharing is not available in this browser preview')),
+      );
+      return;
+    }
     final selected = list.where((e) => _selected.contains(e.id)).toList();
     if (selected.isEmpty) return;
     try {
       final store = ref.read(vaultImageStoreProvider);
-      final scratch = await store.shareScratch();
+      final scratch = Directory(
+        '${(await getTemporaryDirectory()).path}/vault-share',
+      );
+      if (!await scratch.exists()) await scratch.create(recursive: true);
       final files = <XFile>[];
       for (final image in selected) {
-        final src = await store.fileFor(
+        final bytes = await store.readBytes(
           image.vaultFileName,
           trashed: image.isTrashed,
         );
-        if (!await src.exists()) continue;
+        if (bytes == null) continue;
         final temp = File('${scratch.path}/${image.vaultFileName}');
-        await src.copy(temp.path);
+        await temp.writeAsBytes(bytes, flush: true);
         files.add(XFile(temp.path, mimeType: image.mimeType));
       }
       if (files.isEmpty) {
@@ -591,7 +653,9 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
         return;
       }
       await SharePlus.instance.share(ShareParams(files: files));
-      await store.cleanShareScratch();
+      try {
+        await scratch.delete(recursive: true);
+      } catch (_) {}
     } catch (_) {
       messenger.showSnackBar(
         const SnackBar(content: Text('Could not share these photos')),

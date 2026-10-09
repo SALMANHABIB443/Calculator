@@ -1,12 +1,14 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/design/app_spacing.dart';
 import '../../../../core/design/app_typography.dart';
 import '../../../../core/widgets/core_widgets.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../data/device_storage_repository.dart';
 import '../domain/vault_image.dart';
@@ -63,9 +65,9 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
 
   VaultImage get _current => widget.images[_index];
 
-  Future<File> _file(VaultImage image) async {
+  Future<Uint8List?> _bytes(VaultImage image) async {
     final store = ref.read(vaultImageStoreProvider);
-    return store.fileFor(image.vaultFileName, trashed: image.isTrashed);
+    return store.readBytes(image.vaultFileName, trashed: image.isTrashed);
   }
 
   void _toggleChrome() => setState(() => _chrome = !_chrome);
@@ -83,22 +85,38 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
 
   Future<void> _shareCurrent() async {
     final messenger = ScaffoldMessenger.of(context);
+    if (kIsWeb) {
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text('Sharing is not available in this browser preview'),
+        ),
+      );
+      return;
+    }
     try {
-      final file = await _file(_current);
-      if (!await file.exists()) {
+      final store = ref.read(vaultImageStoreProvider);
+      final bytes = await store.readBytes(
+        _current.vaultFileName,
+        trashed: _current.isTrashed,
+      );
+      if (bytes == null) {
         messenger.showSnackBar(
           const SnackBar(content: Text('Photo file is missing')),
         );
         return;
       }
-      final store = ref.read(vaultImageStoreProvider);
-      final scratch = await store.shareScratch();
+      final scratch = Directory(
+        '${(await getTemporaryDirectory()).path}/vault-share',
+      );
+      if (!await scratch.exists()) await scratch.create(recursive: true);
       final temp = File('${scratch.path}/${_current.vaultFileName}');
-      await file.copy(temp.path);
+      await temp.writeAsBytes(bytes, flush: true);
       await SharePlus.instance.share(
         ShareParams(files: [XFile(temp.path, mimeType: _current.mimeType)]),
       );
-      await store.cleanShareScratch();
+      try {
+        await scratch.delete(recursive: true);
+      } catch (_) {}
     } catch (_) {
       messenger.showSnackBar(
         const SnackBar(content: Text('Could not share this photo')),
@@ -181,7 +199,10 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
     );
   }
 
-  Widget _action(IconData icon, String label, VoidCallback onTap) {
+  /// Renders one bottom-bar action; [icon] is a widget so the bar can carry
+  /// the painted [AppTrashIcon] (the History screen's delete glyph) as well as
+  /// Material [Icon]s.
+  Widget _action(Widget icon, String label, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.card),
@@ -193,7 +214,10 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: Colors.white),
+            IconTheme(
+              data: const IconThemeData(color: Colors.white, size: 22),
+              child: icon,
+            ),
             const SizedBox(height: 4),
             Text(
               label,
@@ -227,11 +251,11 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
                   onDoubleTap: () {
                     if (_doubleTap != null) _doubleTapZoom(_doubleTap!);
                   },
-                  child: FutureBuilder<File>(
-                    future: _file(image),
+                  child: FutureBuilder<Uint8List?>(
+                    future: _bytes(image),
                     builder: (context, snapshot) {
-                      final file = snapshot.data;
-                      if (file == null) {
+                      final bytes = snapshot.data;
+                      if (bytes == null) {
                         return const Center(
                           child: CircularProgressIndicator(),
                         );
@@ -241,8 +265,8 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
                         minScale: 1,
                         maxScale: 4,
                         child: Center(
-                          child: Image.file(
-                            file,
+                          child: Image.memory(
+                            bytes,
                             fit: BoxFit.contain,
                             errorBuilder: (_, _, _) => Text(
                               'This photo is damaged',
@@ -263,59 +287,87 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
                 top: 0,
                 left: 0,
                 right: 0,
-                child: Row(
-                  children: [
-                    AppIconButton(
-                      icon: Icons.arrow_back,
-                      tooltip: 'Back',
-                      onPressed: () => Navigator.of(context).maybePop(),
-                    ),
-                    Expanded(
-                      child: Text(
-                        '${_index + 1} of ${widget.images.length}',
-                        textAlign: TextAlign.center,
-                        style: context.type.rowSubtitle.copyWith(
-                          color: Colors.white,
+                child: Padding(
+                  // The app's 24 px screen margin, so the chrome buttons line up
+                  // with every other header in the app instead of sitting on the
+                  // screen edges; the small vertical gap keeps them off the
+                  // status bar inset without eating the photo.
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.screenHorizontal,
+                    AppSpacing.sm,
+                    AppSpacing.screenHorizontal,
+                    0,
+                  ),
+                  child: SizedBox(
+                    height: AppSizes.iconTouchTarget,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            AppIconButton(
+                              icon: Icons.arrow_back,
+                              tooltip: 'Back',
+                              onPressed: () =>
+                                  Navigator.of(context).maybePop(),
+                            ),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Consumer(
+                                  builder: (context, ref, _) {
+                                    final watched = ref
+                                        .watch(vaultImagesProvider)
+                                        .valueOrNull
+                                        ?.images;
+                                    VaultImage? match;
+                                    if (watched != null) {
+                                      for (final entry in watched) {
+                                        if (entry.id == _current.id) {
+                                          match = entry;
+                                          break;
+                                        }
+                                      }
+                                    }
+                                    final fav = match?.isFavorite ??
+                                        _current.isFavorite;
+                                    return AppIconButton(
+                                      icon: fav
+                                          ? Icons.favorite
+                                          : Icons.favorite_border,
+                                      tooltip: fav
+                                          ? 'Remove favorite'
+                                          : 'Mark favorite',
+                                      onPressed: () => ref
+                                          .read(vaultImagesProvider.notifier)
+                                          .toggleFavorite(_current.id),
+                                    );
+                                  },
+                                ),
+                                const SizedBox(width: AppSpacing.sm),
+                                AppIconButton(
+                                  icon: Icons.more_vert,
+                                  tooltip: 'Details',
+                                  onPressed: () => _details(_current),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                      ),
+                        // Centred on the screen rather than in the space left
+                        // over between the two sides: the left side carries one
+                        // button and the right side two, so a `Row`/`Expanded`
+                        // title would sit off-centre.
+                        Text(
+                          '${_index + 1} of ${widget.images.length}',
+                          style: context.type.rowSubtitle.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
-                    Consumer(
-                      builder: (context, ref, _) {
-                        final watched = ref
-                            .watch(vaultImagesProvider)
-                            .valueOrNull
-                            ?.images;
-                        VaultImage? match;
-                        if (watched != null) {
-                          for (final entry in watched) {
-                            if (entry.id == _current.id) {
-                              match = entry;
-                              break;
-                            }
-                          }
-                        }
-                        final fav =
-                            match?.isFavorite ?? _current.isFavorite;
-                        return AppIconButton(
-                          icon: fav
-                              ? Icons.favorite
-                              : Icons.favorite_border,
-                          tooltip: fav
-                              ? 'Remove favorite'
-                              : 'Mark favorite',
-                          onPressed: () => ref
-                              .read(vaultImagesProvider.notifier)
-                              .toggleFavorite(_current.id),
-                        );
-                      },
-                    ),
-                    const SizedBox(width: AppSpacing.sm),
-                    AppIconButton(
-                      icon: Icons.more_vert,
-                      tooltip: 'Details',
-                      onPressed: () => _details(_current),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             if (_chrome)
@@ -326,10 +378,18 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _action(Icons.share_outlined, 'Share', _shareCurrent),
-                    _action(Icons.delete_outline, 'Delete', _deleteCurrent),
                     _action(
-                      Icons.info_outline,
+                      const Icon(Icons.share_outlined),
+                      'Share',
+                      _shareCurrent,
+                    ),
+                    _action(
+                      const AppTrashIcon(color: Colors.white),
+                      'Delete',
+                      _deleteCurrent,
+                    ),
+                    _action(
+                      const Icon(Icons.info_outline),
                       'Details',
                       () => _details(_current),
                     ),
