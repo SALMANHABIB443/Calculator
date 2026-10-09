@@ -311,29 +311,4 @@ abstract final class AppSizes {
   /// reservation, rather than a caller measuring the button's own widget, which
   /// would be reading a layout result back as if it were the budget.
   static const double calculatorBackspaceRow = iconTouchTarget;
-
-  /// Side of the floating home button on the Secret Mode screens (D-86).
-  ///
-  /// **56** rather than the header action's [iconTouchTarget] 48: this button is
-  /// not a header action and does not sit in a header, and at 48 a bottom-right
-  /// circle reads as a stray header box that fell to the wrong end of the screen.
-  /// 56 is the Material FAB's small size, which is the same silhouette this is
-  /// borrowing, and it stays comfortably above the prd.md §12 touch floor.
-  ///
-  /// A *size*, not a new colour or radius — the button is painted from
-  /// [context.appColors.textPrimary] and [context.appColors.textOnFunction], both of which
-  /// already exist. D-84 warned that a blank page needing a token would be the
-  /// signal it had stopped being blank; it has stopped being blank, and this is
-  /// the record of how it did so without opening the palette.
-  static const double secretHomeButton = 56;
-}
-
-/// Inset the floating home button keeps from the screen's edges (D-86).
-///
-/// Named here rather than spelled at the call site so the button's clearance is
-/// one fact: it has to clear the system gesture inset on every screen it appears
-/// on, and a number retyped at two call sites is a number that drifts.
-abstract final class AppSecretSpacing {
-  /// From the right and bottom edges, under the [SafeArea] the screens use.
-  static const double homeButtonInset = 24;
 }

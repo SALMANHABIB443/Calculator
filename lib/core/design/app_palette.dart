@@ -48,7 +48,6 @@ class AppPalette extends ThemeExtension<AppPalette> {
     required this.cardShadow,
     required this.surfaceSelected,
     required this.accent,
-    required this.danger,
     required this.buttonDigit,
     required this.buttonFunction,
     required this.textPrimary,
@@ -119,13 +118,6 @@ class AppPalette extends ThemeExtension<AppPalette> {
   /// Primary accent. Reserved for primary actions only: operator keys, `=`,
   /// toggles when ON, Clear History, and active icons.
   final Color accent;
-
-  /// The colour a wrong entry is reported in (see [AppColors.danger]).
-  ///
-  /// Carried per-theme rather than read from [AppColors] directly for the same
-  /// reason every other colour here is: a `static const` cannot follow a theme
-  /// change, and a red that only works on black is half a token.
-  final Color danger;
 
   /// Fill for the digit keys and the decimal point.
   final Color buttonDigit;
@@ -206,7 +198,6 @@ class AppPalette extends ThemeExtension<AppPalette> {
     // No shadow on a black page — Ethar drops it in dark for the same reason.
     cardShadow: null,
     accent: AppColors.accent,
-    danger: AppColors.danger,
     buttonDigit: AppColors.buttonDigit,
     buttonFunction: AppColors.buttonFunction,
     textPrimary: AppColors.textPrimary,
@@ -248,7 +239,6 @@ class AppPalette extends ThemeExtension<AppPalette> {
     cardBorder: Color(0xFFECEDEF),
     cardShadow: Color(0x0D0F172A),
     accent: Color(0xFFFE651B),
-    danger: Color(0xFFD92D20),
     buttonDigit: Color(0xFFF4F5F7),
     buttonFunction: Color(0xFFD9DADD),
     textPrimary: Color(0xFF0C0F16),
@@ -294,7 +284,6 @@ class AppPalette extends ThemeExtension<AppPalette> {
     Color? cardBorder,
     Color? cardShadow,
     Color? accent,
-    Color? danger,
     Color? buttonDigit,
     Color? buttonFunction,
     Color? textPrimary,
@@ -323,7 +312,6 @@ class AppPalette extends ThemeExtension<AppPalette> {
     // and `CardDecoration` is the only place that wants to.
     cardShadow: cardShadow ?? this.cardShadow,
     accent: accent ?? this.accent,
-    danger: danger ?? this.danger,
     buttonDigit: buttonDigit ?? this.buttonDigit,
     buttonFunction: buttonFunction ?? this.buttonFunction,
     textPrimary: textPrimary ?? this.textPrimary,
@@ -373,7 +361,6 @@ class AppPalette extends ThemeExtension<AppPalette> {
           ? shadow
           : mix(shadow, otherShadow),
       accent: mix(accent, other.accent),
-      danger: mix(danger, other.danger),
       buttonDigit: mix(buttonDigit, other.buttonDigit),
       buttonFunction: mix(buttonFunction, other.buttonFunction),
       textPrimary: mix(textPrimary, other.textPrimary),

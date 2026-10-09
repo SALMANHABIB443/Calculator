@@ -31,24 +31,16 @@ import '../support/pump_app.dart';
 
 void main() {
   group('the graph', () {
-    testWidgets('registers exactly the twelve documented paths', (tester) async {
+    testWidgets('registers exactly the seven documented paths', (tester) async {
       mockEmptyHistory();
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
       final paths = _allPaths(container.read(appRouterProvider));
 
-      // D-20's six, plus the debug-only catalog (D-25), plus the four Secret Mode
-      // routes Phase 11 added (D-82, D-84). The hidden ones are registered even
-      // though nothing links to them: the five-second hold has to push a real
-      // path, and registering it is cheaper than inventing a private navigator
-      // for one screen.
-      //
-      // **The twelfth is D-114's**, and it is the only *parameterised* path in the
-      // app: `/secret/browse/:place` serves the eleven pages the Vault rows open.
-      // One path rather than eleven is the decision this file's count records — a
-      // thirteenth entry here would mean somebody had decided to give those pages
-      // their own routes, which is exactly the change worth a second look.
+      // D-20's six, plus the debug-only catalog (D-25). The Secret Mode routes
+      // that Phase 11 added and D-114 parameterised have been removed along with
+      // the hidden feature.
       expect(
         paths,
         containsAll(<String>[
@@ -59,16 +51,11 @@ void main() {
           AppRoutes.privacy,
           AppRoutes.terms,
           AppRoutes.catalog,
-          AppRoutes.secretUnlock,
-          AppRoutes.secret,
-          AppRoutes.secretSettings,
-          AppRoutes.secretChangePin,
-          AppRoutes.secretBrowse,
         ]),
       );
       expect(
         paths,
-        hasLength(12),
+        hasLength(7),
         reason: 'a new screen must be a decision, not an accident',
       );
     });
@@ -107,13 +94,6 @@ void main() {
 
       // Pushing each path must not throw — a typo in a route constant is
       // otherwise invisible until a user taps the row that leads there.
-      //
-      // **The parameterised path pushes its own pattern**, which is why
-      // `VaultPlaceScreen` tolerates a segment it does not recognise (D-114): the
-      // literal `:place` arrives here as a `:place` id, and it has to render
-      // rather than throw. `vault_place_pages_test.dart` asserts that fallback
-      // directly; what this line buys is that the *route* resolves at all, which
-      // is a different failure from the screen mishandling its input.
       for (final path in _allPaths(router)) {
         router.push(path);
         await tester.pumpAndSettle();

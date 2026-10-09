@@ -13,10 +13,6 @@ import 'package:calculator/features/history/data/history_repository.dart';
 import 'package:calculator/features/history/data/shared_preferences_history_repository.dart';
 import 'package:calculator/features/history/domain/history_entry.dart';
 import 'package:calculator/features/history/presentation/history_controller.dart';
-import 'package:calculator/features/history/presentation/history_screen.dart';
-import 'package:calculator/features/secret/data/device_storage_repository.dart';
-import 'package:calculator/features/secret/data/shared_preferences_secret_repository.dart';
-import 'package:calculator/features/secret/domain/secret_code.dart';
 import 'package:calculator/features/settings/data/shared_preferences_settings_repository.dart';
 import 'package:calculator/features/settings/domain/app_settings.dart';
 import 'package:calculator/features/settings/presentation/decimal_places_sheet.dart';
@@ -52,17 +48,12 @@ void mockEmptyHistory() => mockHistoryStore(const <HistoryEntry>[]);
 void mockHistoryStore(
   List<HistoryEntry> entries, {
   AppSettings? settings,
-  SecretCode? secretPin,
 }) {
   SharedPreferences.setMockInitialValues(<String, Object>{
     SharedPreferencesHistoryRepository.storageKey: jsonEncode([
       for (final entry in entries.reversed) entry.toJson(),
     ]),
     if (settings != null) ...settingsStoreValues(settings),
-    // Seeded through the real repository's key so a Secret Mode test starts
-    // from the same bytes the app would have written (D-83).
-    if (secretPin != null)
-      SharedPreferencesSecretRepository.pinKey: secretPin.value,
   });
 }
 
@@ -126,64 +117,23 @@ HistoryEntry seededEntry({
   timestamp: timestamp,
 );
 
-/// The storage figures every pumped app reports unless a test says otherwise.
-///
-/// Chosen so the formatted subtitle reads `28.35 GB / 32.00 GB · 3.65 GB free`
-/// — the same numbers the row carried when they were hardcoded, now produced by
-/// the real formatter from bytes. Keeping the display identical means the
-/// harness change is visible only to a test that asserts the *format*, not to
-/// every assertion that merely reads the row.
-///
-/// No SD card: `sdCard: null` is what the platform answers for an empty slot,
-/// so the default state of the row stays the state the suite already asserts.
-const VaultStorage harnessVaultStorage = VaultStorage(
-  internal: DeviceStorage(
-    totalBytes: 34359738368, // 32 GB
-    freeBytes: 3918657658, // 3.65 GB
-  ),
-  sdCard: null,
-);
-
 /// Pump the whole app and settles, starting from an empty history unless
 /// [history] says otherwise.
-///
-/// [fakeStorage] replaces [vaultStorageProvider] with [harnessVaultStorage].
-/// It is on by default because the real provider reaches a `MethodChannel`
-/// that no test host answers: the read fails fast and the Vault renders
-/// `Unavailable`, which is honest but makes every storage assertion about the
-/// failure path rather than the figures. A test that *wants* that path — or
-/// wants to drive the channel itself — passes `fakeStorage: false` and owns
-/// the provider (or the channel mock) in its own [overrides].
 Future<void> pumpApp(
   WidgetTester tester, {
   List<Override> overrides = const <Override>[],
   List<HistoryEntry> history = const <HistoryEntry>[],
   AppSettings? settings,
-  SecretCode? secretPin,
-  bool fakeStorage = true,
 }) async {
-  mockHistoryStore(history, settings: settings, secretPin: secretPin);
+  mockHistoryStore(history, settings: settings);
   await tester.pumpWidget(
     ProviderScope(
-      overrides: <Override>[
-        if (fakeStorage)
-          vaultStorageProvider.overrideWith((ref) async => harnessVaultStorage),
-        ...overrides,
-      ],
+      overrides: overrides,
       child: const CalculatorApp(),
     ),
   );
   await tester.pumpAndSettle();
 }
-
-/// How long History's bottom Clear History button must be held before Secret
-/// Mode opens (D-82).
-///
-/// Re-exported from [HistoryScreen] rather than re-declared here so the test
-/// harness holds the *shipped* duration. The alternative — a shorter constant
-/// for tests — would let the production five seconds go unpumped, and the value
-/// is the decision (D-82), not an implementation detail.
-const Duration secretHoldDuration = HistoryScreen.secretHoldDuration;
 
 /// Opens the Calculator screen's history clock (D-20).
 Future<void> openHistory(WidgetTester tester) async {

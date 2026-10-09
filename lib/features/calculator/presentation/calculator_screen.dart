@@ -214,8 +214,7 @@ class CalculatorScreen extends ConsumerWidget {
 /// rather than as an edit to that result.
 ///
 /// The glyph is this app's own [AppBackspaceIcon] rather than Material's
-/// `Icons.backspace_outlined`, so that the calculator's `⌫` and the Secret Mode
-/// pad's are the same drawing (**D-112**).
+/// `Icons.backspace_outlined` (**D-112**).
 class _BackspaceButton extends ConsumerWidget {
   const _BackspaceButton();
 

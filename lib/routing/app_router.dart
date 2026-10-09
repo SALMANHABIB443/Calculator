@@ -7,10 +7,6 @@ import '../features/about/presentation/about_screen.dart';
 import '../features/calculator/presentation/calculator_screen.dart';
 import '../features/history/presentation/history_screen.dart';
 import '../features/legal/presentation/legal_screens.dart';
-import '../features/secret/presentation/change_pin_screen.dart';
-import '../features/secret/presentation/secret_screens.dart';
-import '../features/secret/presentation/secret_settings_screen.dart';
-import '../features/secret/presentation/vault_place.dart';
 import '../features/settings/presentation/settings_screen.dart';
 import 'app_routes.dart';
 
@@ -52,40 +48,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.terms,
         builder: (context, state) => const TermsOfServiceScreen(),
-      ),
-      // Secret Mode (D-82, D-84). Four routes for what is deliberately an
-      // almost-empty area; they are ordinary routes because the five-second hold
-      // has to push one, and pushing needs a registered path. Nothing links here
-      // but the gesture.
-      GoRoute(
-        path: AppRoutes.secretUnlock,
-        builder: (context, state) => const SecretUnlockScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.secret,
-        builder: (context, state) => const SecretScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.secretSettings,
-        builder: (context, state) => const SecretSettingsScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.secretChangePin,
-        builder: (context, state) => const ChangePinScreen(),
-      ),
-      // The one parameterised route in the app (D-114). The `:place` segment is
-      // read here and handed over as a plain string, so the router performs no
-      // lookup that could fail on a segment it did not recognise — an unknown one
-      // is the screen's problem, and it renders a generic page for it.
-      //
-      // `builder`, not `pageBuilder`, like every other route above: D-56 keeps
-      // the platform's own push transition, and a `pageBuilder` here would be the
-      // only place in the app that chose its own animation.
-      GoRoute(
-        path: AppRoutes.secretBrowse,
-        builder: (context, state) => VaultPlaceScreen(
-          placeId: state.pathParameters['place'] ?? '',
-        ),
       ),
       if (kDebugMode)
         GoRoute(

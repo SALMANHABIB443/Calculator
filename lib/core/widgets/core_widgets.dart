@@ -19,8 +19,6 @@ export 'calculator_button.dart';
 export 'empty_state.dart';
 export 'history_card.dart';
 export 'history_day_label.dart';
-export 'menu_colors.dart';
-export 'menu_slider.dart';
 export 'secondary_page_header.dart';
 export 'secondary_page_scaffold.dart';
 export 'section_header.dart';

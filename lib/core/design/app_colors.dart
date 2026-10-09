@@ -112,28 +112,6 @@ abstract final class AppColors {
   /// boundaries were too faint to point at.
   static const Color ruleOnPage = Color(0xFF45454A);
 
-  /// The one colour in the app that means **this input is wrong**.
-  ///
-  /// Added with the Secret PIN screen's wrong-PIN state. Every other colour in
-  /// this file was measured from a mockup or chosen for a surface; this one is
-  /// a **semantic** signal, and it is the first the palette has carried.
-  ///
-  /// **Chosen, not measured.** No mockup in the project contains an error state,
-  /// so there is no pixel to read. `#FF5A5F` is a desaturated red rather than a
-  /// pure `#FF0000`: on the near-black page a fully saturated red vibrates
-  /// against the black and reads as an alarm, whereas this sits in the same
-  /// register as the grays around it while still being unmistakably red. The
-  /// light theme's `#D92D20` is darker for the ordinary reason — a light red on
-  /// white has nowhere to go.
-  ///
-  /// **Used on the PIN indicator and its message only.** It is deliberately not
-  /// a page colour: a red *screen* would repaint the whole feature in the colour
-  /// of its error state, which says something about the screen rather than about
-  /// what the user just typed. It is also not a replacement for [accent] on
-  /// destructive *actions* — "Reset PIN" stays orange, because a destructive
-  /// confirm is a thing the app offers, and this is a thing the app rejects.
-  static const Color danger = Color(0xFFFF5A5F);
-
   /// Track fill of a toggle in the ON state (desing.md §5.2).
   static const Color toggleTrackOn = Color(0xFFF89508);
 

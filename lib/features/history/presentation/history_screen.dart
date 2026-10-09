@@ -16,7 +16,6 @@
 library;
 
 import '../../../../core/design/app_palette.dart';
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,7 +24,6 @@ import 'package:go_router/go_router.dart';
 import '../../../core/design/app_spacing.dart';
 import '../../../core/design/app_typography.dart';
 import '../../../core/widgets/core_widgets.dart';
-import '../../../routing/app_routes.dart';
 import '../../calculator/presentation/calculator_controller.dart';
 import '../data/history_repository.dart';
 import '../domain/history_entry.dart';
@@ -33,16 +31,6 @@ import 'history_controller.dart';
 
 class HistoryScreen extends ConsumerStatefulWidget {
   const HistoryScreen({super.key});
-
-  /// How long the bottom Clear History button must be held before Secret Mode
-  /// opens (FEAT-SEC-001, D-82).
-  ///
-  /// Public on the screen rather than buried in the private button, because the
-  /// duration is a **decision** and a test has to hold for the shipped value.
-  /// A shorter test-only constant would leave the five seconds that actually
-  /// matter unexercised — and five seconds is precisely where "released early
-  /// does nothing" (AC-017) is worth proving.
-  static const Duration secretHoldDuration = Duration(seconds: 5);
 
   @override
   ConsumerState<HistoryScreen> createState() => _HistoryScreenState();
@@ -210,7 +198,6 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
           selectedIds: _selectedIds,
           onToggle: _toggleSelection,
           onClearAll: () => _confirmClear(context, ref),
-          onSecretRequested: _openSecret,
         ),
       ),
     );
@@ -235,16 +222,6 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
 
     if (confirmed) await notifier.clearAll();
   }
-
-  /// Pushes the hidden Secret Mode PIN screen (FEAT-SEC-001, D-82).
-  ///
-  /// Reached only by the five-second hold on the bottom Clear History button,
-  /// and *this* file knows nothing about `features/secret/` — only the route
-  /// name. That is what keeps the dependency one-way: History points at
-  /// `routing`, and `routing` points at the secret screens (struction.md §7).
-  void _openSecret() {
-    context.push(AppRoutes.secretUnlock);
-  }
 }
 
 /// Picks the body for the repository's state.
@@ -260,7 +237,6 @@ class _HistoryBody extends ConsumerWidget {
     required this.selectedIds,
     required this.onToggle,
     required this.onClearAll,
-    required this.onSecretRequested,
   });
 
   final AsyncValue<List<HistoryDayGroup>> history;
@@ -277,10 +253,6 @@ class _HistoryBody extends ConsumerWidget {
 
   /// Opens the Clear History confirmation (D-05).
   final VoidCallback onClearAll;
-
-  /// A completed five-second hold, which pushes the Secret Mode PIN screen
-  /// (D-82). Only the list branch renders a button to hold.
-  final VoidCallback onSecretRequested;
 
   /// What the user is told when the read fails (D-58).
   ///
@@ -324,7 +296,6 @@ class _HistoryBody extends ConsumerWidget {
         selectedIds: selectedIds,
         onToggle: onToggle,
         onClearAll: onClearAll,
-        onSecretRequested: onSecretRequested,
       ),
       _ => Center(
         key: Key('history-loading'),
@@ -342,7 +313,6 @@ class _HistoryList extends StatelessWidget {
     required this.selectedIds,
     required this.onToggle,
     required this.onClearAll,
-    required this.onSecretRequested,
   });
 
   final List<HistoryDayGroup> groups;
@@ -355,10 +325,6 @@ class _HistoryList extends StatelessWidget {
 
   /// Opens the Clear History confirmation (D-05).
   final VoidCallback onClearAll;
-
-  /// A completed five-second hold on the bottom action, which pushes the Secret
-  /// Mode PIN screen (D-82).
-  final VoidCallback onSecretRequested;
 
   /// Whether the list is multi-selecting.
   ///
@@ -399,16 +365,7 @@ class _HistoryList extends StatelessWidget {
         // bottom slot, and the user who has just chosen three rows and then
         // taps the button expecting to delete three rows must not lose all
         // seven instead.
-        if (!_selecting)
-          _ClearHistoryAction(
-            onPressed: onClearAll,
-            // The hidden hold lives on the same button but pushes a different
-            // place. Passed down rather than reached for so this list stays
-            // ignorant of both Secret Mode and the router: the screen above it
-            // owns the navigation, and the dependency arrow still points one way,
-            // into `routing` (D-82, struction.md §7).
-            onSecretRequested: onSecretRequested,
-          ),
+        if (!_selecting) _ClearHistoryAction(onPressed: onClearAll),
       ],
     );
   }
@@ -465,118 +422,12 @@ class _HistoryList extends StatelessWidget {
 /// The bottom action: orange text with a trash icon, centred (desing.md §6.2,
 /// feature.md FEAT-HIST-003).
 ///
-/// Carries the hidden five-second hold that opens Secret Mode (FEAT-SEC-001,
-/// D-82). The hold is **invisible** — no ring, no haptic, no sound, no colour
-/// change, and this widget adds no state to render one. That is the decision,
-/// not an omission: any feedback at all would let the gesture be found by
-/// resting a thumb on the button, which is the one thing a hidden feature must
-/// not be (D-82). The only consequence of holding is that, five seconds later,
-/// a screen is pushed.
-class _ClearHistoryAction extends StatefulWidget {
-  const _ClearHistoryAction({
-    required this.onPressed,
-    required this.onSecretRequested,
-  });
+/// A plain tap opens the Clear History confirmation (D-05).
+class _ClearHistoryAction extends StatelessWidget {
+  const _ClearHistoryAction({required this.onPressed});
 
-  /// A **tap** — still the Clear History confirmation, unchanged (D-05).
+  /// A tap — the Clear History confirmation (D-05).
   final VoidCallback onPressed;
-
-  /// A completed five-second hold. Pushes the PIN screen (FEAT-SEC-001).
-  final VoidCallback onSecretRequested;
-
-  /// How long the press has to last before the secret screen opens (D-82).
-  ///
-  /// Delegates to [HistoryScreen.secretHoldDuration] so the button and the
-  /// screen's documentation cannot state two different values.
-  static const Duration holdDuration = HistoryScreen.secretHoldDuration;
-
-  @override
-  State<_ClearHistoryAction> createState() => _ClearHistoryActionState();
-}
-
-class _ClearHistoryActionState extends State<_ClearHistoryAction> {
-  Timer? _hold;
-
-  /// Whether the release of the in-progress press should be ignored.
-  ///
-  /// Set by [_markLongPress] when the press outlasts [_tapGracePeriod], so a
-  /// four-second attempt that missed the five-second threshold is swallowed
-  /// rather than opening the Clear History confirmation (AC-017). Flutter fires
-  /// a [TextButton]'s `onPressed` on pointer-up regardless of how long the
-  /// finger was down, so without this a long press released early would look
-  /// exactly like a tap.
-  bool _swallowTap = false;
-
-  /// Fires once the press has lasted long enough to be a hold *attempt*.
-  Timer? _longPress;
-
-  /// How long a press must last before its release stops counting as a tap.
-  ///
-  /// Well below the five-second threshold so a genuine four-second attempt is
-  /// swallowed, and well above a real tap's duration so an ordinary tap is not.
-  /// Any value in that gap satisfies AC-017; it is not itself a decision, which
-  /// is why it is named here rather than in the documents.
-  static const Duration _tapGracePeriod = Duration(milliseconds: 500);
-
-  /// Marks the current press as long, so its release is not treated as a tap.
-  ///
-  /// A [Timer] rather than a [Stopwatch] or a `DateTime` for one reason: the
-  /// timer is driven by the same clock `tester.pump` drives. Wall-clock time does
-  /// not move during a widget test, so measuring elapsed time with either of the
-  /// other two would read zero after a four-second pump and every long release
-  /// would count as a tap.
-  void _markLongPress() {
-    _swallowTap = true;
-  }
-
-  /// Starts the countdown. Cancels any previous one, so a second touch while a
-  /// stale timer is still live cannot queue two pushes.
-  void _beginHold() {
-    _hold?.cancel();
-    _longPress?.cancel();
-    _swallowTap = false;
-    _longPress = Timer(_tapGracePeriod, _markLongPress);
-    _hold = Timer(_ClearHistoryAction.holdDuration, () {
-      _hold = null;
-      // The press has done what it came for. The release after it must not also
-      // count as a tap and open the confirmation dialog on top of the screen
-      // just pushed.
-      _swallowTap = true;
-      widget.onSecretRequested();
-    });
-  }
-
-  /// Ends the press, cancelling both timers and leaving `_swallowTap` as
-  /// whichever one got there first.
-  ///
-  /// Called on release *and* on cancel, and both are needed: a cancelled pointer
-  /// — a scroll, a system gesture stealing the touch — never sends an "up", and
-  /// a timer left running would open the secret screen to a user who had already
-  /// moved on.
-  void _endHold() {
-    _hold?.cancel();
-    _hold = null;
-    _longPress?.cancel();
-    _longPress = null;
-  }
-
-  /// The button's real tap action, unless this release has already been claimed
-  /// by the hold gesture.
-  void _handleTap() {
-    _endHold();
-    if (_swallowTap) {
-      _swallowTap = false;
-      return;
-    }
-    widget.onPressed();
-  }
-
-  @override
-  void dispose() {
-    // A timer outliving its State would fire into a disposed widget and throw.
-    _endHold();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -589,31 +440,18 @@ class _ClearHistoryActionState extends State<_ClearHistoryAction> {
       ),
       child: SizedBox(
         width: double.infinity,
-        // `GestureDetector` above `TextButton` rather than a long-press or a
-        // replacement button: the tap path has to reach the real
-        // [TextButton] unchanged, including its ripple, its semantics, and the
-        // `history-clear-button` key the existing tests already drive.
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTapDown: (_) => _beginHold(),
-          onTapUp: (_) => _endHold(),
-          onTapCancel: _endHold,
-          child: TextButton.icon(
-            key: const Key('history-clear-button'),
-            onPressed: _handleTap,
-            style: TextButton.styleFrom(
-              foregroundColor: context.appColors.accent,
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-            ),
-            icon: AppTrashIcon(
-              size: AppIconSize.row,
-              color: context.appColors.accent,
-            ),
-            label: Text(
-              'Clear History',
-              style: context.type.bottomAction,
-            ),
+        child: TextButton.icon(
+          key: const Key('history-clear-button'),
+          onPressed: onPressed,
+          style: TextButton.styleFrom(
+            foregroundColor: context.appColors.accent,
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
           ),
+          icon: AppTrashIcon(
+            size: AppIconSize.row,
+            color: context.appColors.accent,
+          ),
+          label: Text('Clear History', style: context.type.bottomAction),
         ),
       ),
     );

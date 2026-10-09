@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'app_icon.dart';
 
-/// The `⌫` glyph the calculator and the Secret Mode pad delete with (**D-112**).
+/// The `⌫` glyph the calculator deletes with (**D-112**).
 ///
 /// A painted icon for the same reason [AppTrashIcon] is one (**D-73**): the
 /// design calls for a specific outlined backspace, and the two alternatives were
@@ -46,11 +46,10 @@ class AppBackspaceIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // A square box of exactly [size], which is what an [AppIcon] of the same
-    // bucket occupies too, and what a bare `Icon` of that size occupies. Both
-    // call sites here position this glyph inside a box of their own — the
-    // calculator's 48 px `AppIconButton`, and the pad key's own circle — so the
-    // box has to match what they were getting from `Icon` before, or the touch
-    // target and the key's geometry both shift.
+    // bucket occupies too, and what a bare `Icon` of that size occupies. The
+    // call site positions this glyph inside a box of its own — the calculator's
+    // 48 px `AppIconButton` — so the box has to match what it was getting from
+    // `Icon` before, or the touch target and the key's geometry both shift.
     final icon = SizedBox.square(
       dimension: size.value,
       child: CustomPaint(
@@ -98,11 +97,10 @@ class AppBackspacePainter extends CustomPainter {
   ///
   /// Authored so the path's own bounds run x ∈ [2, 22] and y ∈ [4, 20], whose
   /// centre is the 24 grid's (12, 12) — and because the pen is symmetric, the
-  /// *painted* ink is centred there too. That centring is the property both call
-  /// sites depend on: the calculator's `AppIconButton` centres this glyph in its
-  /// 48 px box, and the pad key centres it in a circle it sized from the smaller
-  /// of its two axes, so ink that sat off-centre inside the box would sit
-  /// off-centre in the key.
+  /// *painted* ink is centred there too. That centring is the property the call
+  /// site depends on: the calculator's `AppIconButton` centres this glyph in its
+  /// 48 px box, so ink that sat off-centre inside the box would sit off-centre
+  /// in the button.
   static final Path outline = Path()
     ..moveTo(9, 4)
     ..lineTo(22, 4)
