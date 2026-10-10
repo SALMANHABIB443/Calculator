@@ -176,6 +176,7 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
         children: [
           if (_searching) _searchField(),
           if (!_selecting) _tabRow(),
+          if (_selecting) const SizedBox(height: AppSpacing.lg),
           Expanded(child: _content(context, gallery, list)),
           if (!_selecting) _bottomTabs(),
           if (_selecting) _selectionBar(gallery, list),
@@ -293,7 +294,7 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
       return _albumsList(gallery);
     }
     if (list.isEmpty) return _emptyContent(context);
-    return _photoGrid(list);
+    return _photoGrid(context, list);
   }
 
   Widget _emptyContent(BuildContext context) {
@@ -334,7 +335,7 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
     );
   }
 
-  Widget _photoGrid(List<VaultImage> list) {
+  Widget _photoGrid(BuildContext context, List<VaultImage> list) {
     return Stack(
       children: [
         GridView.builder(
@@ -373,19 +374,95 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
             );
           },
         ),
-        if (!_selecting && _tab == _VaultTab.pictures)
+        if (_tab == _VaultTab.pictures)
           Positioned(
             right: 16,
             bottom: 16,
-            child: FloatingActionButton(
-              key: VaultImagesScreen.addButtonKey,
-              heroTag: 'vault-add',
-              tooltip: 'Add Photos',
-              onPressed: _pickAndImport,
-              child: const Icon(Icons.add),
+            // Always in the tree while the Pictures tab is showing, so entering
+            // and leaving selection mode animates instead of popping. On select
+            // it scales down and fades out; on deselect it grows back in.
+            child: AnimatedScale(
+              scale: _selecting ? 0.0 : 1.0,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              child: AnimatedOpacity(
+                opacity: _selecting ? 0.0 : 1.0,
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeInOut,
+                child: IgnorePointer(
+                  ignoring: _selecting,
+                  child: FloatingActionButton(
+                    key: VaultImagesScreen.addButtonKey,
+                    heroTag: 'vault-add',
+                    tooltip: 'Add Photos',
+                    onPressed: _pickAndImport,
+                    // Inverted contrast: a white disc with a dark plus in the
+                    // dark theme, and a black disc with a white plus in the
+                    // white theme — the same pairing the snackbar uses.
+                    backgroundColor: context.appColors.textPrimary,
+                    foregroundColor: context.appColors.background,
+                    shape: const CircleBorder(),
+                    child: const Icon(Icons.add),
+                  ),
+                ),
+              ),
             ),
           ),
       ],
+    );
+  }
+
+  /// One cell of the bottom bar, shared by the navigation tabs and the
+  /// selection actions.
+  ///
+  /// Both bars must be the same height — the selection bar replaces the tabs in
+  /// place — so the icon, label, and active-pill slot live in exactly one
+  /// builder rather than in two copies that can drift apart. [icon] is a widget
+  /// so a caller can hand in a colour-schemed [Icon] or the painted
+  /// [AppTrashIcon] (D-119); the pill is always present, transparent when
+  /// [active] is false, so every item reserves the same vertical space.
+  Widget _bottomBarItem({
+    required Widget icon,
+    required String label,
+    required Color labelColor,
+    bool active = false,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.only(
+            top: AppSpacing.md,
+            bottom: AppSpacing.sm,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              icon,
+              const SizedBox(height: 4),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: context.type.caption.copyWith(
+                  color: labelColor,
+                  fontWeight: active ? FontWeight.w600 : FontWeight.w400,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Container(
+                width: 16,
+                height: 2.5,
+                decoration: BoxDecoration(
+                  color: active ? labelColor : Colors.transparent,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -406,50 +483,22 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
       final color = active
           ? context.appColors.textPrimary
           : context.appColors.textSecondary;
-      return Expanded(
-        child: InkWell(
-          onTap: () => setState(() {
-            _tab = tab;
-            _selected.clear();
-          }),
-          child: Padding(
-            padding: const EdgeInsets.only(
-              top: AppSpacing.md,
-              bottom: AppSpacing.sm,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                buildIcon(color),
-                const SizedBox(height: 4),
-                Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: context.type.caption.copyWith(
-                    color: color,
-                    fontWeight: active ? FontWeight.w600 : FontWeight.w400,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Container(
-                  width: 16,
-                  height: 2.5,
-                  decoration: BoxDecoration(
-                    color: active ? color : Colors.transparent,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+      return _bottomBarItem(
+        icon: buildIcon(color),
+        label: label,
+        labelColor: color,
+        active: active,
+        onTap: () => setState(() {
+          _tab = tab;
+          _selected.clear();
+        }),
       );
     }
 
     return SafeArea(
       top: false,
       child: Container(
+        key: const Key('vault-bottom-tabs'),
         decoration: BoxDecoration(
           color: context.appColors.surface,
           border: Border(top: BorderSide(color: context.appColors.divider)),
@@ -487,33 +536,24 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
   // History screen's delete glyph) as well as Material [Icon]s.
   Widget _selectionBar(VaultImagesState gallery, List<VaultImage> list) {
     Widget action(Widget icon, String label, VoidCallback onTap) {
-      return Expanded(
-        child: InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconTheme(
-                  data: IconThemeData(
-                    color: context.appColors.textPrimary,
-                    size: AppSizes.rowIcon,
-                  ),
-                  child: icon,
-                ),
-                const SizedBox(height: 2),
-                Text(label, style: context.type.caption),
-              ],
-            ),
+      return _bottomBarItem(
+        icon: IconTheme(
+          data: IconThemeData(
+            color: context.appColors.textPrimary,
+            size: AppSizes.rowIcon,
           ),
+          child: icon,
         ),
+        label: label,
+        labelColor: context.appColors.textPrimary,
+        onTap: onTap,
       );
     }
 
     return SafeArea(
       top: false,
       child: Container(
+        key: const Key('vault-selection-bar'),
         decoration: BoxDecoration(
           color: context.appColors.surface,
           border: Border(top: BorderSide(color: context.appColors.divider)),

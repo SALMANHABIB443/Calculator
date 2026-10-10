@@ -290,11 +290,12 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
                 child: Padding(
                   // The app's 24 px screen margin, so the chrome buttons line up
                   // with every other header in the app instead of sitting on the
-                  // screen edges; the small vertical gap keeps them off the
-                  // status bar inset without eating the photo.
+                  // screen edges; the top gap is [AppSpacing.headerTopGap], the
+                  // same breathing room every other header keeps below the
+                  // status-bar inset, so these buttons are not glued to the top.
                   padding: const EdgeInsets.fromLTRB(
                     AppSpacing.screenHorizontal,
-                    AppSpacing.sm,
+                    AppSpacing.headerTopGap,
                     AppSpacing.screenHorizontal,
                     0,
                   ),
