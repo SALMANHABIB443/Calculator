@@ -22,6 +22,7 @@ library;
 import 'package:calculator/core/design/app_spacing.dart';
 import 'package:calculator/core/widgets/app_icon_button.dart';
 import 'package:calculator/features/calculator/domain/calculator_engine.dart';
+import 'package:calculator/features/calculator/presentation/calculator_display.dart';
 import 'package:calculator/features/calculator/presentation/calculator_keypad.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -352,8 +353,10 @@ void main() {
     ) async {
       await pumpWithCalculation(tester, reference);
 
-      // The result rises into the lower half of the display rather than resting
-      // on the keypad, so there is space under it that is neither line.
+      // The stack is bottom-aligned inside the display block, so the result
+      // lands at the foot of the block — clear of the keypad below, with the
+      // block's own spare room above the calculation rather than under the
+      // number.
       final firstRow = rectOf(tester, CalculatorKey.ac).top;
       expect(
         lineRect(tester).bottom,
@@ -362,24 +365,18 @@ void main() {
       );
     });
 
-    testWidgets('each line centres in its own half', (tester) async {
+    testWidgets('the calculation sits a tight gap above the output', (
+      tester,
+    ) async {
       await pumpWithCalculation(tester, reference);
 
-      // Two equal halves: the boundary between them is the display's own
-      // midline, so each line's centre is a quarter of the way down or up from
-      // it. This is the relationship the split claims, measured rather than
-      // assumed — a layout that merely stacked the two lines would still put
-      // both in the right places but not at these centres.
-      final display = displayRect(tester);
-      final half = display.height / 2;
-
+      // The tight stack: the calculation ends, the 4 px gap runs, and the
+      // live output starts — no half-display of air between them.
+      final gap = lineRect(tester).top - expressionRect(tester).bottom;
       expect(
-        expressionRect(tester).center.dy,
-        closeTo(display.top + half / 2, slack),
-      );
-      expect(
-        lineRect(tester).center.dy,
-        closeTo(display.top + half + half / 2, slack),
+        gap,
+        closeTo(CalculatorDisplay.lineGap, slack),
+        reason: 'the two display lines have drifted apart',
       );
     });
 

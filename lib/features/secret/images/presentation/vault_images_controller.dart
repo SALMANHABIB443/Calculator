@@ -92,10 +92,26 @@ class VaultImagesNotifier extends AsyncNotifier<VaultImagesState> {
   /// Reads bytes straight off the picker (a `blob:` URL on web), so the same
   /// code path feeds both the on-device files and the web store. A file whose
   /// bytes come back empty never reaches metadata.
-  Future<VaultImportResult> importPickedFiles(List<XFile> picked) async {
+  ///
+  /// When [albumId] names an existing album, every imported picture is tagged
+  /// with it in the same save, so the picture lands in both Pictures and that
+  /// album. An unknown id (a virtual row such as `all`, or an album deleted
+  /// concurrently) is ignored: a general import must never leak into an
+  /// arbitrary album.
+  Future<VaultImportResult> importPickedFiles(
+    List<XFile> picked, {
+    String? albumId,
+  }) async {
     final repository = await _repository;
     final store = ref.read(vaultImageStoreProvider);
     final existing = await repository.loadImages();
+    String? targetAlbumId;
+    if (albumId != null) {
+      final albums = await repository.loadAlbums();
+      if (albums.any((album) => album.id == albumId)) {
+        targetAlbumId = albumId;
+      }
+    }
     var imported = 0;
     var failed = 0;
     for (final pick in picked) {
@@ -128,6 +144,9 @@ class VaultImagesNotifier extends AsyncNotifier<VaultImagesState> {
             fileSize: bytes.length,
             dateAdded: now,
             dateModified: modified,
+            albumIds: targetAlbumId == null
+                ? const <String>[]
+                : <String>[targetAlbumId],
           ),
         );
         imported++;

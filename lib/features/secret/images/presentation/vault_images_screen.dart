@@ -119,6 +119,15 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
     });
   }
 
+  /// True when [id] is a real album in the current gallery state — not one of
+  /// the virtual rows (`all`, `favorites`, `recent`) the Albums landing page
+  /// also lists. Virtual rows must never become a picture's `albumIds` entry.
+  bool _isConcreteAlbumId(WidgetRef ref, String id) {
+    final albums = ref.read(vaultImagesProvider).valueOrNull?.albums;
+    if (albums == null) return false;
+    return albums.any((album) => album.id == id);
+  }
+
   @override
   Widget build(BuildContext context) {
     final gallery = ref.watch(vaultImagesProvider);
@@ -627,13 +636,20 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
       final picked = await imagePicker.pickMultiImage();
       if (picked.isEmpty) return;
       if (!mounted) return;
+      // Importing from inside a concrete album tags the new pictures with
+      // that album in the same save (Bug 2). Virtual rows (`all`,
+      // `favorites`, `recent`) and the other tabs import into Pictures only.
+      final targetAlbumId =
+          (_tab == _VaultTab.albums && _isConcreteAlbumId(ref, _albumId))
+              ? _albumId
+              : null;
       setState(() {
         _importing = true;
         _importLabel = 'Importing ${picked.length} photos…';
       });
       final result = await ref
           .read(vaultImagesProvider.notifier)
-          .importPickedFiles(picked);
+          .importPickedFiles(picked, albumId: targetAlbumId);
       if (!mounted) return;
       setState(() {
         _importing = false;
@@ -782,31 +798,30 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
     final name = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        // 24 px insets instead of the framework's 40 px default, so the
-        // dialog spans the same 312 dp as the page's cards and its edges
-        // line up with the header gutters rather than looking squeezed.
-        insetPadding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.screenHorizontal,
-        ),
+        // Standard dialog width (like AppConfirmationDialog): the framework's
+        // 40px inset keeps the popup narrow and centred instead of stretched
+        // edge-to-edge.
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         title: const Text('New album'),
         content: TextField(
-          controller: controller,
-          autofocus: true,
-          maxLength: 40,
-          // White caret and white focus underline instead of the theme's
-          // orange accent — the gallery's interactive lines are white.
-          cursorColor: context.appColors.textPrimary,
-          decoration: InputDecoration(
-            hintText: 'Album name',
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: context.appColors.textPrimary),
+            controller: controller,
+            autofocus: true,
+            maxLength: 40,
+            // White caret and white focus underline instead of the theme's
+            // orange accent — the gallery's interactive lines are white.
+            cursorColor: context.appColors.textPrimary,
+            decoration: InputDecoration(
+              hintText: 'Album name',
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: context.appColors.textPrimary),
+              ),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: context.appColors.divider),
+              ),
             ),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: context.appColors.divider),
-            ),
-          ),
-          onSubmitted: (_) =>
-              Navigator.of(context).pop(controller.text.trim()),
+            onSubmitted: (_) =>
+                Navigator.of(context).pop(controller.text.trim()),
         ),
         actions: [
           TextButton(
@@ -852,14 +867,34 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
       ),
     );
     if (picked == null || !mounted) return;
-    final notifier = ref.read(vaultImagesProvider.notifier);
     if (picked == '__new__') {
+      // The chooser already consumed `_selected` into [ids]; resolve the album
+      // this run creates by set difference rather than trusting `albums.last`.
+      // `albums.last` reads a notifier captured before `invalidateSelf()`
+      // rebuilt the provider, so under concurrency it can point at a sibling
+      // album (or a stale list) and the pictures silently land elsewhere.
+      final before = Set<String>.from(
+        ref.read(vaultImagesProvider).valueOrNull?.albums.map((e) => e.id) ??
+            const <String>[],
+      );
       await _createAlbumDialog();
-      final albums = ref.read(vaultImagesProvider).valueOrNull?.albums;
-      if (albums == null || albums.isEmpty || !mounted) return;
-      await notifier.addToAlbum(albums.last.id, ids);
+      if (!mounted) return;
+      final after =
+          ref.read(vaultImagesProvider).valueOrNull?.albums ??
+          const <VaultAlbum>[];
+      VaultAlbum? created;
+      for (final album in after) {
+        if (!before.contains(album.id)) {
+          created = album;
+          break;
+        }
+      }
+      // Dialog cancelled (or creation raced and lost): keep the selection so
+      // nothing the user picked is silently dropped.
+      if (created == null) return;
+      await ref.read(vaultImagesProvider.notifier).addToAlbum(created.id, ids);
     } else {
-      await notifier.addToAlbum(picked, ids);
+      await ref.read(vaultImagesProvider.notifier).addToAlbum(picked, ids);
     }
     if (!mounted) return;
     setState(_selected.clear);

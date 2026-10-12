@@ -79,15 +79,20 @@ void main() {
   });
 
   group('CalculatorDisplay.minimumHeight', () {
-    test('is two result line boxes when nothing is scaled', () {
-      // The display is split into two equal halves (D-78), and each half has to
-      // hold the taller of the two lines it can be given, so the reservation is
-      // two boxes: the shortest display in which the largest thing either line
-      // can paint — the 60 px result — still fits at full size in its own half.
+    test('is the stacked expression, gap, and result boxes', () {
+      // The display stacks the calculation directly above the live output
+      // (D-78): one expression line box, the 4 px gap, one result line box.
+      // The reservation budgets for the taller calculation state even when a
+      // lone number is showing, so the keypad never shifts when an operator
+      // is keyed.
       expect(
         CalculatorDisplay.minimumHeight(TextScaler.noScaling),
-        moreOrLessEquals(2 * AppTypography.resultLarge.fontSize! * 1.1),
-        reason: 'two halves, so two line boxes are the whole reservation',
+        moreOrLessEquals(
+          AppTypography.expression.fontSize! * 1.2 +
+              CalculatorDisplay.lineGap +
+              AppTypography.resultLarge.fontSize! * 1.1,
+        ),
+        reason: 'expression box plus gap plus result box is the reservation',
       );
     });
 

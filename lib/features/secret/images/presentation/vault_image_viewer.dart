@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,25 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
   late final PageController _pages;
   late int _index;
   bool _chrome = true;
-  final TransformationController _zoom = TransformationController();
+  // One zoom controller per page (keyed by page index). The previous
+  // implementation shared a single TransformationController across every
+  // PageView child, so zooming page N also transformed the off-screen pages
+  // (wrong size => cropped / misplaced) and resetting on page-change fought
+  // the swipe gesture mid-flight. Per-page controllers keep each image's
+  // matrix in its own viewport.
+  final Map<int, TransformationController> _zooms =
+      <int, TransformationController>{};
+  // Cached image-byte futures per vault file: FutureBuilder must not mint a
+  // new future on every build (chrome toggle, page change) or the image
+  // reloads to a spinner and the InteractiveViewer subtree — and its gesture
+  // state — is thrown away, which read as "zoom stuck".
+  final Map<String, Future<Uint8List?>> _bytesCache =
+      <String, Future<Uint8List?>>{};
+  bool _zoomed = false;
+  // Re-entrancy guard for the snap-to-identity inside [_onZoomChanged]:
+  // assigning `controller.value` fires its listener synchronously, which
+  // would re-enter this same handler mid-assignment.
+  bool _settlingZoom = false;
   TapDownDetails? _doubleTap;
 
   @override
@@ -50,7 +69,9 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _pages.dispose();
-    _zoom.dispose();
+    for (final controller in _zooms.values) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -65,21 +86,101 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
 
   VaultImage get _current => widget.images[_index];
 
-  Future<Uint8List?> _bytes(VaultImage image) async {
+  TransformationController _zoomFor(int page) {
+    return _zooms.putIfAbsent(page, () {
+      final controller = TransformationController();
+      controller.addListener(() => _onZoomChanged(page, controller));
+      return controller;
+    });
+  }
+
+  void _onZoomChanged(int page, TransformationController controller) {
+    // Only the visible page drives swipe-vs-pan. Off-screen pages keep their
+    // matrices untouched so a neighbour's transform can never crop this page.
+    if (page != _index || !mounted || _settlingZoom) return;
+    final scale = _scaleOf(controller.value);
+    final zoomed = scale > 1.02;
+    if (!zoomed && controller.value != Matrix4.identity()) {
+      // Pinch-out rarely lands on an exact identity matrix: the scale is back
+      // at ~1x but a residual translation survives. Leaving it means the next
+      // double-tap takes the "reset" branch instead of zooming (read as
+      // "further zooming fails until reopen") and the picture sits offset.
+      // Snap back so scale-1 always means unzoomed-and-centred.
+      _settlingZoom = true;
+      try {
+        controller.value = Matrix4.identity();
+      } finally {
+        _settlingZoom = false;
+      }
+    }
+    if (zoomed != _zoomed) setState(() => _zoomed = zoomed);
+  }
+
+  void _resetZoom(int page) {
+    final controller = _zooms[page];
+    if (controller == null) {
+      if (_zoomed) setState(() => _zoomed = false);
+      return;
+    }
+    if (controller.value != Matrix4.identity()) {
+      // Setting the value fires the listener above, which clears [_zoomed].
+      controller.value = Matrix4.identity();
+    } else if (_zoomed) {
+      setState(() => _zoomed = false);
+    }
+  }
+
+  /// Clears every cached matrix except [current]: a page left zoomed (or with
+  /// a residual translation) and later swiped back to would otherwise show a
+  /// cropped / misplaced picture from its stale transform.
+  void _resetStaleZooms(int current) {
+    for (final entry in _zooms.entries) {
+      if (entry.key == current) continue;
+      if (entry.value.value != Matrix4.identity()) {
+        // Listener ignores non-current pages, so this cannot recurse into
+        // setState; it only drops the stale matrix.
+        entry.value.value = Matrix4.identity();
+      }
+    }
+  }
+
+  /// Uniform scale of a transform matrix (column-vector length of X axis).
+  static double _scaleOf(Matrix4 matrix) {
+    final storage = matrix.storage;
+    final x = storage[0];
+    final y = storage[1];
+    final z = storage[2];
+    final squared = x * x + y * y + z * z;
+    return squared > 0 ? math.sqrt(squared) : 1.0;
+  }
+
+  Future<Uint8List?> _bytes(VaultImage image) {
     final store = ref.read(vaultImageStoreProvider);
-    return store.readBytes(image.vaultFileName, trashed: image.isTrashed);
+    return _bytesCache.putIfAbsent(
+      '${image.isTrashed ? 'trash' : 'vault'}/${image.vaultFileName}',
+      () => store.readBytes(image.vaultFileName, trashed: image.isTrashed),
+    );
   }
 
   void _toggleChrome() => setState(() => _chrome = !_chrome);
 
-  void _doubleTapZoom(TapDownDetails details) {
-    if (_zoom.value != Matrix4.identity()) {
-      _zoom.value = Matrix4.identity();
+  void _doubleTapZoom(int page, TapDownDetails details) {
+    final controller = _zoomFor(page);
+    // Scale-based (not `!= identity`): a pinch-out that settles at ~1x with a
+    // residual translation must still count as "zoomed out", or the tap would
+    // reset instead of zooming and further zooming would appear to fail.
+    if (_scaleOf(controller.value) > 1.02) {
+      controller.value = Matrix4.identity();
     } else {
+      // Zoom 3x around the tapped point: translate first, then scale about
+      // that focal point. The old code multiplied local pixels by an
+      // arbitrary factor and applied translate+scale in the wrong order, so
+      // the image landed off-screen (cropped / misplaced) after double-tap.
       final pos = details.localPosition;
-      _zoom.value = Matrix4.identity()
-        ..translateByDouble(-pos.dx * 2, -pos.dy * 2, 0, 1)
-        ..scaleByDouble(3, 3, 1, 1);
+      controller.value = Matrix4.identity()
+        ..translate(pos.dx, pos.dy)
+        ..scale(3.0)
+        ..translate(-pos.dx, -pos.dy);
     }
   }
 
@@ -239,17 +340,31 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
             PageView.builder(
               controller: _pages,
               itemCount: widget.images.length,
+              // While zoomed the page must not swipe: the drag belongs to the
+              // image pan. At scale 1 the viewer yields so swipes navigate.
+              physics: _zoomed
+                  ? const NeverScrollableScrollPhysics()
+                  : const PageScrollPhysics(),
               onPageChanged: (i) {
-                _zoom.value = Matrix4.identity();
-                setState(() => _index = i);
+                final previous = _index;
+                _resetZoom(previous);
+                _resetStaleZooms(i);
+                final next = _zooms[i];
+                final zoomed =
+                    next != null && _scaleOf(next.value) > 1.02;
+                setState(() {
+                  _index = i;
+                  _zoomed = zoomed;
+                });
               },
               itemBuilder: (context, i) {
                 final image = widget.images[i];
                 return GestureDetector(
+                  key: ValueKey('vault-viewer-page-${image.id}'),
                   onTap: _toggleChrome,
                   onDoubleTapDown: (d) => _doubleTap = d,
                   onDoubleTap: () {
-                    if (_doubleTap != null) _doubleTapZoom(_doubleTap!);
+                    if (_doubleTap != null) _doubleTapZoom(i, _doubleTap!);
                   },
                   child: FutureBuilder<Uint8List?>(
                     future: _bytes(image),
@@ -260,10 +375,23 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
                           child: CircularProgressIndicator(),
                         );
                       }
+                      final zoom = _zoomFor(i);
+                      // Pan only once zoomed so a scale-1 horizontal drag
+                      // reaches the PageView (swipe) instead of being eaten
+                      // by the viewer (which would look like "swipe stuck").
+                      // Pinch stays enabled so zoom-in always starts.
+                      final zoomed = i == _index
+                          ? _zoomed
+                          : _scaleOf(zoom.value) > 1.02;
                       return InteractiveViewer(
-                        transformationController: _zoom,
+                        key: ValueKey('vault-viewer-zoom-${image.id}'),
+                        transformationController: zoom,
                         minScale: 1,
                         maxScale: 4,
+                        panEnabled: zoomed,
+                        scaleEnabled: true,
+                        boundaryMargin: EdgeInsets.zero,
+                        clipBehavior: Clip.hardEdge,
                         child: Center(
                           child: Image.memory(
                             bytes,

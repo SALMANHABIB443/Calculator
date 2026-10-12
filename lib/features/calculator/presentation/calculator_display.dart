@@ -11,15 +11,16 @@ import 'display_resolver.dart';
 /// The calculator's display: **two lines**, the calculation above the output
 /// (desing.md §3, **D-78**, **D-79**).
 ///
-/// The space the display is given is divided into two equal halves. The **upper
-/// half** is the *calculation* — the expression being built, `9 + 9`, in
-/// [context.type.expression] — and the **lower half** is the *output* — the
-/// result, `18`, in the hero [context.type.resultLarge], stepping down to
-/// [context.type.resultMedium] once the value gets long. Each line centres in
-/// its own half, so the boundary between them is the display's own midline
-/// rather than a gap someone has to choose and then defend.
+/// The block sits against the keypad and stacks the two lines with a tight
+/// 4 px gap between them. The **upper** line is the *calculation* — the
+/// expression being built, `9 + 9`, in [context.type.expression] — and the
+/// **lower** line is the *output* — the result, `18`, in the hero
+/// [context.type.resultLarge], stepping down to [context.type.resultMedium]
+/// once the value gets long. Bottom-aligning the stack keeps the calculation
+/// directly above the live output instead of letting the two drift apart on a
+/// tall display.
 ///
-/// The output is a **live preview**: the lower half shows what `=` *would*
+/// The output is a **live preview**: the lower line shows what `=` *would*
 /// produce, updated on every keystroke (**D-79**), so `9 + 9` already reads `18`
 /// while the second `9` is still being keyed and pressing `=` does not move the
 /// number. The preview is derived in `display_resolver.dart` and never touches
@@ -28,8 +29,8 @@ import 'display_resolver.dart';
 ///
 /// It was a single line for a while (**D-82**), which read the expression while
 /// typing and the answer after `=`, so the user could not see the result of
-/// their own arithmetic until they committed it — the one thing the large lower
-/// half exists to show. The two lines are what the layout was drawn for.
+/// their own arithmetic until they committed it — the one thing the large output
+/// line exists to show. The two lines are what the layout was drawn for.
 ///
 /// Both lines right-align (**D-69**), which is what keeps their right edges on
 /// the `=` column, and both scale down rather than clipping or ellipsising a
@@ -50,33 +51,43 @@ class CalculatorDisplay extends ConsumerWidget {
   /// letting it clip or ellipsize a number the user is trying to read.
   static const int compactResultLength = 10;
 
+  /// Gap between the calculation line and the live output.
+  ///
+  /// **4, tight on purpose.** The stack sits against the keypad, so the gap
+  /// is only what separates the two lines from each other — not a token from
+  /// the spacing scale.
+  static const double lineGap = 4;
+
   /// Line height used for a style that does not set one.
   static const double _defaultLineHeight = 1.2;
 
-  /// Height of the result line for [style] at scale 1.0.
-  static double _resultLineHeight(TextStyle style) =>
+  /// Height of [style]'s line box at scale 1.0.
+  static double _lineHeight(TextStyle style) =>
       style.fontSize! * (style.height ?? _defaultLineHeight);
+
+  /// Height of the result line for [style] at scale 1.0.
+  static double _resultLineHeight(TextStyle style) => _lineHeight(style);
 
   /// Space the display needs under [scaler], so the screen can reserve it
   /// before sizing the keypad and the two never squeeze each other (D-09).
   ///
-  /// **Two result line boxes** (**D-78**). The space is split into two equal
-  /// halves, and each half must hold the taller of the two lines it can be given,
-  /// so the reservation is two boxes rather than one — a single box would let the
-  /// display be laid out too short for its own lower half the moment a long
-  /// expression pushed its line past the midpoint.
-  ///
-  /// Taken against the *large* result style because that is the tallest thing
-  /// either line can paint: the expression style is smaller, so it can never be
-  /// the one that overflows its half.
+  /// **One expression box, one result box, and the tight gap between them.**
+  /// The stack paints the 20 px expression line above the 60 px result line,
+  /// so the reservation is those two line boxes plus [lineGap] — a single
+  /// number is shorter still, but the screen budgets for the taller
+  /// calculation state so the keypad never shifts when an operator is keyed.
   ///
   /// Takes the scaler rather than reading it from a `BuildContext` because the
   /// caller is the screen's `LayoutBuilder`, which is sizing the keypad *from*
   /// this number (**D-54**). A fixed point size could not see an enlarged font,
   /// so the two would disagree and the number would be painted in a box too
   /// short to hold it. Pass `TextScaler.noScaling` for the 1x value.
-  static double minimumHeight(TextScaler scaler) =>
-      2 * _resultLineHeight(AppTypography.resultLarge) * scaler.scale(1);
+  static double minimumHeight(TextScaler scaler) => (_lineHeight(
+        AppTypography.expression,
+      ) +
+      lineGap +
+      _resultLineHeight(AppTypography.resultLarge)) *
+      scaler.scale(1);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -104,28 +115,29 @@ class CalculatorDisplay extends ConsumerWidget {
       // A key so a layout test can measure the block rather than inferring it
       // from its own geometry.
       key: const Key('calculator-display'),
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // The upper half — the calculation. Blank while a single number is
-        // being typed, because there is no calculation to show yet.
-        Expanded(
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: _DisplayLine(
-              text: display.expression,
-              style: context.type.expression,
-              lineKey: const Key('calculator-expression'),
-            ),
+        // The calculation, directly above the live output. Blank while a
+        // single number is being typed, because there is no calculation to
+        // show yet — and the gap goes with it, so a lone number sits flush
+        // against the output slot below.
+        Align(
+          alignment: Alignment.centerRight,
+          child: _DisplayLine(
+            text: display.expression,
+            style: context.type.expression,
+            lineKey: const Key('calculator-expression'),
           ),
         ),
-        // The lower half — the output, previewing what `=` would give (D-79).
-        Expanded(
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: _DisplayLine(
-              text: display.result,
-              style: resultStyle,
-              lineKey: const Key('calculator-display-line'),
-            ),
+        if (display.expression.isNotEmpty) const SizedBox(height: lineGap),
+        // The output, previewing what `=` would give (D-79).
+        Align(
+          alignment: Alignment.centerRight,
+          child: _DisplayLine(
+            text: display.result,
+            style: resultStyle,
+            lineKey: const Key('calculator-display-line'),
           ),
         ),
       ],
