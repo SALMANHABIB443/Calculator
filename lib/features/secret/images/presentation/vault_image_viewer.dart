@@ -178,9 +178,9 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
       // the image landed off-screen (cropped / misplaced) after double-tap.
       final pos = details.localPosition;
       controller.value = Matrix4.identity()
-        ..translate(pos.dx, pos.dy)
-        ..scale(3.0)
-        ..translate(-pos.dx, -pos.dy);
+        ..translateByDouble(pos.dx, pos.dy, 0, 1)
+        ..scaleByDouble(3.0, 3.0, 3.0, 1)
+        ..translateByDouble(-pos.dx, -pos.dy, 0, 1);
     }
   }
 

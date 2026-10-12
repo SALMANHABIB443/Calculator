@@ -201,6 +201,71 @@ abstract final class AppColors {
   /// and one value serving both is the drift the token file exists to prevent.
   static const Color keyBorder = Color(0xFF33333A);
 
+  // --- Tactile key surfaces (D-114) ----------------------------------------
+  //
+  // Rounded-square keys carry a very subtle vertical gradient rather than a
+  // flat fill, plus a 1 px inner highlight along the top edge. Each variant
+  // owns a top/bottom pair so digit, function, and operator keys keep distinct
+  // but coordinated treatments. All pairs stay inside the existing hue family:
+  // digits are charcoal/graphite, functions are lighter gray, operators lift
+  // and deepen the existing [accent] without going neon.
+
+  /// Top stop of the digit-key gradient (D-114).
+  static const Color keyDigitTop = Color(0xFF2B2B30);
+
+  /// Bottom stop of the digit-key gradient (D-114).
+  static const Color keyDigitBottom = Color(0xFF1D1D21);
+
+  /// Top stop of the function-key gradient (D-114).
+  static const Color keyFunctionTop = Color(0xFFB4B4BA);
+
+  /// Bottom stop of the function-key gradient (D-114).
+  static const Color keyFunctionBottom = Color(0xFF97979E);
+
+  /// Top stop of the operator-key gradient (D-114).
+  ///
+  /// A lifted [accent]: brighter than the base so the key catches light along
+  /// its upper edge, without leaving the orange family.
+  static const Color keyOperatorTop = Color(0xFFFFA62B);
+
+  /// Bottom stop of the operator-key gradient (D-114).
+  ///
+  /// A deepened [accent]: the same hue pulled down so the key has weight.
+  static const Color keyOperatorBottom = Color(0xFFE07F00);
+
+  /// Inner top-edge highlight on a digit key (D-114).
+  static const Color keyDigitHighlight = Color(0x14FFFFFF);
+
+  /// Inner top-edge highlight on a function key (D-114).
+  static const Color keyFunctionHighlight = Color(0x33FFFFFF);
+
+  /// Inner top-edge highlight on an operator key (D-114).
+  static const Color keyOperatorHighlight = Color(0x40FFFFFF);
+
+  /// Soft accent-tinted shadow cast by operator keys (D-114).
+  ///
+  /// The neutral [keyShadow] halo would read dirty on orange; operators cast
+  /// their own glow in the accent hue at restrained alpha.
+  static const Color keyOperatorShadow = Color(0x4DF89508);
+
+  /// Blur radius of [keyOperatorShadow] (D-114).
+  static const double keyOperatorShadowBlur = 14;
+
+  /// Vertical offset of [keyOperatorShadow] (D-114).
+  static const double keyOperatorShadowOffsetY = 3;
+
+  /// 1 px outline around an operator key (D-114).
+  ///
+  /// Slightly deeper than the accent so the orange key keeps a defined edge
+  /// against the black page without a neon rim.
+  static const Color keyOperatorBorder = Color(0xFFD97A04);
+
+  /// 1 px outline around a function key (D-114).
+  ///
+  /// A step below the function fill so the light key keeps an edge without a
+  /// harsh dark rim.
+  static const Color keyFunctionBorder = Color(0xFF8E8E95);
+
   // --- Multi-select (D-76) ------------------------------------------------
   //
   // The History list's selection mode borrows the sibling app's pattern but

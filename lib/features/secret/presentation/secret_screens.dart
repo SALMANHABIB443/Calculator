@@ -218,7 +218,11 @@ class _SecretUnlockScreenState extends ConsumerState<SecretUnlockScreen> {
             AppSpacing.screenHorizontal,
             AppSpacing.headerTopGap,
             AppSpacing.screenHorizontal,
-            AppSpacing.bottomSafe,
+            // No `bottomSafe` here: [SecretPinField] owns the gap under the pad
+            // itself, measured from the physical bottom edge (D-89). Adding the
+            // screen's own 24 px on top would push the keypad back up off the
+            // floor it was just brought down to.
+            0,
           ),
           child: Stack(
             children: <Widget>[

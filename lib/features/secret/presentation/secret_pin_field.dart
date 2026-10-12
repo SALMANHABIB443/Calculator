@@ -160,7 +160,7 @@ class _SecretPinFieldState extends State<SecretPinField>
   /// actually left over: the same decision, made once instead of twice.
   ///
   /// **And the group is anchored to the bottom, not centred in the screen**
-  /// (D-89) — see [_bottomAnchor] for the measurement and [build] for why the
+  /// (D-89) — see [_bottomGapPx] for the measurement and [build] for why the
   /// slack collects above the prompt rather than being shared out around it.
 
   /// Appends a digit, and checks the code once it is complete.
@@ -249,15 +249,15 @@ class _SecretPinFieldState extends State<SecretPinField>
   /// four small marks; a wide gap is what tells the eye they are not one thing.
   static const double _keypadGap = AppSpacing.md;
 
-  /// How far the pad's bottom edge is lifted off the bottom of the screen, as a
-  /// fraction of the height this widget is given (D-89).
+  /// How far the pad's bottom edge sits above the **physical bottom of the
+  /// screen**, in logical px (D-89, revised).
   ///
-  /// **A fraction of the box, not a token.** The screen hands this widget
-  /// whatever is left after the screen's own padding and safe area, which differs
-  /// between the unlock screen and Change PIN and across devices; a fixed number
-  /// of px would read as a different gap on each. A share of the height is the
-  /// one measurement that means the same thing everywhere.
-  static const double _bottomAnchor = 0.20;
+  /// **A fixed 100, not a fraction of the box.** The group is anchored to the
+  /// bottom, so this is the one number a user sees between the last key and the
+  /// edge of the phone, and 100 is the gap the design now asks for. The old
+  /// `0.20` share of the height grew with the window and left the pad stranded
+  /// well above the thumb on a modern phone.
+  static const double _bottomGapPx = 100;
 
   /// The height reserved beneath the pad so it clears the bottom edge (D-89).
   ///
@@ -267,8 +267,17 @@ class _SecretPinFieldState extends State<SecretPinField>
   /// of it, which is a silent negative. Subtracting first means a window too
   /// short for a full-size pad *and* the gap shrinks the pad — it can never
   /// push the group off the bottom.
-  double _bottomGap(double availableHeight) =>
-      math.max(0, availableHeight * _bottomAnchor);
+  ///
+  /// **The system's own bottom inset is discounted** because the callers keep
+  /// their `SafeArea` and drop their bottom padding, so the field ends where the
+  /// system UI begins. Subtracting that inset makes [_bottomGapPx] the gap from
+  /// the *physical* bottom edge on every device — and on a device whose gesture
+  /// area is taller than 100 px the gap floors at zero rather than drawing under
+  /// it.
+  double _bottomGap(BuildContext context) => math.max(
+    0,
+    _bottomGapPx - MediaQuery.viewPaddingOf(context).bottom,
+  );
 
   /// The tallest the keypad ever renders (D-88).
   ///
@@ -339,7 +348,7 @@ class _SecretPinFieldState extends State<SecretPinField>
 
         // The gap under the pad, claimed from the height available *before* the
         // pad is sized — see [_bottomGap] for why the order is what matters.
-        final bottomGap = _bottomGap(constraints.maxHeight);
+        final bottomGap = _bottomGap(context);
 
         // The pad is sized from the height **actually left over**, not from a
         // share of the screen. That is the whole of the layout: the group below is

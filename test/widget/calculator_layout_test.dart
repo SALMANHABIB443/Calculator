@@ -138,7 +138,7 @@ void main() {
         (CalculatorKey.digit1, CalculatorKey.digit2),
         (CalculatorKey.digit2, CalculatorKey.digit3),
         (CalculatorKey.digit3, CalculatorKey.add),
-        // The wide `0` is one stadium laid across columns one and two, so the
+        // The wide `0` is one rounded square laid across columns one and two, so the
         // gap beside it is a real one rather than the notch its cell absorbed.
         (CalculatorKey.digit0, CalculatorKey.dot),
         (CalculatorKey.dot, CalculatorKey.equals),
@@ -714,7 +714,11 @@ void main() {
 
       final key = rectOf(tester, CalculatorKey.digit5);
       expect(key.width, inInclusiveRange(90, 91));
-      expect(key.width, key.height, reason: 'a round key must be square');
+      expect(
+        key.width,
+        key.height,
+        reason: 'a rounded-square key must fill its square cell',
+      );
     });
   });
 }

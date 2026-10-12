@@ -48,14 +48,19 @@ String expressionText(WidgetTester tester) =>
 
 Finder keyFor(CalculatorKey key) => find.byKey(ValueKey('key-${key.name}'));
 
-/// The colour filling the key's surface.
-Color fillOf(WidgetTester tester, CalculatorKey key) => tester
-    .widget<Material>(
-      find
-          .descendant(of: keyFor(key), matching: find.byType(Material))
-          .first,
-    )
-    .color!;
+/// The colours painting the key's gradient surface.
+///
+/// `Ink.decoration` is typed as [Decoration], which has no `gradient` — the
+/// getter lives on [BoxDecoration] and its stops on [LinearGradient], so the
+/// two casts are what reach the colours the key actually paints.
+List<Color> fillOf(WidgetTester tester, CalculatorKey key) {
+  final ink = tester.widget<Ink>(
+    find.descendant(of: keyFor(key), matching: find.byType(Ink)).first,
+  );
+  final gradient =
+      (ink.decoration! as BoxDecoration).gradient! as LinearGradient;
+  return gradient.colors;
+}
 
 void main() {
   group('keypad layout', () {
@@ -136,18 +141,18 @@ void main() {
       }
     });
 
-    testWidgets('the 0 key spans two columns as a stadium (D-29)', (
+    testWidgets('the 0 key spans two columns as a rounded square (D-29)', (
       tester,
     ) async {
       await pumpCalculator(tester);
 
       final wide = tester.getSize(keyFor(CalculatorKey.digit0));
-      final round = tester.getSize(keyFor(CalculatorKey.digit1));
+      final square = tester.getSize(keyFor(CalculatorKey.digit1));
 
-      expect(wide.height, round.height);
-      expect(wide.width, greaterThan(round.width));
+      expect(wide.height, square.height);
+      expect(wide.width, greaterThan(square.width));
       // Two columns plus the gap between them.
-      expect(wide.width, closeTo(round.width * 2 + CalculatorKeypad.keyGap, 1));
+      expect(wide.width, closeTo(square.width * 2 + CalculatorKeypad.keyGap, 1));
     });
 
     testWidgets('uses the measured palette for every key type (D-03)', (
@@ -155,13 +160,34 @@ void main() {
     ) async {
       await pumpCalculator(tester);
 
-      expect(fillOf(tester, CalculatorKey.digit5), AppColors.buttonDigit);
-      expect(fillOf(tester, CalculatorKey.dot), AppColors.buttonDigit);
-      expect(fillOf(tester, CalculatorKey.ac), AppColors.buttonFunction);
-      expect(fillOf(tester, CalculatorKey.percent), AppColors.buttonFunction);
-      expect(fillOf(tester, CalculatorKey.parentheses), AppColors.buttonFunction);
-      expect(fillOf(tester, CalculatorKey.add), AppColors.accent);
-      expect(fillOf(tester, CalculatorKey.equals), AppColors.accent);
+      expect(fillOf(tester, CalculatorKey.digit5), [
+        AppColors.keyDigitTop,
+        AppColors.keyDigitBottom,
+      ]);
+      expect(fillOf(tester, CalculatorKey.dot), [
+        AppColors.keyDigitTop,
+        AppColors.keyDigitBottom,
+      ]);
+      expect(fillOf(tester, CalculatorKey.ac), [
+        AppColors.keyFunctionTop,
+        AppColors.keyFunctionBottom,
+      ]);
+      expect(fillOf(tester, CalculatorKey.percent), [
+        AppColors.keyFunctionTop,
+        AppColors.keyFunctionBottom,
+      ]);
+      expect(fillOf(tester, CalculatorKey.parentheses), [
+        AppColors.keyFunctionTop,
+        AppColors.keyFunctionBottom,
+      ]);
+      expect(fillOf(tester, CalculatorKey.add), [
+        AppColors.keyOperatorTop,
+        AppColors.keyOperatorBottom,
+      ]);
+      expect(fillOf(tester, CalculatorKey.equals), [
+        AppColors.keyOperatorTop,
+        AppColors.keyOperatorBottom,
+      ]);
     });
 
     testWidgets('the function keys carry dark labels on the light fill', (
@@ -195,7 +221,11 @@ void main() {
       // that will catch a silent return to the compressed layout.
       final size = tester.getSize(keyFor(CalculatorKey.digit5));
       expect(size.width, inInclusiveRange(90, 91));
-      expect(size.width, size.height, reason: 'a round key must be square');
+      expect(
+        size.width,
+        size.height,
+        reason: 'a rounded-square key must fill its square cell',
+      );
     });
 
     testWidgets('scales down on a small phone without clipping (D-09)', (

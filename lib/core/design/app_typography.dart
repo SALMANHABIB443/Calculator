@@ -138,27 +138,43 @@ abstract final class AppTypography {
   ];
 
   /// Hero result on the calculator display (desing.md §3.1).
+  ///
+  /// **Lightened in D-114 from w600 to w300.** The reference display is a thin,
+  /// elegant hero numeral; the heavy weight made the result shout where the
+  /// reference whispers. Tabular figures are kept so columns of digits still
+  /// align as the value changes.
   static const TextStyle resultLarge = TextStyle(
     color: AppColors.textPrimary,
     fontSize: 60,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontWeight.w300,
     height: 1.1,
   );
 
   /// Result style used where the value can get long and the display needs to
   /// shrink it. One step down from [resultLarge].
+  ///
+  /// **Lightened in D-114 from w600 to w300**, matching [resultLarge].
   static const TextStyle resultMedium = TextStyle(
     color: AppColors.textPrimary,
     fontSize: 44,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontWeight.w300,
     height: 1.1,
   );
 
   /// Expression line above the result (desing.md §3.1).
+  ///
+  /// **`height: 1.2` is load-bearing, not styling.** Without it the line box
+  /// inherits the Material `DefaultTextStyle`'s height (M3's `bodyMedium` is
+  /// 1.43), so a 20 px glyph renders on a **29 px** line while
+  /// `CalculatorDisplay.minimumHeight` reserves 20 × 1.2 = 24. That 5 px gap
+  /// overflowed the display's `Expanded` box on every calculator layout test.
+  /// Stating the height pins the rendered box to the one the screen budgets for,
+  /// which is what keeps the display from squeezing the keypad (D-54).
   static const TextStyle expression = TextStyle(
     color: AppColors.textSecondary,
     fontSize: 20,
     fontWeight: FontWeight.w400,
+    height: 1.2,
   );
 
   /// Screen title in a page header — “Settings”, “History”, “About”
@@ -262,9 +278,12 @@ abstract final class AppTypography {
   );
 
   /// Label on a calculator key (desing.md §3.1).
+  ///
+  /// **Lightened in D-114 from w500 to w400.** The reference numerals are clean
+  /// and lightweight; the medium weight made every digit shout at once.
   static const TextStyle buttonLabel = TextStyle(
     fontSize: 25,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w400,
   );
 
   /// Label on an **operator** key — `+ − × ÷` and `=` (D-111).
@@ -276,11 +295,13 @@ abstract final class AppTypography {
   /// operator column is the calculator's spine — one full column, orange, with
   /// `=` under it — and it is now sized as such.
   ///
-  /// w600 rather than w500 as well: a bar has less ink to carry than a numeral,
-  /// so a larger glyph and a heavier one are what actually make it hold the eye.
+  /// **Eased in D-114 from 32/w600 to 30/w500.** The heavier cut fought the
+  /// reference's light touch; one step down in both size and weight keeps the
+  /// operators the largest labels on the pad while letting them sit calmly on
+  /// the orange.
   static const TextStyle buttonOperatorLabel = TextStyle(
-    fontSize: 32,
-    fontWeight: FontWeight.w600,
+    fontSize: 30,
+    fontWeight: FontWeight.w500,
   );
 
   /// Label on a **function** key — `AC`, `+/−`, `%` (D-111).
@@ -291,9 +312,11 @@ abstract final class AppTypography {
   /// labels that get squeezed (the `FittedBox` shrinks them, and a shrunken
   /// label is worse than a deliberately smaller one). `%` and `+/−` carry the
   /// heavier weight to match the operator keys they sit beside.
+  ///
+  /// **Eased in D-114 from w600 to w500**, matching the operator labels.
   static const TextStyle buttonFunctionLabel = TextStyle(
     fontSize: 24,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontWeight.w500,
   );
 
   /// “Clear History” at the foot of the history screen (desing.md §3.1).

@@ -199,7 +199,18 @@ abstract final class AppRadius {
   /// The About hero card and the confirmation dialog.
   static const double dialog = 20;
 
-  /// Calculator keys are full circles.
+  /// Rounded-square calculator keys (D-114).
+  ///
+  /// 26 on the ~90 px cell: moderate corners that read compact and refined
+  /// rather than circular. The wide `0` reuses the same radius while spanning
+  /// two columns. Kept as a radius value rather than a `BorderRadius` so the
+  /// button can compose it per-variant without a second token.
+  static const double calculatorKey = 26;
+
+  /// Calculator keys were full circles before D-114.
+  ///
+  /// Kept so older call sites and tests still resolve; new code reads
+  /// [calculatorKey].
   static const BorderRadius button = BorderRadius.all(Radius.circular(999));
 }
 

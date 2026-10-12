@@ -16,7 +16,7 @@ class CalculatorKeypad extends StatelessWidget {
 
   /// Gap between neighbouring keys, in logical px (**D-110**).
   ///
-  /// desing.md §4 asks for "evenly spaced circular buttons with consistent
+  /// desing.md §4 asks for "evenly spaced buttons with consistent
   /// gaps" without a value, and Phase 9 measured the original mockup at 13 px
   /// horizontally and 15 px vertically, which D-60 settled on the 14 px midpoint
   /// for both axes. **D-110 raises it to 16** as part of the spacious-layout
@@ -171,8 +171,8 @@ class CalculatorKeypad extends StatelessWidget {
   Widget _buildCell(_KeySpec spec, double cellSize) {
     return SizedBox(
       // A spanning cell absorbs the gaps it straddles, so the `0` key is one
-      // stadium laid across columns one and two rather than two keys plus a
-      // hole (**D-29**).
+      // rounded square laid across columns one and two rather than two keys
+      // plus a hole (**D-29**).
       width: cellSize * spec.columnSpan + keyGap * (spec.columnSpan - 1),
       height: cellSize,
       child: CalculatorButton(
@@ -193,8 +193,8 @@ class _KeySpec {
 
   final CalculatorKey key;
 
-  /// The `0` key spans two columns, which is why it renders as a stadium
-  /// rather than a circle (D-29).
+  /// The `0` key spans two columns, which is why it renders as a double-width
+  /// rounded square (D-29, D-114).
   final int columnSpan;
 }
 

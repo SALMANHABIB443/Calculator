@@ -65,6 +65,20 @@ class AppPalette extends ThemeExtension<AppPalette> {
     required this.pressedOpacity,
     required this.keyShadow,
     required this.keyBorder,
+    required this.keyDigitTop,
+    required this.keyDigitBottom,
+    required this.keyFunctionTop,
+    required this.keyFunctionBottom,
+    required this.keyOperatorTop,
+    required this.keyOperatorBottom,
+    required this.keyDigitHighlight,
+    required this.keyFunctionHighlight,
+    required this.keyOperatorHighlight,
+    required this.keyOperatorShadow,
+    required this.keyOperatorShadowBlur,
+    required this.keyOperatorShadowOffsetY,
+    required this.keyOperatorBorder,
+    required this.keyFunctionBorder,
   });
 
   /// Full screen background. The page colour behind every card and row.
@@ -192,6 +206,44 @@ class AppPalette extends ThemeExtension<AppPalette> {
   /// The 1 px outline drawn around every calculator key (D-111).
   final Color keyBorder;
 
+  /// Top stop of the digit-key gradient (D-114).
+  final Color keyDigitTop;
+
+  /// Bottom stop of the digit-key gradient (D-114).
+  final Color keyDigitBottom;
+
+  /// Top stop of the function-key gradient (D-114).
+  final Color keyFunctionTop;
+
+  /// Bottom stop of the function-key gradient (D-114).
+  final Color keyFunctionBottom;
+
+  /// Top stop of the operator-key gradient (D-114).
+  final Color keyOperatorTop;
+
+  /// Bottom stop of the operator-key gradient (D-114).
+  final Color keyOperatorBottom;
+
+  /// Inner top-edge highlight per key variant (D-114).
+  final Color keyDigitHighlight;
+  final Color keyFunctionHighlight;
+  final Color keyOperatorHighlight;
+
+  /// Accent-tinted shadow cast by operator keys (D-114).
+  final Color keyOperatorShadow;
+
+  /// Blur radius of [keyOperatorShadow] (D-114).
+  final double keyOperatorShadowBlur;
+
+  /// Vertical offset of [keyOperatorShadow] (D-114).
+  final double keyOperatorShadowOffsetY;
+
+  /// 1 px outline around an operator key (D-114).
+  final Color keyOperatorBorder;
+
+  /// 1 px outline around a function key (D-114).
+  final Color keyFunctionBorder;
+
   /// The dark palette — every field is the token [AppColors] already holds.
   static const AppPalette dark = AppPalette(
     background: AppColors.background,
@@ -230,6 +282,22 @@ class AppPalette extends ThemeExtension<AppPalette> {
     // plus a hard 1 px edge, which is what actually makes it an object.
     keyShadow: AppColors.keyShadow,
     keyBorder: AppColors.keyBorder,
+    // D-114: per-variant tactile surfaces — subtle gradients, top highlights,
+    // an accent-tinted operator shadow, and per-variant edges.
+    keyDigitTop: AppColors.keyDigitTop,
+    keyDigitBottom: AppColors.keyDigitBottom,
+    keyFunctionTop: AppColors.keyFunctionTop,
+    keyFunctionBottom: AppColors.keyFunctionBottom,
+    keyOperatorTop: AppColors.keyOperatorTop,
+    keyOperatorBottom: AppColors.keyOperatorBottom,
+    keyDigitHighlight: AppColors.keyDigitHighlight,
+    keyFunctionHighlight: AppColors.keyFunctionHighlight,
+    keyOperatorHighlight: AppColors.keyOperatorHighlight,
+    keyOperatorShadow: AppColors.keyOperatorShadow,
+    keyOperatorShadowBlur: AppColors.keyOperatorShadowBlur,
+    keyOperatorShadowOffsetY: AppColors.keyOperatorShadowOffsetY,
+    keyOperatorBorder: AppColors.keyOperatorBorder,
+    keyFunctionBorder: AppColors.keyFunctionBorder,
   );
   /// The white palette, matching the sibling Ethar app's white theme.
   ///
@@ -274,6 +342,23 @@ class AppPalette extends ThemeExtension<AppPalette> {
     // the two themes differ because the page differs, not for variety.
     keyShadow: Color(0x1F0F172A),
     keyBorder: Color(0xFFE4E6EA),
+    // D-114: light-theme halves of the tactile surfaces. Same recipe as dark —
+    // subtle vertical gradients with a top highlight — restated in light values
+    // so the keys keep depth on a white page.
+    keyDigitTop: Color(0xFFFFFFFF),
+    keyDigitBottom: Color(0xFFE9EBEF),
+    keyFunctionTop: Color(0xFFE4E5E8),
+    keyFunctionBottom: Color(0xFFC6C7CC),
+    keyOperatorTop: Color(0xFFFF7A33),
+    keyOperatorBottom: Color(0xFFE14E00),
+    keyDigitHighlight: Color(0xFFFFFFFF),
+    keyFunctionHighlight: Color(0xB3FFFFFF),
+    keyOperatorHighlight: Color(0x40FFFFFF),
+    keyOperatorShadow: Color(0x4DFE651B),
+    keyOperatorShadowBlur: 14,
+    keyOperatorShadowOffsetY: 3,
+    keyOperatorBorder: Color(0xFFE14E00),
+    keyFunctionBorder: Color(0xFFC4C6CB),
   );
 
   /// The palette the [context] is currently painting with.
@@ -311,6 +396,20 @@ class AppPalette extends ThemeExtension<AppPalette> {
     double? pressedOpacity,
     Color? keyShadow,
     Color? keyBorder,
+    Color? keyDigitTop,
+    Color? keyDigitBottom,
+    Color? keyFunctionTop,
+    Color? keyFunctionBottom,
+    Color? keyOperatorTop,
+    Color? keyOperatorBottom,
+    Color? keyDigitHighlight,
+    Color? keyFunctionHighlight,
+    Color? keyOperatorHighlight,
+    Color? keyOperatorShadow,
+    double? keyOperatorShadowBlur,
+    double? keyOperatorShadowOffsetY,
+    Color? keyOperatorBorder,
+    Color? keyFunctionBorder,
   }) => AppPalette(
     background: background ?? this.background,
     surface: surface ?? this.surface,
@@ -342,6 +441,21 @@ class AppPalette extends ThemeExtension<AppPalette> {
     // shadow alone", and that is the only way to ask for it here.
     keyShadow: keyShadow ?? this.keyShadow,
     keyBorder: keyBorder ?? this.keyBorder,
+    keyDigitTop: keyDigitTop ?? this.keyDigitTop,
+    keyDigitBottom: keyDigitBottom ?? this.keyDigitBottom,
+    keyFunctionTop: keyFunctionTop ?? this.keyFunctionTop,
+    keyFunctionBottom: keyFunctionBottom ?? this.keyFunctionBottom,
+    keyOperatorTop: keyOperatorTop ?? this.keyOperatorTop,
+    keyOperatorBottom: keyOperatorBottom ?? this.keyOperatorBottom,
+    keyDigitHighlight: keyDigitHighlight ?? this.keyDigitHighlight,
+    keyFunctionHighlight: keyFunctionHighlight ?? this.keyFunctionHighlight,
+    keyOperatorHighlight: keyOperatorHighlight ?? this.keyOperatorHighlight,
+    keyOperatorShadow: keyOperatorShadow ?? this.keyOperatorShadow,
+    keyOperatorShadowBlur: keyOperatorShadowBlur ?? this.keyOperatorShadowBlur,
+    keyOperatorShadowOffsetY:
+        keyOperatorShadowOffsetY ?? this.keyOperatorShadowOffsetY,
+    keyOperatorBorder: keyOperatorBorder ?? this.keyOperatorBorder,
+    keyFunctionBorder: keyFunctionBorder ?? this.keyFunctionBorder,
   );
 
   @override
@@ -397,6 +511,30 @@ class AppPalette extends ThemeExtension<AppPalette> {
           ? keyGlow
           : mix(keyGlow, otherKeyGlow),
       keyBorder: mix(keyBorder, other.keyBorder),
+      keyDigitTop: mix(keyDigitTop, other.keyDigitTop),
+      keyDigitBottom: mix(keyDigitBottom, other.keyDigitBottom),
+      keyFunctionTop: mix(keyFunctionTop, other.keyFunctionTop),
+      keyFunctionBottom: mix(keyFunctionBottom, other.keyFunctionBottom),
+      keyOperatorTop: mix(keyOperatorTop, other.keyOperatorTop),
+      keyOperatorBottom: mix(keyOperatorBottom, other.keyOperatorBottom),
+      keyDigitHighlight: mix(keyDigitHighlight, other.keyDigitHighlight),
+      keyFunctionHighlight: mix(
+        keyFunctionHighlight,
+        other.keyFunctionHighlight,
+      ),
+      keyOperatorHighlight: mix(
+        keyOperatorHighlight,
+        other.keyOperatorHighlight,
+      ),
+      keyOperatorShadow: mix(keyOperatorShadow, other.keyOperatorShadow),
+      keyOperatorShadowBlur:
+          keyOperatorShadowBlur +
+          (other.keyOperatorShadowBlur - keyOperatorShadowBlur) * t,
+      keyOperatorShadowOffsetY:
+          keyOperatorShadowOffsetY +
+          (other.keyOperatorShadowOffsetY - keyOperatorShadowOffsetY) * t,
+      keyOperatorBorder: mix(keyOperatorBorder, other.keyOperatorBorder),
+      keyFunctionBorder: mix(keyFunctionBorder, other.keyFunctionBorder),
     );
   }
 }

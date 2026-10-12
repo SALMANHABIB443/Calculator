@@ -309,10 +309,63 @@ void main() {
       );
       // A heavier weight is what actually lets a short bar hold the eye at a
       // size, so the operator and function keys carry more ink than a digit.
+      // Eased one step in D-114: the reference labels are light, and w600 on
+      // every key fought that touch while still keeping operators heaviest.
       expect(
         AppTypography.buttonOperatorLabel.fontWeight,
         AppTypography.buttonFunctionLabel.fontWeight,
       );
+      expect(AppTypography.resultLarge.fontWeight, FontWeight.w300);
+      expect(AppTypography.resultMedium.fontWeight, FontWeight.w300);
+      expect(AppTypography.buttonLabel.fontWeight, FontWeight.w400);
+    });
+
+    test('the tactile key tokens stay inside the measured palette (D-114)', () {
+      // The D-114 surfaces must not introduce new hues: digit gradients stay
+      // near the digit fill, function gradients near the function fill, and
+      // operator gradients near the accent. Asserted as luminance neighbours
+      // rather than literals so a retune keeps the relationship.
+      for (final stop in [
+        AppColors.keyDigitTop,
+        AppColors.keyDigitBottom,
+      ]) {
+        expect(
+          (stop.computeLuminance() - AppColors.buttonDigit.computeLuminance())
+              .abs(),
+          lessThan(0.02),
+        );
+      }
+      for (final stop in [
+        AppColors.keyFunctionTop,
+        AppColors.keyFunctionBottom,
+      ]) {
+        // The function gradient is a soft tonal shift *around* the flat fill
+        // (0xFFA2A2A8): its lighter top sits ~0.095 above the fill's luminance
+        // and its darker bottom ~0.052 below. The tolerance has to clear that
+        // spread, so it is 0.12 rather than a value tight enough to fail the
+        // design it is meant to describe.
+        expect(
+          (stop.computeLuminance() -
+                  AppColors.buttonFunction.computeLuminance())
+              .abs(),
+          lessThan(0.12),
+        );
+      }
+      for (final stop in [
+        AppColors.keyOperatorTop,
+        AppColors.keyOperatorBottom,
+      ]) {
+        // Same reasoning as the function row: the operator gradient lifts and
+        // deepens the accent, spanning ~0.104 of luminance on the deeper stop.
+        expect(
+          (stop.computeLuminance() - AppColors.accent.computeLuminance()).abs(),
+          lessThan(0.12),
+        );
+      }
+      // The operator shadow is the accent at restrained alpha — tinted, never
+      // neon.
+      expect(AppColors.keyOperatorShadow.a, lessThan(0.35));
+      expect(AppRadius.calculatorKey, 26);
     });
 
     test('the key label size is chosen by the variant, not by the call site (D-111)', () {
@@ -420,7 +473,7 @@ void main() {
   });
 
   group('CalculatorButton', () {
-    testWidgets('renders its label on the variant fill', (tester) async {
+    testWidgets('renders its label on the variant gradient', (tester) async {
       await pump(
         tester,
         const Center(
@@ -432,11 +485,11 @@ void main() {
       );
 
       expect(find.text('7'), findsOneWidget);
-      expect(fillOf(tester), AppColors.buttonDigit);
+      expect(fillOf(tester), [AppColors.keyDigitTop, AppColors.keyDigitBottom]);
       expect(labelStyleOf(tester, '7')?.color, AppColors.textPrimary);
     });
 
-    testWidgets('function keys put a dark label on the light fill', (
+    testWidgets('function keys put a dark label on the light gradient', (
       tester,
     ) async {
       await pump(
@@ -449,7 +502,10 @@ void main() {
         ),
       );
 
-      expect(fillOf(tester), AppColors.buttonFunction);
+      expect(fillOf(tester), [
+        AppColors.keyFunctionTop,
+        AppColors.keyFunctionBottom,
+      ]);
       expect(labelStyleOf(tester, 'AC')?.color, AppColors.textOnFunction);
     });
 
@@ -464,10 +520,13 @@ void main() {
         ),
       );
 
-      expect(fillOf(tester), AppColors.accent);
+      expect(fillOf(tester), [
+        AppColors.keyOperatorTop,
+        AppColors.keyOperatorBottom,
+      ]);
     });
 
-    testWidgets('is round in a square cell', (tester) async {
+    testWidgets('is a rounded square in a square cell', (tester) async {
       await pump(
         tester,
         const SizedBox(
@@ -483,11 +542,11 @@ void main() {
       expect(tester.getSize(find.byType(CalculatorButton)), const Size(90, 90));
       expect(
         borderRadiusOf(tester),
-        const BorderRadius.all(Radius.circular(45)),
+        const BorderRadius.all(Radius.circular(AppRadius.calculatorKey)),
       );
     });
 
-    testWidgets('the wide 0 key spans its cell and rounds only the ends', (
+    testWidgets('the wide 0 key spans its cell with the same corners', (
       tester,
     ) async {
       await pump(
@@ -509,7 +568,7 @@ void main() {
       );
       expect(
         borderRadiusOf(tester),
-        const BorderRadius.all(Radius.circular(45)),
+        const BorderRadius.all(Radius.circular(AppRadius.calculatorKey)),
       );
     });
 
@@ -1623,17 +1682,24 @@ Future<void> pump(WidgetTester tester, Widget child) async {
   await tester.pumpAndSettle();
 }
 
-/// The fill colour of the single [Material] a [CalculatorButton] paints with.
-Color? fillOf(WidgetTester tester) => tester
-    .widget<Material>(
-      find.descendant(
-        of: find.byType(CalculatorButton),
-        matching: find.byType(Material),
-      ),
-    )
-    .color;
+/// The gradient stops of the [Ink] a [CalculatorButton] paints with.
+///
+/// `Ink.decoration` is typed as [Decoration], which has no `gradient` — the
+/// getter lives on [BoxDecoration] and its stops on [LinearGradient], so the
+/// two casts are what reach the colours the key actually paints.
+List<Color> fillOf(WidgetTester tester) {
+  final ink = tester.widget<Ink>(
+    find.descendant(
+      of: find.byType(CalculatorButton),
+      matching: find.byType(Ink),
+    ),
+  );
+  final gradient =
+      (ink.decoration! as BoxDecoration).gradient! as LinearGradient;
+  return gradient.colors;
+}
 
-/// The corner radius the button's fill uses, which is what makes it a circle.
+/// The corner radius the button's fill uses — the rounded square (D-114).
 BorderRadius? borderRadiusOf(WidgetTester tester) {
   final border =
       tester

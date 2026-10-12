@@ -133,7 +133,11 @@ class _ChangePinScreenState extends ConsumerState<ChangePinScreen> {
             AppSpacing.screenHorizontal,
             AppSpacing.headerTopGap,
             AppSpacing.screenHorizontal,
-            AppSpacing.bottomSafe,
+            // No `bottomSafe`: [SecretPinField] owns the gap under the pad and
+            // measures it from the physical bottom edge (D-89), so the field
+            // must reach the bottom of the [SafeArea] for that measurement to
+            // mean what it says.
+            0,
           ),
           child: Column(
             children: <Widget>[

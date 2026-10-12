@@ -111,10 +111,13 @@ class CalculatorDisplay extends ConsumerWidget {
         ? context.type.resultMedium
         : context.type.resultLarge;
 
-    return Column(
+    final stack = Column(
       // A key so a layout test can measure the block rather than inferring it
       // from its own geometry.
       key: const Key('calculator-display'),
+      // `min`, not `max`: the stack states the height it actually needs, which
+      // is what lets the [FittedBox] below decide whether the box is too short.
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -141,6 +144,28 @@ class CalculatorDisplay extends ConsumerWidget {
           ),
         ),
       ],
+    );
+
+    // The stack is measured at its natural size, then the **whole thing** scales
+    // down only when the box it was handed cannot hold it (D-69).
+    //
+    // Normally the screen reserves `minimumHeight`, so the box is taller than
+    // the stack and `scaleDown` is a no-op — the layout is exactly the stack.
+    // On a window too short to honour both that reservation and the keypad's
+    // 44 pt floor, the keypad wins and the display is the half that gives way.
+    // Until this box existed the `Column` had no way to give: the two lines
+    // overflowed their own slot by a few pixels and the framework painted the
+    // yellow-and-black stripe over the result at the text-scale clamp. Scaling
+    // the pair together compresses the display as the decision says it must,
+    // without moving the right edge the keypad column is aligned to.
+    return LayoutBuilder(
+      builder: (context, constraints) => FittedBox(
+        fit: BoxFit.scaleDown,
+        // Bottom-right so the shrunken stack keeps both anchors of the full
+        // one: flush with the keypad below and on the `=` column at the right.
+        alignment: Alignment.bottomRight,
+        child: SizedBox(width: constraints.maxWidth, child: stack),
+      ),
     );
   }
 }
