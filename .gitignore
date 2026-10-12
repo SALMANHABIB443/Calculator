@@ -46,3 +46,9 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Local scratch / tool output (analyze, test, pub output dumped at repo root)
+/*.txt
+/analyze_*.log
+/verify*.log
+/vaulttest*.log
