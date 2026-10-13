@@ -66,11 +66,11 @@ class _VaultDocumentsTrashScreenState
     final documents = ref.watch(vaultDocumentsProvider);
     return documents.when(
       loading: () => SecondaryPageScaffold(
-        header: const SecondaryPageHeader(title: 'Recycle bin'),
+        header: const SecondaryPageHeader(),
         body: const Center(child: CircularProgressIndicator()),
       ),
       error: (error, _) => SecondaryPageScaffold(
-        header: const SecondaryPageHeader(title: 'Recycle bin'),
+        header: const SecondaryPageHeader(),
         body: EmptyState(
           icon: Icons.error_outline,
           title: 'Could not open the recycle bin',
@@ -87,7 +87,6 @@ class _VaultDocumentsTrashScreenState
 
   Widget _buildLoaded(BuildContext context, VaultDocumentsState state) {
     final resolved = _resolved(state);
-    final title = _selecting ? '${_selected.length} selected' : 'Recycle bin';
     final allSelected =
         resolved.isNotEmpty && resolved.every((e) => _selected.contains(e.id));
 
@@ -95,7 +94,6 @@ class _VaultDocumentsTrashScreenState
       header: VaultDocumentsHeader(
         selecting: _selecting,
         selectedCount: _selected.length,
-        title: title,
         allSelected: allSelected,
         onCancel: () => setState(_selected.clear),
         onSelectAll: () => _selectAll(resolved),

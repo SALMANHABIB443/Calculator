@@ -212,7 +212,7 @@ class SettingsGroup extends StatelessWidget {
     return BoxDecoration(
       color: colors.surface,
       borderRadius: BorderRadius.circular(AppRadius.card),
-      border: Border.all(color: colors.cardBorder),
+      border: null,
       boxShadow: shadow == null
           ? const []
           : [

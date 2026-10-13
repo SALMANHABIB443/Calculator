@@ -277,7 +277,7 @@ class VaultPlaceScreen extends StatelessWidget {
     if (placeId == 'recycle-bin') return const VaultDocumentsTrashScreen();
 
     return SecondaryPageScaffold(
-      header: SecondaryPageHeader(title: place.title),
+      header: const SecondaryPageHeader(),
       body: EmptyState(
         key: bodyKey,
         iconWidget: vaultPlaceGlyph(

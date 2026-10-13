@@ -13,7 +13,6 @@ class VaultGalleryHeader extends StatelessWidget {
   const VaultGalleryHeader({
     required this.selecting,
     required this.selectedCount,
-    required this.title,
     required this.allSelected,
     required this.onCancel,
     required this.onSelectAll,
@@ -24,7 +23,6 @@ class VaultGalleryHeader extends StatelessWidget {
 
   final bool selecting;
   final int selectedCount;
-  final String title;
   final bool allSelected;
   final VoidCallback onCancel;
   final VoidCallback onSelectAll;
@@ -89,15 +87,7 @@ class VaultGalleryHeader extends StatelessWidget {
               onPressed: () => Navigator.of(context).maybePop(),
             ),
             const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: Text(
-                title,
-                style: context.type.screenTitle,
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
+            const Spacer(),
             const SizedBox(width: AppSpacing.sm),
             AppIconButton(
               icon: Icons.search,

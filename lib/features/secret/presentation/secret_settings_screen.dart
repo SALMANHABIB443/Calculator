@@ -52,7 +52,7 @@ class SecretSettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SecondaryPageScaffold(
-      header: const SecondaryPageHeader(title: 'Settings'),
+      header: const SecondaryPageHeader(),
       body: ListView(
         padding: const EdgeInsets.only(top: AppSpacing.lg),
         children: <Widget>[

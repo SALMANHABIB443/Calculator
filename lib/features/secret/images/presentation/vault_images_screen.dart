@@ -158,11 +158,11 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
     final gallery = ref.watch(vaultImagesProvider);
     return gallery.when(
       loading: () => SecondaryPageScaffold(
-        header: const SecondaryPageHeader(title: 'Pictures'),
+        header: const SecondaryPageHeader(),
         body: const Center(child: CircularProgressIndicator()),
       ),
       error: (error, _) => SecondaryPageScaffold(
-        header: const SecondaryPageHeader(title: 'Pictures'),
+        header: const SecondaryPageHeader(),
         body: EmptyState(
           icon: Icons.broken_image_outlined,
           title: 'Could not open the gallery',
@@ -179,23 +179,12 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
 
   Widget _buildLoaded(BuildContext context, VaultImagesState gallery) {
     final list = _currentList(gallery);
-    final title = _selecting
-        ? '${_selected.length} selected'
-        : _albumDetail
-        ? (widget.albumTitle ?? 'Album')
-        : switch (_tab) {
-            _VaultTab.pictures => 'Pictures',
-            _VaultTab.albums => 'Albums',
-            _VaultTab.favorites => 'Favorites',
-            _VaultTab.trash => 'Trash',
-          };
     final allSelected =
         list.isNotEmpty && list.every((e) => _selected.contains(e.id));
     return SecondaryPageScaffold(
       header: VaultGalleryHeader(
         selecting: _selecting,
         selectedCount: _selected.length,
-        title: title,
         allSelected: allSelected,
         onCancel: () => setState(_selected.clear),
         onSelectAll: () => _selectAll(list),
@@ -1087,7 +1076,7 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
             ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppRadius.iconButton),
-              border: Border.all(color: colors.cardBorder),
+              border: null,
             ),
             child: Text(
               'NEW',

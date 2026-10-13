@@ -31,35 +31,17 @@ import 'app_icon_button.dart';
 /// objects that ride the margin, so the arithmetic is gone rather than ported.
 class SecondaryPageHeader extends StatelessWidget {
   const SecondaryPageHeader({
-    required this.title,
     super.key,
     this.onBack,
     this.trailing,
-    this.titleStyle,
     this.backIcon = Icons.arrow_back,
   });
-
-  /// Screen title, e.g. `History`.
-  final String title;
 
   /// Overrides the default `Navigator.pop`. Used by tests.
   final VoidCallback? onBack;
 
-  /// Optional right-hand action, e.g. the History trash. A
-  /// [AppSizes.iconTouchTarget] blank takes its place when it is absent, which
-  /// is what keeps the title centred.
+  /// Optional right-hand action, e.g. the History trash.
   final Widget? trailing;
-
-  /// The title's style, defaulting to [context.type.screenTitle].
-  ///
-  /// A named token at the call site rather than a `copyWith`, so a reduction
-  /// stays scoped to the screen that asked for it — the About hero card prints
-  /// `AppInfo.name` through the same default, and an in-place size edit would
-  /// demote the app's own name along with the caller's title (D-71, D-75).
-  ///
-  /// No screen passes one today: with the header subtitle gone everywhere
-  /// (D-75), every header is the shared size.
-  final TextStyle? titleStyle;
 
   /// The leading glyph. A parameter so the token that names it is read in
   /// application code rather than spelled again in test code.
@@ -90,20 +72,7 @@ class SecondaryPageHeader extends StatelessWidget {
               onPressed: onBack ?? () => Navigator.of(context).maybePop(),
             ),
             const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: Text(
-                title,
-                style: titleStyle ?? context.type.screenTitle,
-                textAlign: TextAlign.center,
-                // One line, ellipsised. A wrapped title would make this bar
-                // taller than the 56 px the page is laid out around, and
-                // every screen's top spacing is measured from that. Dynamic
-                // Type still grows the line's own height, so a larger system
-                // font is yielded to rather than clipped (D-54).
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
+            const Spacer(),
             const SizedBox(width: AppSpacing.md),
             // The mirror of the back box. A caller's action sits in the slot;
             // an absent one is filled with its own width so the title stays

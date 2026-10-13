@@ -70,7 +70,6 @@ class _VaultDocumentViewerScreenState
   Widget build(BuildContext context) {
     return SecondaryPageScaffold(
       header: _ViewerHeader(
-        title: widget.document.fileName,
         onShare: _share,
       ),
       body: FutureBuilder<Uint8List>(
@@ -119,9 +118,8 @@ class _VaultDocumentViewerScreenState
 /// because the header's single trailing slot is spent on Share and the title is
 /// a filename that must be allowed to ellipsize.
 class _ViewerHeader extends StatelessWidget {
-  const _ViewerHeader({required this.title, required this.onShare});
+  const _ViewerHeader({required this.onShare});
 
-  final String title;
   final VoidCallback onShare;
 
   @override
@@ -142,15 +140,7 @@ class _ViewerHeader extends StatelessWidget {
               onPressed: () => Navigator.of(context).maybePop(),
             ),
             const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: Text(
-                title,
-                style: context.type.screenTitle,
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
+            const Spacer(),
             const SizedBox(width: AppSpacing.sm),
             AppIconButton(
               icon: Icons.ios_share,
