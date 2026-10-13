@@ -279,5 +279,136 @@ void main() {
       expect(result.failed, 1);
       expect((await _state(container)).visible, isEmpty);
     });
+
+    test('createAlbum trims the stored name', () async {
+      final container = _container(_MemoryStore());
+      final notifier = container.read(vaultImagesProvider.notifier);
+      await container.read(vaultImagesProvider.future);
+
+      final album = await notifier.createAlbum('  Trip  ');
+      expect(album.name, 'Trip');
+
+      final state = await _state(container);
+      expect(state.albums.single.name, 'Trip');
+    });
+
+    test('createAlbum refuses an empty name', () async {
+      final container = _container(_MemoryStore());
+      final notifier = container.read(vaultImagesProvider.notifier);
+      await container.read(vaultImagesProvider.future);
+
+      await expectLater(
+        notifier.createAlbum('   '),
+        throwsA(isA<AlbumNameException>()),
+      );
+      expect((await _state(container)).albums, isEmpty);
+    });
+
+    test('createAlbum refuses a duplicate name case-insensitively', () async {
+      final container = _container(_MemoryStore());
+      final notifier = container.read(vaultImagesProvider.notifier);
+      await container.read(vaultImagesProvider.future);
+
+      await notifier.createAlbum('Trip');
+      await expectLater(
+        notifier.createAlbum('  trip '),
+        throwsA(isA<AlbumNameException>()),
+      );
+      // The rejected create left the store exactly as it was.
+      expect((await _state(container)).albums, hasLength(1));
+    });
+
+    test('concurrent creates both persist (no lost update)', () async {
+      final container = _container(_MemoryStore());
+      final notifier = container.read(vaultImagesProvider.notifier);
+      await container.read(vaultImagesProvider.future);
+
+      // Without the controller's mutation queue both calls read the empty
+      // album list before either writes, and the second save overwrites the
+      // first — the "album creation sometimes fails" symptom.
+      await Future.wait(<Future<VaultAlbum>>[
+        notifier.createAlbum('Alpha'),
+        notifier.createAlbum('Beta'),
+      ]);
+
+      final state = await _state(container);
+      expect(state.albums.map((e) => e.name).toSet(), {'Alpha', 'Beta'});
+    });
+  });
+
+  group('web refresh self-heal', () {
+    // The bug this group guards: `build()`'s web self-heal used to clear BOTH
+    // images and albums when the in-memory byte store came back empty. Because
+    // an album is metadata-only and owns no bytes, every album created before
+    // the first photo was imported was deleted on the next `build()` — which
+    // `createAlbum` itself triggers via `invalidateSelf()`. On a fresh Chrome
+    // session that meant "I made an album and it never showed up".
+    //
+    // `kIsWeb` is a compile-time constant, so the VM test suite can never reach
+    // the browser branch in `build()`. The decision is therefore a pure
+    // function, tested directly here; `build()` just feeds it the store's
+    // emptiness.
+    final images = <VaultImage>[_image('1', 'a.jpg'), _image('2', 'b.jpg')];
+    final albums = <VaultAlbum>[
+      VaultAlbum(id: 'al', name: 'Trip', createdAt: DateTime(2026, 1, 1)),
+    ];
+
+    test('an empty store drops the image rows but keeps the albums', () {
+      final healed = VaultImagesNotifier.healMetadataForEmptyStore(
+        images,
+        albums,
+        storeIsEmpty: true,
+      );
+      expect(healed.images, isEmpty);
+      // The regression: albums own no bytes, so an empty store must not be
+      // read as "the album is stale". This assertion fails against the old
+      // behaviour that cleared albums alongside images.
+      expect(healed.albums, same(albums));
+      expect(healed.albums.map((e) => e.name), ['Trip']);
+    });
+
+    test('a non-empty store keeps everything untouched', () {
+      final healed = VaultImagesNotifier.healMetadataForEmptyStore(
+        images,
+        albums,
+        storeIsEmpty: false,
+      );
+      expect(healed.images, same(images));
+      expect(healed.albums, same(albums));
+    });
+
+    test('an already-empty gallery stays empty', () {
+      final healed = VaultImagesNotifier.healMetadataForEmptyStore(
+        const <VaultImage>[],
+        const <VaultAlbum>[],
+        storeIsEmpty: true,
+      );
+      expect(healed.images, isEmpty);
+      expect(healed.albums, isEmpty);
+    });
+
+    test('an album-only vault is never wiped', () {
+      final healed = VaultImagesNotifier.healMetadataForEmptyStore(
+        const <VaultImage>[],
+        albums,
+        storeIsEmpty: true,
+      );
+      expect(healed.images, isEmpty);
+      expect(healed.albums.map((e) => e.name), ['Trip']);
+    });
+
+    test('the create path leaves an album-only vault intact', () async {
+      // The exact state the user was in on a fresh Chrome session: no photos,
+      // just a created album.
+      final container = _container(_MemoryStore());
+      final notifier = container.read(vaultImagesProvider.notifier);
+      await container.read(vaultImagesProvider.future);
+
+      final album = await notifier.createAlbum('Trip');
+      final state = await _state(container);
+
+      expect(state.albums.map((e) => e.id), [album.id]);
+      expect(state.visible, isEmpty);
+    });
   });
 }

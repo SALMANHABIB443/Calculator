@@ -25,7 +25,22 @@ import 'vault_images_state.dart';
 /// than a copied gallery. The 3-column grid, circular selection checks, and
 /// bottom Create/Share/Delete/More bar follow the screenshot behaviour.
 class VaultImagesScreen extends ConsumerStatefulWidget {
-  const VaultImagesScreen({super.key});
+  const VaultImagesScreen({super.key, this.albumId, this.albumTitle});
+
+  /// When non-null, this screen is an **album-details page** scoped to
+  /// [albumId] rather than the tabbed gallery: the top tab row and the bottom
+  /// nav are hidden and the header carries [albumTitle]. The `all`,
+  /// `favorites`, and `recent` virtual ids are accepted the same way, so the
+  /// Quick Access rows open a page too.
+  ///
+  /// The page is pushed on its own `MaterialPageRoute` (see
+  /// [_VaultImagesScreenState._openAlbum]) rather than shown by flipping
+  /// `_albumId` in place, which is what used to leave Back exiting the whole
+  /// Gallery instead of returning to the Albums list.
+  final String? albumId;
+
+  /// The label the album-details header shows. Ignored in gallery mode.
+  final String? albumTitle;
 
   static const Key searchFieldKey = Key('vault-images-search');
   static const Key addButtonKey = Key('vault-images-add');
@@ -46,14 +61,24 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
   final Set<String> _selected = <String>{};
   bool _importing = false;
   String? _importLabel;
+  bool _creatingAlbum = false;
   final TextEditingController _searchController = TextEditingController();
 
   bool get _selecting => _selected.isNotEmpty;
+
+  /// True when this instance is a pushed album-details page (see
+  /// [VaultImagesScreen.albumId]).
+  bool get _albumDetail => widget.albumId != null;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    final albumId = widget.albumId;
+    if (albumId != null) {
+      _tab = _VaultTab.albums;
+      _albumId = albumId;
+    }
   }
 
   @override
@@ -156,6 +181,8 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
     final list = _currentList(gallery);
     final title = _selecting
         ? '${_selected.length} selected'
+        : _albumDetail
+        ? (widget.albumTitle ?? 'Album')
         : switch (_tab) {
             _VaultTab.pictures => 'Pictures',
             _VaultTab.albums => 'Albums',
@@ -184,10 +211,14 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
       body: Column(
         children: [
           if (_searching) _searchField(),
-          if (!_selecting) _tabRow(),
-          if (_selecting) const SizedBox(height: AppSpacing.lg),
+          if (!_selecting && !_albumDetail) _tabRow(),
+          // Selection mode and the album-details page both hide the tab row,
+          // so each needs its own gap under the header. The album page used to
+          // fall through with none, leaving the grid glued to the header icons.
+          if (_selecting || _albumDetail)
+            const SizedBox(height: AppSpacing.lg),
           Expanded(child: _content(context, gallery, list)),
-          if (!_selecting) _bottomTabs(),
+          if (!_selecting && !_albumDetail) _bottomTabs(),
           if (_selecting) _selectionBar(gallery, list),
           if (_importing) _importBanner(),
         ],
@@ -299,7 +330,10 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
     VaultImagesState gallery,
     List<VaultImage> list,
   ) {
-    if (_tab == _VaultTab.albums && _albumId == 'all' && _query.isEmpty) {
+    if (!_albumDetail &&
+        _tab == _VaultTab.albums &&
+        _albumId == 'all' &&
+        _query.isEmpty) {
       return _albumsList(gallery);
     }
     if (list.isEmpty) return _emptyContent(context);
@@ -383,7 +417,7 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
             );
           },
         ),
-        if (_tab == _VaultTab.pictures)
+        if (_tab == _VaultTab.pictures || _albumDetail)
           Positioned(
             right: 16,
             bottom: 16,
@@ -793,52 +827,45 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
     );
   }
 
-  Future<void> _createAlbumDialog() async {
-    final controller = TextEditingController();
-    final name = await showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        // Standard dialog width (like AppConfirmationDialog): the framework's
-        // 40px inset keeps the popup narrow and centred instead of stretched
-        // edge-to-edge.
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-        title: const Text('New album'),
-        content: TextField(
-            controller: controller,
-            autofocus: true,
-            maxLength: 40,
-            // White caret and white focus underline instead of the theme's
-            // orange accent — the gallery's interactive lines are white.
-            cursorColor: context.appColors.textPrimary,
-            decoration: InputDecoration(
-              hintText: 'Album name',
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: context.appColors.textPrimary),
-              ),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: context.appColors.divider),
-              ),
-            ),
-            onSubmitted: (_) =>
-                Navigator.of(context).pop(controller.text.trim()),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () =>
-                Navigator.of(context).pop(controller.text.trim()),
-            child: const Text('Create'),
-          ),
-        ],
+  /// Opens [id]'s photos on a page of their own.
+  ///
+  /// A pushed route rather than the old `setState(() => _albumId = id)`: the
+  /// inline swap left Back pointing at the whole Gallery page, so returning
+  /// from an album left the vault. Pushing also keeps this screen — with its
+  /// selected tab and scroll position — mounted underneath, so Back lands
+  /// exactly where the album was opened from.
+  void _openAlbum(String id, String title) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => VaultImagesScreen(albumId: id, albumTitle: title),
       ),
     );
-    controller.dispose();
-    if (name == null || name.trim().isEmpty || !mounted) return;
-    await ref.read(vaultImagesProvider.notifier).createAlbum(name);
+  }
+
+  Future<void> _createAlbumDialog() async {
+    // One dialog at a time: a second tap on the badge (or the chooser's New
+    // album row) while the first is in flight must not open a second prompt.
+    if (_creatingAlbum) return;
+    _creatingAlbum = true;
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final name = await showDialog<String>(
+        context: context,
+        builder: (context) => const _AlbumNameDialog(),
+      );
+      if (name == null || name.trim().isEmpty || !mounted) return;
+      await ref.read(vaultImagesProvider.notifier).createAlbum(name);
+    } on AlbumNameException catch (error) {
+      messenger.showSnackBar(SnackBar(content: Text(error.message)));
+    } catch (_) {
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text('Could not create the album. Please try again.'),
+        ),
+      );
+    } finally {
+      _creatingAlbum = false;
+    }
   }
 
   Future<void> _addToAlbumSheet(VaultImagesState gallery) async {
@@ -988,7 +1015,7 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
         icon: icon,
         title: name,
         subtitle: '$count photos',
-        onTap: () => setState(() => _albumId = id),
+        onTap: () => _openAlbum(id, name),
       );
     }
 
@@ -1032,7 +1059,7 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
                   title: album.name,
                   subtitle:
                       '${gallery.visible.where((e) => e.albumIds.contains(album.id)).length} photos',
-                  onTap: () => setState(() => _albumId = album.id),
+                  onTap: () => _openAlbum(album.id, album.name),
                 ),
             ],
           ),
@@ -1143,6 +1170,80 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
           ),
         ),
       ),
+    );
+  }
+}
+
+/// The **New album** prompt: a text field and Cancel/Create.
+///
+/// A `StatefulWidget` that owns its own [TextEditingController] rather than one
+/// created in `_createAlbumDialog` and disposed the instant `showDialog`
+/// returned: the dialog route is still animating out when that future
+/// completes, and a rebuild during the exit transition would touch a disposed
+/// controller. Here `dispose()` runs only when the route itself is gone.
+///
+/// **Create latches after the first press**, so a double-tap cannot pop twice
+/// (which would dismiss the dialog *and* the page under it) or submit the same
+/// album twice.
+class _AlbumNameDialog extends StatefulWidget {
+  const _AlbumNameDialog();
+
+  @override
+  State<_AlbumNameDialog> createState() => _AlbumNameDialogState();
+}
+
+class _AlbumNameDialogState extends State<_AlbumNameDialog> {
+  final TextEditingController _controller = TextEditingController();
+  bool _submitted = false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    if (_submitted) return;
+    _submitted = true;
+    Navigator.of(context).pop(_controller.text.trim());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      // Standard dialog width (like AppConfirmationDialog): the framework's
+      // 40px inset keeps the popup narrow and centred instead of stretched
+      // edge-to-edge.
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      title: const Text('New album'),
+      content: TextField(
+        controller: _controller,
+        autofocus: true,
+        maxLength: 40,
+        // White caret and white focus underline instead of the theme's
+        // orange accent — the gallery's interactive lines are white.
+        cursorColor: context.appColors.textPrimary,
+        decoration: InputDecoration(
+          hintText: 'Album name',
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: context.appColors.textPrimary),
+          ),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: context.appColors.divider),
+          ),
+        ),
+        onSubmitted: (_) => _submit(),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: _submit,
+          child: const Text('Create'),
+        ),
+      ],
     );
   }
 }

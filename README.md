@@ -279,6 +279,268 @@ dependency of `share_plus` (`D-23`).
 
 ## Changelog
 
+### Secret Docs blank-screen fix and full-layout empty state (`vault-gallery-updates`)
+
+**Fixed the blank-screen bug and unified the Documents page layout across all
+states.**
+
+- **Root cause:** `_landing()` returned a full-page `EmptyState` (icon + "No
+  documents yet" + Add button) when the document list was empty, replacing the
+  entire Documents layout — filter chips, Recent Documents, Browse by Type,
+  All Documents — with a near-blank page. The same pattern existed in
+  `_collectionBody()`.
+- **Fix:** Both methods now always render the complete Documents layout. When
+  no documents exist, an inline message ("No documents yet. Tap ADD to import.")
+  appears inside the Recent Documents section; when a search or filter matches
+  nothing, a different inline message ("No documents match the current search
+  or filter.") is shown. The `_emptyState()` method and its `kIsWeb` import were
+  removed as dead code.
+- **Add button key:** The `addButtonKey` now lives on the `_addBadge()` `InkWell`
+  (the `+ ADD` button in the Recent Documents header), so tests and the
+  "Add Documents" overflow action resolve to the same tappable element.
+- **Collection page:** `_collectionBody()` now shows an inline empty message and
+  an Add button when the filtered family is empty, rather than replacing the
+  whole page.
+- **UI consistency:** The full Documents layout — header with back/title/
+  search/overflow, filter chips with live counts, Recent Documents with `+ ADD`,
+  Browse by Type card, All Documents row, and the floating white Home button —
+  is now always visible regardless of document count (zero, one, or many).
+- **Import flow:** Unchanged. Import remains an action initiated from the
+  Documents page (via `+ ADD` or the overflow menu), never navigating to a
+  separate screen. The import banner appears inline without removing the main
+  layout.
+- **Files modified:**
+  - `lib/features/secret/documents/presentation/vault_documents_screen.dart`
+  - `test/widget/vault_documents_test.dart`
+  - `test/widget/vault_place_pages_test.dart`
+- **Tests/build:** `flutter analyze` clean; 71 documents-related tests pass
+  (widget + unit + navigation).
+
+### Secret Docs web support — PC/browser parity (`vault-gallery-updates`)
+
+**Added** the browser build of Secret Docs so the whole feature can be tested
+on a PC (`flutter run -d chrome`), with the *same session-only contract the
+Images feature already ships in the browser*:
+
+- **Import works:** `file_picker`'s web picker has no filesystem path, so the
+  bytes come through `PlatformFile.readAsBytes` (the web plugin serves them
+  from the `File` object the user chose — no `withData` flag exists on the v13
+  static API). Multi-select, duplicate detection, and the "Import anyway"
+  offer behave exactly as on Android.
+- **Share becomes Download on the web:** the browser has no share sheet and no
+  private cache directory, so `shareDocuments()` decrypts to a Blob and clicks
+  a one-shot anchor (`vault_document_downloader.dart` seam, web implementation
+  via `package:web`; the IO stub is a no-op that mobile never reaches). The
+  PDF viewer's "no renderer" fallback offers the same Download.
+- **PDF preview guard:** `pdfx`'s web host is not what production Android/iOS
+  ship and an exception there takes the viewer down, so `_canRenderPdf` now
+  allows only Android/iOS; web (and widget tests, Windows) get the honest
+  fallback with Download instead of a crash.
+- **Session-only by design (user's choice):** blobs live in an in-memory store
+  under a process-lifetime AES-GCM key — same as before this change, same as
+  Images. A full page refresh drops them and the existing self-heal clears the
+  orphaned metadata, so the list never shows rows that cannot open. The
+  empty-state message now says so on the web. No key is persisted to
+  `localStorage`; the Android keystore model is untouched.
+- **Dependencies changed:** `web: ^1.1.1` promoted from transitive to direct
+  (the project's own code imports it for the download). No Android manifest or
+  Gradle change.
+- **Files added:** `vault_document_downloader.dart` (seam),
+  `vault_document_downloader_web.dart`, `vault_document_downloader_io.dart`.
+- **Files changed:** `vault_document_picker.dart` (browser-safe read),
+  `vault_documents_controller.dart` (web download path),
+  `vault_pdf_preview.dart` (platform guard + Download fallback),
+  `vault_documents_providers.dart` (viewer seam carries fileName/mimeType),
+  `vault_document_viewer.dart` (passes name to the seam),
+  `vault_documents_screen.dart` (web empty-state note).
+- **Tests/build:** `flutter analyze` clean; documents unit 27 + widget 20 pass;
+  images regression 55 pass; `flutter build web` (compile check reported in
+  the summary). Manual PC checklist: import → list → open → search/filter/sort
+  → download → trash/restore → refresh clears.
+
+### Secret Docs — private encrypted document vault (`vault-gallery-updates`)
+
+**Added** the Secret Docs page behind Vault → Documents (`/secret/browse/documents`),
+matching the 9:16 Documents reference: dark landing with filter chips (All / PDF /
+Word / Text with live counts), recent-documents list (max 5), Browse-by-type card,
+All-documents collection row (count + total size), and the floating white Home
+button. Collection pages push per filter with correct Back navigation.
+
+- **Import:** Android Storage Access Framework via `file_picker` (no manifest
+  permission). Multi-select, PDF/DOC/DOCX/TXT/any, duplicate detection
+  (content-hash, name-and-size fallback) with "Import anyway" offer, graceful
+  cancel/empty/permission handling.
+- **Private storage:** AES-256-GCM (`cryptography`) over a keystore-backed key
+  (`flutter_secure_storage`); ciphertext blobs under app-private
+  `vault/documents/` (+ `.nomedia`), metadata only in `shared_preferences`.
+  Never plaintext on disk; share/export decrypts to a temp file deleted
+  best-effort afterwards.
+- **Viewers:** in-app PDF (`pdfx`, memory-only bytes), in-app text reader,
+  honest Word/unsupported fallback with Share action. Separate viewer route, so
+  Back always returns to the list.
+- **Search/sort/actions:** instant case-insensitive search, 4 sorts (persisted),
+  Open/Rename/Share/Info/Delete, 30-day Recycle Bin (`recycle-bin` place) with
+  restore + delete-forever, selection multi-actions, overflow menu.
+- **Files:** `lib/features/secret/documents/` (domain, data, presentation),
+  `lib/features/secret/presentation/secret_home_button.dart` (extracted shared
+  Home button); tests `test/unit/vault_documents_test.dart` (27),
+  `test/widget/vault_documents_test.dart` (20), `test/support/vault_documents.dart`.
+- **Dependencies added:** `file_picker ^13.1.0`, `pdfx ^2.11.0`,
+  `cryptography ^2.9.0`, `flutter_secure_storage ^11.2.0`. No Android manifest
+  permission added.
+- **Bugs fixed during verification:** (1) `file_picker` v13 API misuse
+  (`FilePicker.pickFiles` static list return — ager code `FilePicker.platform`
+  + `result.files` + `file.bytes` use korsilo, analyze fail hoto); (2) nested
+  scroll crash — search-empty `EmptyState` (own scroll view) inside the page's
+  `SingleChildScrollView` → plain centred note; (3) 7 widget-test expectation
+  mismatches (uppercase `SectionHeader`, `3.00 KB` format, two-step sort sheet,
+  `SnackBarAction` duplicate offer, offstage `byType` count, `SettingsRow`
+  key-vs-`InkWell` tap target).
+- **Tests/build:** `flutter analyze` clean; unit 27/27 + widget 20/20 pass;
+  images regression (`vault_images`, `vault_place_pages`, `vault_image_viewer`)
+  55 pass. `flutter build apk --debug` environment timeout-e verify kora jay nai —
+  device/emulator-e manual check baki.
+- **Limitations:** Word (DOC/DOCX) has no in-app renderer (Share fallback);
+  web build-e page refresh-e session key bodle jay bole docs list clear hoye jay
+  (documented self-heal); device/emulator-e physical import/viewer check hoyni.
+
+### Albums vanished on the web build — self-heal deleted metadata-only albums (`feature/vault`)
+
+**Root cause found and fixed.** `VaultImagesNotifier.build()`'s web self-heal
+cleared **both** images and albums whenever the in-memory byte store came back
+empty. That rule is right for images — a row with no pixels is a broken tile —
+but wrong for albums: an album is metadata-only and owns no bytes by design, so
+it is *always* "empty-store metadata", and an empty album is a valid state the
+user just asked for.
+
+On a fresh Chrome session the sequence was: tap **Create** → `createAlbum`
+writes the album → `invalidateSelf()` re-runs `build()` → `kIsWeb` is true and
+the byte store is empty (no photos imported) → `saveAlbums([])` → the album was
+deleted from `localStorage` before the list ever rendered it. It looked
+intermittent because importing at least one photo first made the store
+non-empty and skipped the wipe. Android was unaffected (`kIsWeb` is false).
+
+- **Fixed:** `build()` now heals **images only**, and only when there are images
+  to heal. Albums are never cleared by the self-heal, so an album created before
+  the first photo import survives — showing `0 photos` — exactly like a real
+  album should.
+- **Added:** `VaultImagesNotifier.healMetadataForEmptyStore`, a pure function
+  (`@visibleForTesting`) that returns the healed `(images, albums)` pair. Because
+  `kIsWeb` is a compile-time constant the VM test suite can never reach the
+  browser branch, so the rule is pulled out where it can be tested and the
+  "empty store drops images, keeps albums" contract can't silently regress.
+- **Tests:** `test/unit/vault_images_test.dart` gained a `web refresh self-heal`
+  group (5 tests) covering the empty/non-empty/already-empty/album-only cases and
+  the create-then-rebuild path. New `test/widget/vault_album_creation_test.dart`
+  drives the real UI — Albums tab → **NEW** → type → **Create** — and asserts the
+  album appears under **My Albums**, that a second album stacks alongside it, and
+  that a duplicate name is refused with a message. That dialog→list path had no
+  coverage before, which is how this bug reached you.
+- **Needs manual verification:** on Chrome, create an album with **no photos
+  imported** and confirm it stays in My Albums; then refresh the tab and confirm
+  the album survives while any pre-refresh photo tiles are cleared.
+
+### Album creation reliability and album details page — two bug fixes (`feature/vault`)
+
+**Both bugs traced to a root cause and fixed; no UI redesign.**
+
+**Bug 1 — album creation failed intermittently.** Every metadata mutation
+(`createAlbum`, imports, favorites, trash moves, deletes, sort) is a
+read-modify-write over the same `shared_preferences` keys, and nothing
+serialized the calls. A double-tapped **Create**, or a create racing another
+mutation, let both calls read the *same* old album list before either wrote; the
+second save then overwrote the first, so the album appeared to "work sometimes".
+The symptom is reproducible in a test: with the fix bypassed,
+`createAlbum('Alpha')` + `createAlbum('Beta')` in one `Future.wait` persists only
+`{'Beta'}`.
+
+- **Added:** `VaultImagesNotifier._serialize`, a `Completer`-based mutation queue.
+  Every mutating method now runs through it, so each mutation observes the
+  previous one's result. The gate future always completes *normally* even when an
+  action throws — one failed mutation cannot wedge the queue.
+- **Added:** `AlbumNameException`, thrown by `createAlbum` for a name that is
+  empty after trimming, or a case-insensitive duplicate of an existing album
+  (`An album named "X" already exists.`). Duplicates are refused because the
+  Albums list has no other identity to tell two same-named rows apart.
+- **Added:** controller-side validation — names are trimmed before storage, so
+  `"  Trip  "` is stored as `"Trip"`.
+- **Changed:** `_createAlbumDialog` now catches `AlbumNameException` and any
+  other failure and shows the reason in a `SnackBar`, instead of discarding the
+  `Future` (an unhandled error is why a failure looked like nothing happened).
+  A `_creatingAlbum` guard blocks a second prompt while one is in flight.
+- **Fixed:** the `TextEditingController` created in the dialog method and
+  disposed the instant `showDialog` returned — the route is still animating out
+  when that future completes, so a rebuild during the exit transition could touch
+  a disposed controller. The prompt is now a private `_AlbumNameDialog`
+  `StatefulWidget` that owns its controller and disposes it when the route is
+  gone; its **Create** button also latches after the first press, so a double-tap
+  cannot submit twice or pop the page under the dialog.
+- **Tests:** `test/unit/vault_images_test.dart` gained four cases — trims the
+  stored name, refuses an empty name, refuses a duplicate case-insensitively, and
+  concurrent creates both persist. 11 → 15 tests.
+
+**Bug 2 — an album showed its contents inline, and Back exited the Gallery.**
+The Albums landing rows did `setState(() => _albumId = id)`, swapping the grid
+into the *same* `VaultImagesScreen`. Nothing was pushed, so the header's Back
+(and the Android system/gesture Back) popped the whole `/secret/browse/images`
+route: returning from an album left the Vault.
+
+- **Added:** an optional `albumId` / `albumTitle` on `VaultImagesScreen`. When
+  `albumId` is set the screen is an album-details page: tab row and bottom nav
+  hidden, header titled with the album. `initState` seeds `_tab`/`_albumId`.
+- **Added:** `_openAlbum`, which pushes a dedicated `MaterialPageRoute` for the
+  tapped row — every Quick Access row (`All Photos`, `Favorites`, `Recent`) and
+  every `My Albums` row. Pushing keeps the Albums list mounted underneath with
+  its selected tab and scroll position, so Back lands exactly where the album was
+  opened from and never exits the Gallery. The go_router graph is unchanged (its
+  12 documented routes still stand).
+- **Added:** the add-photos FAB is shown in album-detail mode too, so a picture
+  can be imported straight into the album being viewed.
+- **Tests:** new `test/widget/vault_album_navigation_test.dart` drives a real tap
+  on an album row and asserts a dedicated page (album's own photos, no landing
+  list, no bottom tabs), then taps Back and asserts the Albums list returns
+  inside the same `VaultPlaceScreen`. A second case does the same for `All
+  Photos`, and a third pops the Navigator directly — Android's Back is a pop, not
+  the header arrow — proving both leave the album the same way without exiting
+  the Gallery.
+- **Needs manual Android verification:** on a physical device, double-tap
+  **Create** and confirm the album is added once with a clear message for a
+  duplicate; then use the system Back button/gesture from an opened album and
+  confirm it returns to the Albums list rather than exiting the Vault.
+
+### Fullscreen Vault image viewer — real pinch, pan, and swipe (`feature/vault`)
+
+**Root cause found and fixed.** The fullscreen viewer's zoom/pan was still dead on a
+physical Android phone because the pager's horizontal-drag recognizer raced the
+`InteractiveViewer` scale recognizer for every touch: with any horizontal component
+in a pinch, the pager won the gesture arena on the first pointer and the pinch read
+as a page swipe. `InteractiveViewer` registers its `ScaleGestureRecognizer`
+unconditionally, so "only accept gestures while zoomed" was a chicken-and-egg patch
+that could never win on real touch input.
+
+The gesture architecture is restructured so **one owner handles every touch**:
+
+- **Added:** real two-finger pinch-to-zoom (1×–5×), one-finger pan while zoomed, and
+  double-tap 3× zoom all flow through the viewer's own gesture layer. Page swiping
+  is driven from `InteractiveViewer.onInteractionStart/Update/End` when unzoomed
+  (`jumpTo` while dragging, `animateToPage` settle/fling on release).
+- **Changed:** the `PageView` is permanently locked to `NeverScrollableScrollPhysics`,
+  so its drag recognizer never enters the gesture arena and can never swallow a
+  pinch; swiping between pages is driven by the same recognizer that owns pinch/pan.
+- **Fixed:** pinch being swallowed as a page swipe; pan never engaging after zoom;
+  and the scale-1 identity snap firing mid-gesture (it now runs on
+  `onInteractionEnd`, so the tail of a pinch-in no longer stutters).
+- **Removed:** the dynamic `PageScrollPhysics` ↔ `NeverScrollableScrollPhysics`
+  switch and the mid-gesture force-snap to identity.
+- **Preserved:** per-page `TransformationController`s, double-tap 3× toggle, boundary
+  clamping, chrome hide/show, share/delete/details, image-byte caching, and
+  reset-on-page-change semantics.
+- **Tests:** `vault_image_viewer_test.dart` now drives real two-pointer pinch
+  gestures through the arena (pinch-out zoom, pinch-in restore, one-finger pan
+  while zoomed, vertical-drag rejection); 8 → 12 tests. Analyzer clean.
+- **Caveat:** physical-device validation is still required — widget tests synthesize
+  multi-touch pointer events but cannot reproduce every hardware touch slop/timing.
+
 ### History card redesign — Ethar's task card, ported whole (`D-93`)
 
 **Presentation only.** Grouping, persistence, tap-to-load, the long-press gesture,

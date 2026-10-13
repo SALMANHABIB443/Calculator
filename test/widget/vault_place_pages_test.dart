@@ -2,6 +2,8 @@ import 'package:calculator/app.dart';
 import 'package:calculator/core/design/app_theme.dart';
 import 'package:calculator/core/widgets/core_widgets.dart';
 import 'package:calculator/features/history/domain/history_entry.dart';
+import 'package:calculator/features/secret/documents/presentation/vault_documents_screen.dart';
+import 'package:calculator/features/secret/documents/presentation/vault_documents_trash_screen.dart';
 import 'package:calculator/features/secret/presentation/secret_screens.dart';
 import 'package:calculator/features/secret/presentation/vault_place.dart';
 import 'package:calculator/routing/app_router.dart';
@@ -264,6 +266,35 @@ void main() {
         // than the generic empty state every other place shows.
         if (place.id == 'images') {
           expect(find.text('Pictures'), findsWidgets);
+          expect(tester.takeException(), isNull);
+          return;
+        }
+
+        // The Documents place owns the real vault (FEAT-SEC-009) and the
+        // Recycle bin owns its trash page. Both bring their own header — the
+        // documents header carries a Search button beside the title, so it is
+        // not a [SecondaryPageHeader] — and the Documents page keeps the
+        // floating Home button the rest of the Secret area carries.
+        if (place.id == 'documents') {
+          expect(find.byType(VaultDocumentsScreen), findsOneWidget);
+          expect(find.text(place.title), findsOneWidget);
+          // The Documents page shows the full layout even when empty, with
+          // an inline message instead of a blank-screen EmptyState.
+          expect(
+            find.text('No documents yet. Tap ADD to import.'),
+            findsOneWidget,
+          );
+          expect(find.byKey(const Key('secret-home')), findsOneWidget);
+          expect(tester.takeException(), isNull);
+          return;
+        }
+        if (place.id == 'recycle-bin') {
+          expect(find.byType(VaultDocumentsTrashScreen), findsOneWidget);
+          expect(find.text(place.title), findsOneWidget);
+          expect(find.text(place.emptyTitle), findsOneWidget);
+          // The Recycle bin is a pushed list, not the Vault screen itself, so
+          // it carries the header's back button and no second floating exit.
+          expect(find.byKey(const Key('secret-home')), findsNothing);
           expect(tester.takeException(), isNull);
           return;
         }

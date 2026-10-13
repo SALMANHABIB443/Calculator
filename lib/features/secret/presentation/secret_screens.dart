@@ -10,6 +10,7 @@ import '../../../core/widgets/core_widgets.dart';
 import '../../../routing/app_routes.dart';
 import '../data/device_storage_repository.dart';
 import 'secret_controller.dart';
+import 'secret_home_button.dart';
 import 'secret_lockout_controller.dart';
 import 'secret_menu.dart';
 import 'secret_pin_field.dart';
@@ -49,7 +50,7 @@ class _SecretBackButton extends StatelessWidget {
   /// The handle tests reach this button by, and the name every finder's key
   /// matches.
   ///
-  /// Distinct from [_SecretHomeButton.buttonKey] on purpose: the two buttons now
+  /// Distinct from [SecretHomeButton.buttonKey] on purpose: the two buttons now
   /// live on different screens, and a shared key would let a test asserting
   /// "the PIN screen has no home button" pass for the wrong reason.
   static const Key buttonKey = Key('secret-back');
@@ -68,86 +69,6 @@ class _SecretBackButton extends StatelessWidget {
         // would slide back into the app with the hidden area still under them.
         // `go` leaves nothing of Secret Mode on the stack either way.
         onPressed: () => context.go(AppRoutes.calculator),
-      ),
-    );
-  }
-}
-
-/// The floating way home from the unlocked secret screen (D-86, narrowed by
-/// D-87).
-///
-/// **Reverses D-84**, which held that the system back gesture was the *only*
-/// exit and that a second exit "would be an affordance telling the user this page
-/// is somewhere they arrived at". The reason it is being reversed is that the
-/// user who actually arrived there could not get out at all. A screen nobody can
-/// leave teaches the wrong lesson — that the app has trapped them — which is a
-/// worse way to reveal a hidden feature than an extra button is.
-///
-/// Bottom-right and white, in the position and at the contrast a Material FAB
-/// occupies, because that is a shape every phone user already reads as "go back
-/// to the main thing". The glyph is black on the white fill
-/// ([context.appColors.textOnFunction] on [context.appColors.textPrimary]) — the app's own
-/// inverted pair, not a new colour.
-///
-/// **Why this button stayed a FAB while the PIN screen's became an arrow**
-/// (D-87): this screen has no primary action at all, so a bottom-right circle
-/// reads as *the* control rather than as a rival to one. The PIN screen is a
-/// keypad with one job; there the arrow belongs instead.
-///
-/// **What this costs, on the record.** The blankness in D-84 was a real
-/// property, argued well: a screenshot of this page spoils nothing when the page
-/// shows nothing. This button does not spoil the *feature* — the five-second hold
-/// still has to be known to reach either screen — but it does mean the page is
-/// now visible in a screenshot as somewhere a user has been. That is accepted:
-/// reachability beats deniability when the unreachable user cannot leave.
-class _SecretHomeButton extends StatelessWidget {
-  const _SecretHomeButton();
-
-  /// The handle tests and `find.byKey` reach this button by.
-  ///
-  /// Applied to the **[Material]** rather than to this widget, which sounds like
-  /// a detail and is not: a `Key` on this widget resolves to the `Align` that
-  /// fills the screen, so `tester.getRect` would measure the whole page and every
-  /// assertion about the button's size and position would be measuring the
-  /// layout instead of the control. On the `Material`, the key resolves to the
-  /// 56 px circle the tests mean to measure.
-  ///
-  /// Published as a constant rather than written at the two call sites, for the
-  /// same reason the app does this elsewhere (D-82's hold duration, the settings
-  /// repository's keys): the value a test asserts against must be the one that
-  /// ships.
-  static const Key buttonKey = Key('secret-home');
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.bottomRight,
-      child: Padding(
-        padding: const EdgeInsets.all(AppSecretSpacing.homeButtonInset),
-        child: Semantics(
-          container: true,
-          button: true,
-          label: 'Back to calculator',
-          child: Material(
-            key: buttonKey,
-            color: context.appColors.textPrimary,
-            shape: const CircleBorder(),
-            child: InkWell(
-              onTap: () => context.go(AppRoutes.calculator),
-              customBorder: const CircleBorder(),
-              child: SizedBox.square(
-                dimension: AppSizes.secretHomeButton,
-                child: Icon(
-                  Icons.home_outlined,
-                  // The inverted half of the app's own pair, so the glyph keeps
-                  // its contrast against whatever it is drawn on.
-                  color: context.appColors.textOnFunction,
-                  size: AppSizes.rowIcon + 4,
-                ),
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }
@@ -478,7 +399,7 @@ class _SecretCategoryCard extends StatelessWidget {
 /// Downloads) and none of them names the feature, the area, or the code, so §6.8
 /// still holds and a screenshot still does not hand over the PIN. What a
 /// screenshot now shows is that a file manager exists — which was already true the
-/// moment [_SecretHomeButton] shipped, and was accepted for the same reason.
+/// moment [SecretHomeButton] shipped, and was accepted for the same reason.
 ///
 /// **Titled "Vault", in the top-left.** The bar was titleless because it carried
 /// nothing but two actions, and a [Spacer] put both boxes on the right margin
@@ -724,7 +645,7 @@ class SecretScreen extends ConsumerWidget {
             // return to the app they came from (D-86). Now a sibling of the
             // scrolling column rather than of a [Stack] holding one button, so it
             // floats over the cards — which is why the list above pads for it.
-            const _SecretHomeButton(),
+            const SecretHomeButton(),
           ],
         ),
       ),

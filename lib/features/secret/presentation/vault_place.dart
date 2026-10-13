@@ -2,6 +2,8 @@ import '../../../core/design/app_palette.dart';
 import '../../../core/widgets/core_widgets.dart';
 import 'package:flutter/material.dart';
 
+import '../documents/presentation/vault_documents_screen.dart';
+import '../documents/presentation/vault_documents_trash_screen.dart';
 import '../images/presentation/vault_images_screen.dart';
 
 /// One place inside the hidden area, and the wording its page is built from
@@ -267,9 +269,12 @@ class VaultPlaceScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final place = vaultPlaceById(placeId) ?? _unknownPlace;
 
-    // The Images place owns a full gallery; every other place keeps the
-    // honest empty state until its own storage lands.
+    // The Images place owns a full gallery; the Documents place owns the
+    // document vault and the Recycle bin owns its trash page. Every other place
+    // keeps the honest empty state until its own storage lands.
     if (placeId == 'images') return const VaultImagesScreen();
+    if (placeId == 'documents') return const VaultDocumentsScreen();
+    if (placeId == 'recycle-bin') return const VaultDocumentsTrashScreen();
 
     return SecondaryPageScaffold(
       header: SecondaryPageHeader(title: place.title),

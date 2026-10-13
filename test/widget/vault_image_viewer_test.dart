@@ -99,6 +99,36 @@ Future<void> _doubleTap(WidgetTester tester, Finder page) async {
   await tester.pumpAndSettle();
 }
 
+/// Simulates a real two-finger pinch through the gesture arena: two pointers
+/// land together and move apart (`outward`) or together (`inward`).
+Future<void> _pinch(
+  WidgetTester tester,
+  Offset center, {
+  required bool outward,
+  double halfSpan = 24,
+  double step = 12,
+  int steps = 12,
+}) async {
+  final dir = outward ? -1.0 : 1.0;
+  final finger1 = await tester.startGesture(
+    center - Offset(halfSpan, 0),
+    pointer: 101,
+  );
+  final finger2 = await tester.startGesture(
+    center + Offset(halfSpan, 0),
+    pointer: 102,
+  );
+  await tester.pump();
+  for (var i = 0; i < steps; i++) {
+    await finger1.moveBy(Offset(dir * step, 0));
+    await finger2.moveBy(Offset(-dir * step, 0));
+    await tester.pump(const Duration(milliseconds: 16));
+  }
+  await finger1.up();
+  await finger2.up();
+  await tester.pumpAndSettle();
+}
+
 void main() {
   group('vault image viewer zoom / swipe', () {
     testWidgets('double-tap zooms and back out', (tester) async {
@@ -120,9 +150,13 @@ void main() {
       await _doubleTap(tester, page);
       expect(_matrix(tester, 'a'), Matrix4.identity());
       expect(_zoomViewer(tester, 'a').panEnabled, isFalse);
+      // Swiping is driven by the viewer's own gesture layer, so the pager
+      // stays locked (NeverScrollableScrollPhysics) at every zoom level: its
+      // drag recognizer must never enter the gesture arena and race the
+      // pinch/pan scale recognizer.
       expect(
         tester.widget<PageView>(find.byType(PageView)).physics,
-        isA<PageScrollPhysics>(),
+        isA<NeverScrollableScrollPhysics>(),
       );
       expect(tester.takeException(), isNull);
     });
@@ -304,6 +338,100 @@ void main() {
       await _doubleTap(
           tester, find.byKey(const ValueKey('vault-viewer-page-a')));
       expect(_zoomViewer(tester, 'a').panEnabled, isTrue);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('two-finger pinch-out zooms in and never changes the page',
+        (tester) async {
+      // Synthetic touch pointers are the closest a widget test can get to a
+      // real two-finger pinch; the scale recognizer must win the arena with
+      // both pointers down and hand the fingers to oh zoom, not to paging.
+      final store = _FakeStore(_pixel());
+      await tester.pumpWidget(_viewer(store, [_image('a'), _image('b')]));
+      await tester.pumpAndSettle();
+      final page = find.byKey(const ValueKey('vault-viewer-page-a'));
+      await _pinch(tester, tester.getCenter(page), outward: true);
+      expect(
+        _scaleOf(_matrix(tester, 'a')),
+        greaterThan(1.5),
+        reason: 'a real two-finger spread must zoom the image in',
+      );
+      expect(_zoomViewer(tester, 'a').panEnabled, isTrue,
+          reason: 'zoomed images must accept one-finger panning');
+      expect(find.text('1 of 2'), findsOneWidget,
+          reason: 'a pinch must not be swallowed by page swiping');
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('one-finger drag pans a zoomed image without paging',
+        (tester) async {
+      final store = _FakeStore(_pixel());
+      await tester.pumpWidget(_viewer(store, [_image('a'), _image('b')]));
+      await tester.pumpAndSettle();
+      final page = find.byKey(const ValueKey('vault-viewer-page-a'));
+      await _doubleTap(tester, page);
+      expect(_zoomViewer(tester, 'a').panEnabled, isTrue);
+      final before = _matrix(tester, 'a').getTranslation();
+      final drag =
+          await tester.startGesture(tester.getCenter(page), pointer: 51);
+      await tester.pump(const Duration(milliseconds: 16));
+      for (var i = 0; i < 6; i++) {
+        await drag.moveBy(const Offset(-20, 0));
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+      await drag.up();
+      await tester.pumpAndSettle();
+      final after = _matrix(tester, 'a').getTranslation();
+      expect(after.x, lessThan(before.x),
+          reason: 'dragging left must pan the zoomed image left');
+      expect(find.text('1 of 2'), findsOneWidget,
+          reason: 'panning must not change the page');
+      expect(_zoomViewer(tester, 'a').panEnabled, isTrue);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('vertical drag while unzoomed moves neither image nor page',
+        (tester) async {
+      final store = _FakeStore(_pixel());
+      await tester.pumpWidget(_viewer(store, [_image('a'), _image('b')]));
+      await tester.pumpAndSettle();
+      final page = find.byKey(const ValueKey('vault-viewer-page-a'));
+      final drag =
+          await tester.startGesture(tester.getCenter(page), pointer: 61);
+      await tester.pump(const Duration(milliseconds: 16));
+      for (var i = 0; i < 6; i++) {
+        await drag.moveBy(const Offset(0, 25));
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+      await drag.up();
+      await tester.pumpAndSettle();
+      expect(_matrix(tester, 'a'), Matrix4.identity(),
+          reason: 'unzoomed vertical drag must leave the matrix untouched');
+      expect(_zoomViewer(tester, 'a').panEnabled, isFalse);
+      expect(find.text('1 of 2'), findsOneWidget,
+          reason: 'unzoomed vertical drag must not page');
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('pinch back in restores the fitted view', (tester) async {
+      final store = _FakeStore(_pixel());
+      await tester.pumpWidget(_viewer(store, [_image('a')]));
+      await tester.pumpAndSettle();
+      final page = find.byKey(const ValueKey('vault-viewer-page-a'));
+      final center = tester.getCenter(page);
+      await _pinch(tester, center, outward: true);
+      expect(
+        _scaleOf(_matrix(tester, 'a')),
+        greaterThan(1.5),
+        reason: 'opening pinch must zoom in first',
+      );
+      // A closing pinch must land at 1x and snap the residual translation back
+      // to identity so the next double-tap zooms instead of "resetting".
+      await _pinch(tester, center, outward: false, halfSpan: 150, step: 12);
+      expect(_matrix(tester, 'a'), Matrix4.identity(),
+          reason: 'pinch back in must restore identity');
+      expect(_zoomViewer(tester, 'a').panEnabled, isFalse,
+          reason: 'scale ~1 must read as unzoomed');
       expect(tester.takeException(), isNull);
     });
   });

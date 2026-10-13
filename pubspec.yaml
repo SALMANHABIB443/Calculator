@@ -33,6 +33,15 @@ dependencies:
   cupertino_icons: ^1.0.8
   image_picker: ^1.2.4
   path_provider: ^2.1.6
+  file_picker: ^13.1.0
+  pdfx: ^2.11.0
+  cryptography: ^2.9.0
+  flutter_secure_storage: ^11.2.0
+
+  # Browser DOM interop for the web build's document download (no `dart:html`,
+  # which is deprecated; already transitive via file_picker_web, promoted to a
+  # direct dependency because this project's own code imports it).
+  web: ^1.1.1
 
 dev_dependencies:
   flutter_test:

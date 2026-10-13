@@ -55,6 +55,21 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
   // assigning `controller.value` fires its listener synchronously, which
   // would re-enter this same handler mid-assignment.
   bool _settlingZoom = false;
+  // True while `InteractiveViewer` reports an active pan/scale gesture. The
+  // scale-1 identity snap is deferred until the fingers leave the glass:
+  // forcing the matrix back while they are still down makes the tail of a
+  // pinch-in stutter.
+  bool _gestureActive = false;
+  // The pager is locked (`NeverScrollableScrollPhysics`), so its drag
+  // recognizer cannot race the pinch/pan scale recognizer and swallow the
+  // gesture on the first pointer. While unzoomed a one-finger horizontal drag
+  // belongs to the page instead of the image, and the viewer drives the swipe
+  // itself from these values via `_pages.position.jumpTo`.
+  bool _swipeActive = false;
+  bool _pagerMoved = false;
+  double _swipeStartPixels = 0;
+  double _swipeStartX = 0;
+  static const double _kSwipeFlingVelocity = 350.0;
   TapDownDetails? _doubleTap;
 
   @override
@@ -100,12 +115,16 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
     if (page != _index || !mounted || _settlingZoom) return;
     final scale = _scaleOf(controller.value);
     final zoomed = scale > 1.02;
-    if (!zoomed && controller.value != Matrix4.identity()) {
+    if (!zoomed &&
+        !_gestureActive &&
+        controller.value != Matrix4.identity()) {
       // Pinch-out rarely lands on an exact identity matrix: the scale is back
       // at ~1x but a residual translation survives. Leaving it means the next
       // double-tap takes the "reset" branch instead of zooming (read as
       // "further zooming fails until reopen") and the picture sits offset.
-      // Snap back so scale-1 always means unzoomed-and-centred.
+      // Snap back so scale-1 always means unzoomed-and-centred. Only when no
+      // gesture is active -- snapping mid-gesture fights the recognizer and
+      // stutters the tail of a pinch-in.
       _settlingZoom = true;
       try {
         controller.value = Matrix4.identity();
@@ -182,6 +201,89 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
         ..scaleByDouble(3.0, 3.0, 3.0, 1)
         ..translateByDouble(-pos.dx, -pos.dy, 0, 1);
     }
+  }
+
+  /// One gesture owner per page: the `InteractiveViewer` scale recognizer
+  /// claims every touch (pinch and one-finger drag), so the pager must be
+  /// locked and driven from here instead of competing in the gesture arena.
+  void _onInteractionStart(ScaleStartDetails details) {
+    _gestureActive = true;
+    _pagerMoved = false;
+    if (!_zoomed &&
+        details.pointerCount == 1 &&
+        _pages.hasClients &&
+        _pages.position.hasContentDimensions) {
+      _swipeActive = true;
+      _swipeStartPixels = _pages.position.pixels;
+      _swipeStartX = details.localFocalPoint.dx;
+    } else {
+      _swipeActive = false;
+    }
+  }
+
+  void _onInteractionUpdate(ScaleUpdateDetails details) {
+    if (!_gestureActive) return;
+    if (details.pointerCount > 1) {
+      // A second finger landed mid-move: this is a pinch, not a pager swipe.
+      _swipeActive = false;
+      return;
+    }
+    if (_zoomed || !_swipeActive || !_pages.hasClients) return;
+    if (!_pages.position.hasContentDimensions) return;
+    final double dx = details.localFocalPoint.dx - _swipeStartX;
+    final double next =
+        (_swipeStartPixels - dx).clamp(0.0, _pages.position.maxScrollExtent);
+    if (next != _pages.position.pixels) {
+      _pages.position.jumpTo(next);
+      _pagerMoved = true;
+    }
+  }
+
+  void _onInteractionEnd(int page, ScaleEndDetails details) {
+    if (!_gestureActive) return;
+    _gestureActive = false;
+    _swipeActive = false;
+    // A pinch that began while a swipe was mid-flight can leave the pager
+    // between pages; snap it home so navigation never feels half-dragged.
+    if (_pagerMoved && _pages.hasClients) {
+      _settlePager(details.velocity.pixelsPerSecond.dx);
+    }
+    _pagerMoved = false;
+    // Snap a ~1x residual translation back to a true identity once the
+    // fingers are gone (see [_onZoomChanged]).
+    final controller = _zooms[page];
+    if (controller == null) return;
+    if (_scaleOf(controller.value) <= 1.02 &&
+        controller.value != Matrix4.identity()) {
+      _settlingZoom = true;
+      try {
+        controller.value = Matrix4.identity();
+      } finally {
+        _settlingZoom = false;
+      }
+    }
+  }
+
+  /// Settles a manual pager swipe to the nearest page, or flings by velocity.
+  void _settlePager(double velocityX) {
+    final position = _pages.position;
+    if (position.viewportDimension <= 0) return;
+    final double page = position.pixels / position.viewportDimension;
+    final int count = widget.images.length;
+    int target;
+    if (velocityX < -_kSwipeFlingVelocity) {
+      target = page.ceil();
+    } else if (velocityX > _kSwipeFlingVelocity) {
+      target = page.floor();
+    } else {
+      target = page.round();
+    }
+    target = target.clamp(0, count - 1);
+    _pages.animateToPage(
+      target,
+      duration: const Duration(milliseconds: 220),
+      curve: Curves.easeOutCubic,
+    );
   }
 
   Future<void> _shareCurrent() async {
@@ -340,11 +442,15 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
             PageView.builder(
               controller: _pages,
               itemCount: widget.images.length,
-              // While zoomed the page must not swipe: the drag belongs to the
-              // image pan. At scale 1 the viewer yields so swipes navigate.
-              physics: _zoomed
-                  ? const NeverScrollableScrollPhysics()
-                  : const PageScrollPhysics(),
+              // The pager never claims gestures: if `Scrollable` registered its
+              // horizontal-drag recognizer here, it would race the viewer's
+              // scale recognizer on the first pointer and win on real touch
+              // input (any horizontal component in a pinch reads as a swipe),
+              // which is exactly the "pinch/pan dead" bug. Swiping between
+              // pages is driven from the viewer's own gesture layer instead
+              // (see [_onInteractionStart]/[_onInteractionUpdate]/
+              // [_onInteractionEnd]).
+              physics: const NeverScrollableScrollPhysics(),
               onPageChanged: (i) {
                 final previous = _index;
                 _resetZoom(previous);
@@ -387,11 +493,14 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
                         key: ValueKey('vault-viewer-zoom-${image.id}'),
                         transformationController: zoom,
                         minScale: 1,
-                        maxScale: 4,
+                        maxScale: 5,
                         panEnabled: zoomed,
                         scaleEnabled: true,
                         boundaryMargin: EdgeInsets.zero,
                         clipBehavior: Clip.hardEdge,
+                        onInteractionStart: _onInteractionStart,
+                        onInteractionUpdate: _onInteractionUpdate,
+                        onInteractionEnd: (d) => _onInteractionEnd(i, d),
                         child: Center(
                           child: Image.memory(
                             bytes,
