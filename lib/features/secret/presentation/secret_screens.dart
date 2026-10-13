@@ -9,6 +9,12 @@ import '../../../core/design/app_typography.dart';
 import '../../../core/widgets/core_widgets.dart';
 import '../../../routing/app_routes.dart';
 import '../data/device_storage_repository.dart';
+import '../documents/domain/vault_document.dart';
+import '../documents/presentation/vault_document_viewer.dart';
+import '../documents/presentation/vault_documents_controller.dart';
+import '../images/domain/vault_image.dart';
+import '../images/presentation/vault_image_viewer.dart';
+import '../images/presentation/vault_images_controller.dart';
 import 'secret_controller.dart';
 import 'secret_home_button.dart';
 import 'secret_lockout_controller.dart';
@@ -439,8 +445,14 @@ class _SecretCategoryCard extends StatelessWidget {
 /// whereas every other control here names a category a phone already has. The
 /// overflow opens [SecretMenu] (D-115), which holds one row and leads to the
 /// hidden area's own settings (FEAT-SEC-004).
-class SecretScreen extends ConsumerWidget {
+class SecretScreen extends ConsumerStatefulWidget {
   const SecretScreen({super.key});
+
+  @override
+  ConsumerState<SecretScreen> createState() => _SecretScreenState();
+}
+
+class _SecretScreenState extends ConsumerState<SecretScreen> {
 
   // The five non-grid rows resolve their [VaultPlace] from [vaultPlaces] rather
   // than repeating its title and icon, for the same reason the Categories grid
@@ -460,6 +472,60 @@ class SecretScreen extends ConsumerWidget {
   static final VaultPlace _sdCard = vaultPlaceById('sd-card')!;
   static final VaultPlace _recycleBin = vaultPlaceById('recycle-bin')!;
   static final VaultPlace _analyseStorage = vaultPlaceById('analyse-storage')!;
+
+  final TextEditingController _searchController = TextEditingController();
+  bool _searching = false;
+  String _query = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _toggleSearch() {
+    setState(() {
+      _searching = !_searching;
+      if (!_searching) {
+        _query = '';
+        _searchController.clear();
+      }
+    });
+  }
+
+  void _closeSearch() {
+    setState(() {
+      _searching = false;
+      _query = '';
+      _searchController.clear();
+    });
+  }
+
+  List<VaultImage> _searchImages(WidgetRef ref) {
+    final gallery = ref.read(vaultImagesProvider).valueOrNull;
+    if (gallery == null) return [];
+    final q = _query.trim().toLowerCase();
+    if (q.isEmpty) return gallery.visible;
+    return gallery.visible.where((image) {
+      return image.fileName.toLowerCase().contains(q) ||
+          image.dateAdded.toIso8601String().toLowerCase().contains(q) ||
+          image.albumIds.any((id) {
+            final album = gallery.albums.where((a) => a.id == id);
+            return album.isNotEmpty && album.first.name.toLowerCase().contains(q);
+          });
+    }).toList();
+  }
+
+  List<VaultDocument> _searchDocuments(WidgetRef ref) {
+    final state = ref.read(vaultDocumentsProvider).valueOrNull;
+    if (state == null) return [];
+    final q = _query.trim().toLowerCase();
+    if (q.isEmpty) return state.visible;
+    return state.visible.where((doc) {
+      return doc.fileName.toLowerCase().contains(q) ||
+          doc.dateAdded.toIso8601String().toLowerCase().contains(q);
+    }).toList();
+  }
 
   /// Opens [place]'s page.
   ///
@@ -502,7 +568,8 @@ class SecretScreen extends ConsumerWidget {
       );
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final ref = this.ref;
     return Scaffold(
       backgroundColor: context.appColors.background,
       body: SafeArea(
@@ -510,133 +577,11 @@ class SecretScreen extends ConsumerWidget {
           children: <Widget>[
             Column(
               children: <Widget>[
-                AppPageHeader(
-                  title: 'Vault',
-                  actions: <Widget>[
-                    AppIconButton(
-                      key: const Key('secret-search'),
-                      icon: Icons.search,
-                      tooltip: 'Search',
-                      // **The last control on the screen that does nothing**
-                      // (D-114), and the reason it is left that way is not
-                      // sloppiness: search is the one affordance here with no
-                      // destination and no honest page to open. Every other row
-                      // names a category, so it has a [VaultPlace] whose empty
-                      // state can be written truthfully — "No images yet" is a
-                      // fact, whereas a search page with an empty state would be
-                      // claiming to search a set of files that does not exist.
-                      // Search arrives with the file list it searches.
-                      onPressed: _noop,
-                    ),
-                    // `AppPageHeader` spreads its actions with no gap of its own,
-                    // because the calculator only ever passes one. 12 px is the
-                    // gap the app already uses between the back box and a title,
-                    // so these two read as a pair rather than as a wall.
-                    const SizedBox(width: AppSpacing.md),
-                    // **Moved to the top-right.** It sat alone on the far side of
-                    // a page that had nothing on it, which was defensible then and
-                    // is not now that the header carries a second action. The key
-                    // is unchanged, so nothing that finds this button by it stops
-                    // working; the tooltip became 'Menu' with D-115 because the
-                    // button no longer navigates to Settings, it opens a panel.
-                    //
-                    // **The panel is a dialog, not a drawer (D-115).** `show`
-                    // opens [SecretMenu] through the shared [MenuSlider], which
-                    // brings Ethar's slide, fade, 340 ms timing, and 54 % scrim.
-                    // A `Scaffold.drawer` was dropped because it could not be the
-                    // same animation: the framework's drawer slides at its own
-                    // speed under its own scrim, and this panel is *the* Ethar
-                    // menu, not a Material clone of it.
-                    AppIconButton(
-                      key: const Key('secret-overflow'),
-                      icon: Icons.more_vert,
-                      tooltip: 'Menu',
-                      onPressed: () => SecretMenu.show(context),
-                    ),
-                  ],
-                ),
-                // Scrollable because the content stopped fitting: a 360 × 640
-                // screen runs past the bottom, and so does this one at D-54's 1.3×
-                // text scale. A page that cannot scroll is a page whose last card
-                // cannot be reached.
+                if (_searching) _searchHeader(context) else _defaultHeader(context, ref),
                 Expanded(
-                  child: ListView(
-                    key: const Key('secret-home-list'),
-                    padding: const EdgeInsets.only(
-                      // Clears the floating home button instead of sitting under
-                      // it: the 56 px circle plus the 24 px inset it is padded by
-                      // plus the 12 px that keeps the last card off the button's
-                      // own optical edge. Written from the two tokens that size
-                      // it, so moving either moves this.
-                      bottom:
-                          AppSizes.secretHomeButton +
-                          AppSecretSpacing.homeButtonInset +
-                          AppSpacing.md,
-                    ),
-                    children: <Widget>[
-                      SizedBox(height: AppSpacing.lg),
-                      // **No [SectionHeader] above this one**, unlike the two
-                      // groups below it. "Recent files" is the only row on the
-                      // page, so a label over it would be a heading announcing a
-                      // list of one; it is the page's own first action instead,
-                      // and the [AppSpacing.lg] above it matches History's.
-                      SettingsGroup(
-                        children: <Widget>[
-                          SettingsRow(
-                            key: const Key('secret-recent-files'),
-                            iconWidget: vaultPlaceGlyph(_recent),
-                            title: _recent.title,
-                            onTap: () => _browse(context, _recent),
-                          ),
-                        ],
-                      ),
-                      const SectionHeader('Categories'),
-                      const _SecretCategoryCard(),
-                      const SectionHeader('Storage'),
-                      SettingsGroup(
-                        children: <Widget>[
-                          SettingsRow(
-                            key: const Key('secret-storage-internal'),
-                            // `smartphone`, not the `phone_iphone` the Vibration
-                            // row uses — same glyph in two places reads as a bug
-                            // rather than as a theme.
-                            iconWidget: vaultPlaceGlyph(_internalStorage),
-                            title: _internalStorage.title,
-                            subtitle: _internalSubtitle(ref),
-                            onTap: () => _browse(context, _internalStorage),
-                          ),
-                          SettingsRow(
-                            key: const Key('secret-storage-sd'),
-                            iconWidget: vaultPlaceGlyph(_sdCard),
-                            title: _sdCard.title,
-                            subtitle: _sdSubtitle(ref),
-                            onTap: () => _browse(context, _sdCard),
-                          ),
-                        ],
-                      ),
-                      // A [SizedBox] rather than a [SectionHeader], because these
-                      // two rows are actions and not a group — 24 px is the gap
-                      // [SectionHeader.topPadding] leaves between two groups, so
-                      // the rhythm matches without inventing a heading for them.
-                      const SizedBox(height: AppSpacing.xl),
-                      SettingsGroup(
-                        children: <Widget>[
-                          SettingsRow(
-                            key: const Key('secret-recycle-bin'),
-                            iconWidget: vaultPlaceGlyph(_recycleBin),
-                            title: _recycleBin.title,
-                            onTap: () => _browse(context, _recycleBin),
-                          ),
-                          SettingsRow(
-                            key: const Key('secret-analyse-storage'),
-                            iconWidget: vaultPlaceGlyph(_analyseStorage),
-                            title: _analyseStorage.title,
-                            onTap: () => _browse(context, _analyseStorage),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                  child: _searching
+                      ? _searchResults(context, ref)
+                      : _defaultBody(context, ref),
                 ),
               ],
             ),
@@ -645,24 +590,251 @@ class SecretScreen extends ConsumerWidget {
             // return to the app they came from (D-86). Now a sibling of the
             // scrolling column rather than of a [Stack] holding one button, so it
             // floats over the cards — which is why the list above pads for it.
-            const SecretHomeButton(),
+            if (!_searching) const SecretHomeButton(),
           ],
         ),
       ),
     );
   }
+
+  Widget _defaultHeader(BuildContext context, WidgetRef ref) {
+    return AppPageHeader(
+      title: 'Vault',
+      actions: <Widget>[
+        AppIconButton(
+          key: const Key('secret-search'),
+          icon: Icons.search,
+          tooltip: 'Search',
+          onPressed: _toggleSearch,
+        ),
+        const SizedBox(width: AppSpacing.md),
+        AppIconButton(
+          key: const Key('secret-overflow'),
+          icon: Icons.more_vert,
+          tooltip: 'Menu',
+          onPressed: () => SecretMenu.show(context),
+        ),
+      ],
+    );
+  }
+
+  Widget _searchHeader(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: AppSpacing.md,
+        right: AppSpacing.screenHorizontal,
+        top: AppSpacing.headerTopGap,
+      ),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: AppSizes.headerHeight),
+        child: Row(
+          children: [
+            AppIconButton(
+              icon: Icons.arrow_back,
+              tooltip: 'Close search',
+              onPressed: _closeSearch,
+              bordered: false,
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: TextField(
+                key: const Key('secret-vault-search'),
+                controller: _searchController,
+                autofocus: true,
+                decoration: InputDecoration(
+                  hintText: 'Search files...',
+                  filled: true,
+                  fillColor: Colors.grey.withOpacity(0.15),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.sm,
+                  ),
+                  suffixIcon: _query.isEmpty
+                      ? null
+                      : IconButton(
+                          icon: const Icon(Icons.clear),
+                          tooltip: 'Clear search',
+                          onPressed: () => setState(() {
+                            _query = '';
+                            _searchController.clear();
+                          }),
+                        ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.card),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                onChanged: (value) => setState(() => _query = value),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _searchResults(BuildContext context, WidgetRef ref) {
+    final images = _searchImages(ref);
+    final documents = _searchDocuments(ref);
+    final total = images.length + documents.length;
+
+    if (_query.trim().isEmpty) {
+      return const EmptyState(
+        icon: Icons.search,
+        title: 'Search your vault',
+        message: 'Type to search photos and documents',
+      );
+    }
+
+    if (total == 0) {
+      return const EmptyState(
+        icon: Icons.search_off,
+        title: 'No results found',
+        message: 'Try a different search term',
+      );
+    }
+
+    return ListView(
+      padding: const EdgeInsets.only(
+        top: AppSpacing.sm,
+        bottom: AppSpacing.xl,
+      ),
+      children: [
+        if (images.isNotEmpty) ...[
+          SectionHeader('Photos (${images.length})'),
+          SettingsGroup(
+            children: [
+              for (final image in images)
+                SettingsRow(
+                  icon: Icons.image_outlined,
+                  title: image.fileName,
+                  subtitle: _formatDate(image.dateAdded),
+                  onTap: () => _openImage(context, ref, image),
+                ),
+            ],
+          ),
+        ],
+        if (documents.isNotEmpty) ...[
+          SectionHeader('Documents (${documents.length})'),
+          SettingsGroup(
+            children: [
+              for (final doc in documents)
+                SettingsRow(
+                  icon: Icons.description_outlined,
+                  title: doc.fileName,
+                  subtitle: _formatDate(doc.dateAdded),
+                  onTap: () => _openDocument(context, ref, doc),
+                ),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.day}/${date.month}/${date.year}';
+  }
+
+  void _openImage(BuildContext context, WidgetRef ref, VaultImage image) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => VaultImageViewer(images: [image], initialIndex: 0),
+      ),
+    );
+  }
+
+  void _openDocument(BuildContext context, WidgetRef ref, VaultDocument doc) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => VaultDocumentViewerScreen(document: doc),
+      ),
+    );
+  }
+
+  Widget _defaultBody(BuildContext context, WidgetRef ref) {
+    // Scrollable because the content stopped fitting: a 360 × 640
+    // screen runs past the bottom, and so does this one at D-54's 1.3×
+    // text scale. A page that cannot scroll is a page whose last card
+    // cannot be reached.
+    return ListView(
+      key: const Key('secret-home-list'),
+      padding: const EdgeInsets.only(
+        // Clears the floating home button instead of sitting under
+        // it: the 56 px circle plus the 24 px inset it is padded by
+        // plus the 12 px that keeps the last card off the button's
+        // own optical edge. Written from the two tokens that size
+        // it, so moving either moves this.
+        bottom:
+            AppSizes.secretHomeButton +
+            AppSecretSpacing.homeButtonInset +
+            AppSpacing.md,
+      ),
+      children: <Widget>[
+        SizedBox(height: AppSpacing.lg),
+        // **No [SectionHeader] above this one**, unlike the two
+        // groups below it. "Recent files" is the only row on the
+        // page, so a label over it would be a heading announcing a
+        // list of one; it is the page's own first action instead,
+        // and the [AppSpacing.lg] above it matches History's.
+        SettingsGroup(
+          children: <Widget>[
+            SettingsRow(
+              key: const Key('secret-recent-files'),
+              iconWidget: vaultPlaceGlyph(_recent),
+              title: _recent.title,
+              onTap: () => _browse(context, _recent),
+            ),
+          ],
+        ),
+        const SectionHeader('Categories'),
+        const _SecretCategoryCard(),
+        const SectionHeader('Storage'),
+        SettingsGroup(
+          children: <Widget>[
+            SettingsRow(
+              key: const Key('secret-storage-internal'),
+              // `smartphone`, not the `phone_iphone` the Vibration
+              // row uses — same glyph in two places reads as a bug
+              // rather than as a theme.
+              iconWidget: vaultPlaceGlyph(_internalStorage),
+              title: _internalStorage.title,
+              subtitle: _internalSubtitle(ref),
+              onTap: () => _browse(context, _internalStorage),
+            ),
+            SettingsRow(
+              key: const Key('secret-storage-sd'),
+              iconWidget: vaultPlaceGlyph(_sdCard),
+              title: _sdCard.title,
+              subtitle: _sdSubtitle(ref),
+              onTap: () => _browse(context, _sdCard),
+            ),
+          ],
+        ),
+        // A [SizedBox] rather than a [SectionHeader], because these
+        // two rows are actions and not a group — 24 px is the gap
+        // [SectionHeader.topPadding] leaves between two groups, so
+        // the rhythm matches without inventing a heading for them.
+        const SizedBox(height: AppSpacing.xl),
+        SettingsGroup(
+          children: <Widget>[
+            SettingsRow(
+              key: const Key('secret-recycle-bin'),
+              iconWidget: vaultPlaceGlyph(_recycleBin),
+              title: _recycleBin.title,
+              onTap: () => _browse(context, _recycleBin),
+            ),
+            SettingsRow(
+              key: const Key('secret-analyse-storage'),
+              iconWidget: vaultPlaceGlyph(_analyseStorage),
+              title: _analyseStorage.title,
+              onTap: () => _browse(context, _analyseStorage),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 }
 
-/// The callback the Search button is wired to (FEAT-SEC-007, D-114).
-///
-/// **A no-op rather than `null`, and that is the entire point of it.**
-/// [AppIconButton] draws its box and [Material]-backed ripple regardless, so
-/// leaving the callback off would render the header as a greyed control, which
-/// reads as a layout bug rather than as a search that has not shipped.
-///
-/// **It used to be the callback of all eleven rows.** They now open a
-/// [VaultPlaceScreen] each, and the search box is the last control on the screen
-/// that is enabled-looking and inert — the reason is recorded at its call site.
-/// The function itself is unchanged: a control that cannot do its job yet should
-/// still look like the control it is going to be, and should never be a trap.
-void _noop() {}
+
