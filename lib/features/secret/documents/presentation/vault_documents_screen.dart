@@ -7,6 +7,7 @@ import '../../../../core/design/app_typography.dart';
 import '../../../../core/widgets/core_widgets.dart';
 import '../../data/device_storage_repository.dart';
 import '../../presentation/secret_home_button.dart';
+import '../../presentation/vault_search_header.dart';
 import '../data/vault_document_picker.dart';
 import '../domain/vault_document.dart';
 import 'vault_document_viewer.dart';
@@ -18,12 +19,14 @@ import 'vault_documents_state.dart';
 ///
 /// One screen in two modes, mirroring how the gallery handles an album page:
 ///
-/// * **Landing** (no [initialFilter]) — the filter chips, the five most recent
-///   documents, a Browse-by-type card, and the All-documents collection row,
-///   with the floating Home button the rest of the secret area carries.
+/// * **Landing** (no [initialFilter]) — a Browse-by-type card, the
+///   All-documents collection row, and the five most recent documents, with the
+///   floating Home button the rest of the secret area carries.
 /// * **Collection** ([initialFilter] set) — the same rows for one family (or
 ///   all), pushed from a Browse row or the collection row. A pushed route rather
-///   than an in-place swap, so Back returns to whatever opened it.
+///   than an in-place swap, so Back returns to whatever opened it. Only the
+///   All-documents page carries the type filter chips; a single-family page does
+///   not, since every row there already belongs to that family.
 ///
 /// The search text and the chip filter are local to the screen rather than in a
 /// provider: they are transient, and a mutation that invalidated the data
@@ -58,6 +61,11 @@ class _VaultDocumentsScreenState extends ConsumerState<VaultDocumentsScreen> {
   String? _importLabel;
   final TextEditingController _searchController = TextEditingController();
 
+  /// Drives whichever list is showing, so a drag can auto-scroll to documents
+  /// that started off screen (D-120). One controller: only one body is built at
+  /// a time.
+  final ScrollController _scrollController = ScrollController();
+
   bool get _selecting => _selected.isNotEmpty;
 
   @override
@@ -69,6 +77,7 @@ class _VaultDocumentsScreenState extends ConsumerState<VaultDocumentsScreen> {
   @override
   void dispose() {
     _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -105,34 +114,35 @@ class _VaultDocumentsScreenState extends ConsumerState<VaultDocumentsScreen> {
         resolved.isNotEmpty && resolved.every((e) => _selected.contains(e.id));
 
     return SecondaryPageScaffold(
-      header: VaultDocumentsHeader(
-        selecting: _selecting,
-        selectedCount: _selected.length,
-        allSelected: allSelected,
-        onCancel: () => setState(_selected.clear),
-        onSelectAll: () => _selectAll(resolved),
-        onSearch: _toggleSearch,
-        onMore: () => _showMoreSheet(state),
-      ),
+      header: _header(state, resolved, allSelected),
       body: Stack(
         children: [
           Positioned.fill(
             child: Column(
               children: [
-                if (_searching) _searchField(),
                 Expanded(
-                  child: _selecting
-                      ? _documentList(resolved)
-                      : _collectionMode
-                      ? _collectionBody(state, resolved)
-                      : _landing(state, resolved),
+                  // D-120: one region wraps whichever body is showing, so the
+                  // drag survives the landing→selection swap that a long-press
+                  // triggers, and every list gets auto-scroll from one place.
+                  child: DragSelectRegion(
+                    controller: _scrollController,
+                    onBegin: _beginDrag,
+                    onPaint: _paintDrag,
+                    child: _selecting
+                        ? _documentList(resolved)
+                        : _searching
+                        ? _searchResults(_searchList(state))
+                        : _collectionMode
+                        ? _collectionBody(state, resolved)
+                        : _landing(state, resolved),
+                  ),
                 ),
                 if (_selecting) _selectionBar(state, resolved),
                 if (_importing) _importBanner(),
               ],
             ),
           ),
-          if (!_selecting)
+          if (!_selecting && !_searching)
             const Positioned.fill(child: SecretHomeButton()),
         ],
       ),
@@ -140,20 +150,103 @@ class _VaultDocumentsScreenState extends ConsumerState<VaultDocumentsScreen> {
   }
 
   // ---------------------------------------------------------------------------
+  // Header
+  // ---------------------------------------------------------------------------
+
+  /// The top row: the documents header, or the shared search bar when a search
+  /// is open (and no selection has taken the row over).
+  Widget _header(
+    VaultDocumentsState state,
+    List<VaultDocument> resolved,
+    bool allSelected,
+  ) {
+    if (!_selecting && _searching) {
+      return VaultSearchHeader(
+        fieldKey: VaultDocumentsScreen.searchFieldKey,
+        controller: _searchController,
+        query: _query,
+        hintText: 'Search documents',
+        onChanged: (value) => setState(() => _query = value),
+        onClose: _closeSearch,
+      );
+    }
+    return VaultDocumentsHeader(
+      selecting: _selecting,
+      selectedCount: _selected.length,
+      allSelected: allSelected,
+      onCancel: () => setState(_selected.clear),
+      onSelectAll: () => _selectAll(resolved),
+      onSearch: () => setState(() => _searching = true),
+      onMore: () => _showMoreSheet(state),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
   // Bodies
   // ---------------------------------------------------------------------------
+
+  /// The documents a search looks through.
+  ///
+  /// **All types on the landing page, the page's own selection in a collection.**
+  /// The landing page carries no type filter, so a search there reaches every
+  /// document. A collection page *is* its selection's page — the All-documents
+  /// page searches within its chosen chip, a single-family page within its
+  /// family — so a search there stays inside it.
+  List<VaultDocument> _searchList(VaultDocumentsState state) => state.resolve(
+    VaultDocumentView(
+      query: _query,
+      typeFilter: _collectionMode ? _filter : VaultDocumentFilter.all,
+    ),
+  );
+
+  /// The results of an open search: a prompt before anything is typed, an
+  /// honest empty state when nothing matches, and the matching rows otherwise.
+  ///
+  /// **The landing sections do not appear here.** Search replaces the
+  /// filter chips, the Browse-by-type card, the collection row, and Recent
+  /// documents rather than sitting under them, so the field has the screen and
+  /// a result is not one more row buried in a page of other controls.
+  Widget _searchResults(List<VaultDocument> results) {
+    if (_query.trim().isEmpty) {
+      return const EmptyState(
+        icon: Icons.search,
+        title: 'Search your documents',
+        message: 'Type to search by file name',
+      );
+    }
+    if (results.isEmpty) {
+      return const EmptyState(
+        icon: Icons.search_off,
+        title: 'No documents found',
+        message: 'No documents match the current search or filter',
+      );
+    }
+    return ListView.builder(
+      key: VaultDocumentsScreen.listKey,
+      controller: _scrollController,
+      padding: _listPadding,
+      itemCount: results.length,
+      itemBuilder: (context, index) {
+        final document = results[index];
+        return DragSelectItem(
+          id: document.id,
+          child: VaultDocumentRow(
+            key: Key('vault-document-${document.id}'),
+            document: document,
+            onTap: () => _openViewer(document),
+            onMenu: () => _showRowSheet(document),
+          ),
+        );
+      },
+    );
+  }
 
   Widget _landing(VaultDocumentsState state, List<VaultDocument> resolved) {
     return ListView(
       key: const Key('vault-documents-landing'),
+      controller: _scrollController,
       padding: _listPadding,
       children: [
-        VaultDocumentFilterBar(
-          selected: _filter,
-          countOf: state.countOf,
-          onSelected: (filter) => setState(() => _filter = filter),
-        ),
-        const SizedBox(height: AppSpacing.lg),
         const SectionHeader('Browse by type'),
         VaultDocumentBrowseCard(
           countOf: state.countOf,
@@ -183,18 +276,48 @@ class _VaultDocumentsScreenState extends ConsumerState<VaultDocumentsScreen> {
           )
         else
           for (final document in resolved.take(5))
-            VaultDocumentRow(
-              key: Key('vault-document-${document.id}'),
-              document: document,
-              onTap: () => _openViewer(document),
-              onLongPress: () => setState(() => _selected.add(document.id)),
-              onMenu: () => _showRowSheet(document),
+            DragSelectItem(
+              id: document.id,
+              child: VaultDocumentRow(
+                key: Key('vault-document-${document.id}'),
+                document: document,
+                onTap: () => _openViewer(document),
+                onMenu: () => _showRowSheet(document),
+              ),
             ),
       ],
     );
   }
 
+  /// Whether this collection page carries the type filter chips.
+  ///
+  /// Only the All-documents page does: a single-family page already shows one
+  /// family, so a chip row there would only ever hide rows the user came to see.
+  bool get _showsTypeChips => widget.initialFilter == VaultDocumentFilter.all;
+
   Widget _collectionBody(
+    VaultDocumentsState state,
+    List<VaultDocument> resolved,
+  ) {
+    final list = _collectionList(state, resolved);
+    if (!_showsTypeChips) return list;
+    return Column(
+      children: [
+        // The chips sit directly under the header here, so they need the gap the
+        // landing page used to give them before this bar moved onto this page.
+        const SizedBox(height: AppSpacing.lg),
+        VaultDocumentFilterBar(
+          selected: _filter,
+          countOf: state.countOf,
+          onSelected: (filter) => setState(() => _filter = filter),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Expanded(child: list),
+      ],
+    );
+  }
+
+  Widget _collectionList(
     VaultDocumentsState state,
     List<VaultDocument> resolved,
   ) {
@@ -202,6 +325,7 @@ class _VaultDocumentsScreenState extends ConsumerState<VaultDocumentsScreen> {
       final query = _query.trim();
       return ListView(
         key: VaultDocumentsScreen.listKey,
+        controller: _scrollController,
         padding: _listPadding,
         children: [
           Padding(
@@ -211,7 +335,9 @@ class _VaultDocumentsScreenState extends ConsumerState<VaultDocumentsScreen> {
             ),
             child: Text(
               query.isEmpty
-                  ? 'No ${_filter.label} documents in this vault.'
+                  ? (_filter == VaultDocumentFilter.all
+                        ? 'No documents in this vault yet.'
+                        : 'No ${_filter.label} documents in this vault.')
                   : 'No documents match the current search or filter.',
               textAlign: TextAlign.center,
               style: context.type.rowSubtitle,
@@ -236,25 +362,28 @@ class _VaultDocumentsScreenState extends ConsumerState<VaultDocumentsScreen> {
 
     return ListView.builder(
       key: VaultDocumentsScreen.listKey,
+      controller: _scrollController,
       padding: _listPadding,
       itemCount: resolved.length,
       itemBuilder: (context, index) {
         final document = resolved[index];
         final selected = _selected.contains(document.id);
-        return VaultDocumentRow(
-          key: Key('vault-document-${document.id}'),
-          document: document,
-          selected: selected,
-          selecting: _selecting,
-          onTap: () {
-            if (_selecting) {
-              _toggleSelect(document);
-            } else {
-              _openViewer(document);
-            }
-          },
-          onLongPress: () => setState(() => _selected.add(document.id)),
-          onMenu: () => _showRowSheet(document),
+        return DragSelectItem(
+          id: document.id,
+          child: VaultDocumentRow(
+            key: Key('vault-document-${document.id}'),
+            document: document,
+            selected: selected,
+            selecting: _selecting,
+            onTap: () {
+              if (_selecting) {
+                _toggleSelect(document);
+              } else {
+                _openViewer(document);
+              }
+            },
+            onMenu: () => _showRowSheet(document),
+          ),
         );
       },
     );
@@ -270,16 +399,20 @@ class _VaultDocumentsScreenState extends ConsumerState<VaultDocumentsScreen> {
     }
     return ListView.builder(
       key: VaultDocumentsScreen.listKey,
+      controller: _scrollController,
       padding: _listPadding,
       itemCount: resolved.length,
       itemBuilder: (context, index) {
         final document = resolved[index];
-        return VaultDocumentRow(
-          key: Key('vault-document-${document.id}'),
-          document: document,
-          selected: _selected.contains(document.id),
-          selecting: true,
-          onTap: () => _toggleSelect(document),
+        return DragSelectItem(
+          id: document.id,
+          child: VaultDocumentRow(
+            key: Key('vault-document-${document.id}'),
+            document: document,
+            selected: _selected.contains(document.id),
+            selecting: true,
+            onTap: () => _toggleSelect(document),
+          ),
         );
       },
     );
@@ -292,42 +425,6 @@ class _VaultDocumentsScreenState extends ConsumerState<VaultDocumentsScreen> {
         AppSecretSpacing.homeButtonInset +
         AppSpacing.md,
   );
-
-
-
-  Widget _searchField() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.screenHorizontal,
-        AppSpacing.sm,
-        AppSpacing.screenHorizontal,
-        AppSpacing.sm,
-      ),
-      child: TextField(
-        key: VaultDocumentsScreen.searchFieldKey,
-        controller: _searchController,
-        autofocus: true,
-        decoration: InputDecoration(
-          hintText: 'Search documents',
-          prefixIcon: const Icon(Icons.search),
-          suffixIcon: _query.isEmpty
-              ? null
-              : IconButton(
-                  icon: const Icon(Icons.clear),
-                  tooltip: 'Clear search',
-                  onPressed: () => setState(() {
-                    _query = '';
-                    _searchController.clear();
-                  }),
-                ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppRadius.card),
-          ),
-        ),
-        onChanged: (value) => setState(() => _query = value),
-      ),
-    );
-  }
 
   Widget _addBadge() {
     final colors = context.appColors;
@@ -398,7 +495,11 @@ class _VaultDocumentsScreenState extends ConsumerState<VaultDocumentsScreen> {
     VaultDocumentsState state,
     List<VaultDocument> resolved,
   ) {
-    Widget action(IconData icon, String label, VoidCallback onTap) {
+    // [icon] is a widget so the bar can carry the painted [AppTrashIcon] (the
+    // History screen's delete glyph, D-119) as well as Material [Icon]s — the
+    // same shape the gallery's bottom bar already uses, so the two selection
+    // bars read as one component.
+    Widget action(Widget icon, String label, VoidCallback onTap) {
       return Expanded(
         child: InkWell(
           onTap: onTap,
@@ -410,10 +511,12 @@ class _VaultDocumentsScreenState extends ConsumerState<VaultDocumentsScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  icon,
-                  size: AppSizes.rowIcon,
-                  color: context.appColors.textPrimary,
+                IconTheme(
+                  data: IconThemeData(
+                    color: context.appColors.textPrimary,
+                    size: AppSizes.rowIcon,
+                  ),
+                  child: icon,
                 ),
                 const SizedBox(height: 4),
                 Text(label, style: context.type.caption),
@@ -434,10 +537,13 @@ class _VaultDocumentsScreenState extends ConsumerState<VaultDocumentsScreen> {
         ),
         child: Row(
           children: [
-            action(Icons.ios_share, 'Share', _shareSelected),
-            action(Icons.delete_outline, 'Delete', _deleteSelectedDialog),
+            action(const Icon(Icons.ios_share), 'Share', _shareSelected),
+            // D-119's glyph, not Material's `delete_outline`: this bar deletes
+            // with the same trash the History screen paints, so the app keeps
+            // one delete glyph across every selection bar.
+            action(const AppTrashIcon(), 'Delete', _deleteSelectedDialog),
             action(
-              Icons.more_vert,
+              const Icon(Icons.more_vert),
               'More',
               () => _showMoreSheet(state),
             ),
@@ -471,6 +577,38 @@ class _VaultDocumentsScreenState extends ConsumerState<VaultDocumentsScreen> {
     });
   }
 
+  /// Starts a long-press-and-drag selection (D-120).
+  ///
+  /// The document under the press is entered, and the drag's direction comes
+  /// back as the return value: an unselected row means the drag adds, an
+  /// already chosen one means it removes.
+  bool _beginDrag(String id) {
+    final selecting = !_selected.contains(id);
+    setState(() {
+      if (selecting) {
+        _selected.add(id);
+      } else {
+        _selected.remove(id);
+      }
+    });
+    return selecting;
+  }
+
+  /// Applies the drag's mode to one document it passed over (D-120).
+  ///
+  /// *Sets* rather than toggles, so a finger that drifts back over a row does
+  /// not undo what it just did.
+  void _paintDrag(String id, bool select) {
+    if (select == _selected.contains(id)) return;
+    setState(() {
+      if (select) {
+        _selected.add(id);
+      } else {
+        _selected.remove(id);
+      }
+    });
+  }
+
   // ---------------------------------------------------------------------------
   // Navigation
   // ---------------------------------------------------------------------------
@@ -496,13 +634,11 @@ class _VaultDocumentsScreenState extends ConsumerState<VaultDocumentsScreen> {
     );
   }
 
-  void _toggleSearch() {
+  void _closeSearch() {
     setState(() {
-      _searching = !_searching;
-      if (!_searching) {
-        _query = '';
-        _searchController.clear();
-      }
+      _searching = false;
+      _query = '';
+      _searchController.clear();
     });
   }
 
@@ -625,7 +761,10 @@ class _VaultDocumentsScreenState extends ConsumerState<VaultDocumentsScreen> {
               onTap: () => Navigator.of(context).pop('info'),
             ),
             ListTile(
-              leading: const Icon(Icons.delete_outline),
+              // D-119: the History screen's trash rather than Material's
+              // `delete_outline`, so the row sheet deletes with the same glyph
+              // as the selection bar above it.
+              leading: const AppTrashIcon(),
               title: const Text('Delete'),
               onTap: () => Navigator.of(context).pop('delete'),
             ),

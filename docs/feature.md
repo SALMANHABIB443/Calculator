@@ -283,22 +283,31 @@ History is stored locally and respects the Settings toggle.
 ## C. Settings Screen
 
 ### FEAT-SET-001 — Theme Selection
-**Priority:** Must Have (UI) / Could Have (functionality)
+**Priority:** Must Have
 
-**Description**  
-Allows selection of appearance theme.
+**Description**
+Choose the app's appearance theme: **Dark** (the mockups) or **White** (the sibling Ethar app's
+palette) — **D-90**.
 
-**User Interaction**  
-- Tap the Theme row.  
+**User Interaction**
+- Tap the Theme row → a modal bottom sheet (`ThemeSheet`) opens with one row per theme.
+- Each row previews **three chips of that theme's real palette**, so a theme is recognised by how it
+  looks rather than by its name.
+- Tap a theme → it is chosen, persisted, and the whole app repaints at once.
+- Dismiss the sheet without choosing → the theme is left alone.
 
-**Expected Behavior**  
-- Currently shows “Dark mode”.  
-- Only Dark mode is present in mockups; Light mode is out of scope for v1.0.  
+**Expected Behavior**
+- The row shows the **current** theme's name — "Dark" or "White" — resolved through
+  `AppThemeName.from`, never by comparing the raw stored string.
+- The sheet opens with the current choice check-marked.
+- The choice persists and **survives a restart**; the default is `'dark'`.
+- **D-90 supersedes D-45's** display-only row: the row now draws a chevron and leads to a real sheet.
 
-**UI Components**  
-- Sun icon + “Theme” / “Dark mode” + chevron  
+**UI Components**
+- Sun icon + "Theme" / the current theme's label + chevron.
+- A modal bottom sheet with one swatch row per theme.
 
-**Related:** FR-003  
+**Related:** FR-003, D-90
 
 ---
 
@@ -634,35 +643,45 @@ A black screen that asks for a four-digit PIN and reveals the secret screen when
 
 ---
 
-### FEAT-SEC-003 — Secret Screen & Overflow Menu
+### FEAT-SEC-003 — Vault Home (the unlocked screen)
 **Priority:** Must Have
 
 **Description**
-The unlocked secret screen: an empty black page whose only content is one overflow button in the
-top-left (D-84) and, as of **D-86**, a floating white home button in the bottom-right.
+The unlocked secret screen: the hidden area's own file manager, titled **"Vault"**. One `AppPageHeader`
+(title + Search + Menu), a Categories grid, the Storage rows, two action rows, and a floating home button.
+**D-114 reverses D-84's "blank screen"** — a vault that lists nothing and opens nothing is a wall, and the
+user who proved they know the PIN is the one it least serves.
 
 **User Interaction**
-- Tap the top-left overflow button → opens the secret Settings screen (FEAT-SEC-004).
-- Tap the bottom-right home button → returns to the calculator with `go`, leaving nothing of Secret Mode
-  on the stack (D-86).
+- Tap the top-right **Search** button → the header swaps to the shared `VaultSearchHeader` and the body to
+  live results; close it to restore the home list.
+- Tap the top-right **Menu** button → `SecretMenu` slides in (D-115); its one row, "Settings", opens the
+  secret Settings page (FEAT-SEC-004).
+- Tap "Recent files", a Categories cell, or a Storage/action row → the matching place page (FEAT-SEC-007).
+- Tap the floating home button → returns to the calculator with `go`, leaving nothing of Secret Mode on the
+  stack (D-86).
 - System back gesture → returns to the previous screen.
 
 **Expected Behavior**
-- The screen is **blank** of content: no title, no logo, no empty-state illustration, no copy of any kind.
-- The header button is the **shared** `AppIconButton` (D-74), in the same position and of the same
-  48 px bordered size as every other header action in the app, so it looks entirely ordinary.
-- There is **no back arrow** of its own. The system back gesture remains, and the floating home button is
-  the way out of Secret Mode — **D-86** reversed "the system back gesture is the only exit", because on the
-  PIN screen that gesture leaves a user who cannot guess the code trapped in the hidden area.
-- The home button is a 56 px white circle: `AppColors.textPrimary` behind `AppColors.textOnFunction`, both
-  pre-existing tokens. **No new colour token is introduced.**
+- Header: the title **"Vault"** plus **two** shared `AppIconButton`s — Search and Menu (D-74).
+- Body, top to bottom: a "Recent files" row; a **Categories** section of six cells in a 3×2 grid — Images,
+  Videos, Audio files, Documents, Downloads, Installation files; a **Storage** section ("Internal storage",
+  "SD card") whose subtitles are **real device figures** read from the platform; then "Recycle bin" and
+  "Analyse storage".
+- **Search is inline and live**: results are a `Photos (N)` group and a `Documents (N)` group of rows,
+  filtered on name, date, or album. An empty query shows "Search your vault"; nothing matching shows
+  "No results found".
+- The home button is a 56 px surface (`secretHomeButton`), `textPrimary` behind `textOnFunction`, and is
+  **hidden while search is open**.
+- The title "Vault" **names the area**, which withdraws D-84's naming rule *for this screen only*; the four
+  digits, "PIN", "default", and "Secret" still appear nowhere.
 
 **UI Components**
-- One `AppIconButton` (`Icons.more_vert`), tooltip `Settings`.
-- One floating `Material`/`InkWell` circle, `Icons.home_outlined`, semantics label "Back to calculator".
-- **No new design token is introduced.**
+- `AppPageHeader` (title "Vault") with two `AppIconButton`s.
+- `SettingsGroup` / `SettingsRow` / `SectionHeader` for the list; an `AppIconTile` + label for each category
+  cell; the shared `VaultSearchHeader`; the `SecretHomeButton`.
 
-**Related:** FR-007, AC-020
+**Related:** FEAT-SEC-002, FEAT-SEC-004, FEAT-SEC-007, FR-007, AC-020
 
 ---
 
@@ -670,7 +689,8 @@ top-left (D-84) and, as of **D-86**, a floating white home button in the bottom-
 **Priority:** Must Have
 
 **Description**
-A minimal settings page holding two rows, reached from the secret screen's overflow button.
+A minimal settings page holding two rows, reached from the Vault's **Menu** panel (**D-115**), which
+pushes it from the overflow button's row.
 
 **User Interaction**
 - Tap "Change PIN" → the Change PIN flow (FEAT-SEC-005).
@@ -687,6 +707,9 @@ A minimal settings page holding two rows, reached from the secret screen's overf
 - **Anyone who reaches this page can wipe the PIN in one tap.** This is the accepted cost recorded in
   D-86, weighed against a user locked out with only a reinstall available.
 - Ordinary system back returns to the secret screen.
+- **D-115** added one hop: the Vault's overflow button now opens `SecretMenu` (a slide-in panel with a lock
+  avatar, the title "Vault", and one "Settings" row) rather than navigating here directly. The page itself
+  is unchanged — same route, same two rows, same keys.
 
 **UI Components**
 - Standard secondary page header with a back action and the title "Settings".
@@ -814,12 +837,11 @@ and the rows, and left every one of those rows inert.
   so it returns to whichever screen was tapped to arrive. The Vault screen's
   floating home button does not travel down - one page, one way out, as everywhere
   else in the app.
-- **Every page currently shows an empty state.** Nothing is read, listed, moved, or
-  deleted, and no file is invented to fill the list: "No images yet" is a fact,
-  where a row of sample filenames would be a lie the app cannot keep.
-- **The Search button on the Vault screen still does nothing.** It is the one
-  control left enabled-looking and inert, because a search page over a set of files
-  that does not exist would claim something untrue. It arrives with the file list.
+- **Three of the eleven places hand off to a live feature**, and their pages are those features rather than
+  an empty state: `images` → the gallery (FEAT-SEC-008), `documents` → the document vault (FEAT-SEC-009),
+  and `recycle-bin` → the document recycle bin. The other eight still show an honest empty state - nothing is
+  read, listed, moved, or deleted, and no file is invented to fill the list: "No images yet" is a fact, where
+  a row of sample filenames would be a lie the app cannot keep.
 - **An unrecognised `:place` renders a generic page rather than crashing.** A path
   parameter can arrive from a stale bookmark or a hand-typed URL, and the fallback
   names no category, so a wrong segment lands on a page that says nothing wrong.

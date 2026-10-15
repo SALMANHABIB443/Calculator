@@ -5,19 +5,31 @@ import '../../../../core/design/app_palette.dart';
 import '../../../../core/design/app_spacing.dart';
 import '../../../../core/design/app_typography.dart';
 import '../../../../core/widgets/core_widgets.dart';
-import '../domain/vault_document.dart';
+import '../../presentation/vault_search_header.dart';
+import '../../presentation/vault_trash.dart';
+import '../../images/domain/vault_image.dart';
+import '../../images/presentation/vault_images_controller.dart';
+import '../../images/presentation/vault_images_state.dart';
 import 'vault_document_widgets.dart';
 import 'vault_documents_controller.dart';
 import 'vault_documents_state.dart';
 
-/// The Recycle bin: documents deleted from the vault, kept for 30 days
-/// (FEAT-SEC-009).
+/// The global Recycle bin: everything deleted anywhere in the vault, kept for
+/// 30 days (FEAT-SEC-009, D-116).
 ///
-/// The `recycle-bin` place's page. It lists only *documents* — the image
-/// gallery keeps its own Trash tab — because this is the page the Vault screen
-/// opens, and the Vault screen's deletion story is the documents one. Everything
-/// here is recoverable until the 30-day purge; nothing on this page deletes
-/// without a confirmation.
+/// The `recycle-bin` place's page, and the vault's *one* bin. It lists trashed
+/// documents **and** trashed pictures together, because both are rows the same
+/// vault keeps and both carry a `trashedAt`; a user who deleted a photo and a
+/// PDF on the same afternoon should find them in the same list, ordered the way
+/// they were deleted.
+///
+/// **The gallery's own Trash tab is untouched.** A picture moved to trash still
+/// shows under Pictures ▸ Trash; this page is a second view over the same
+/// `trashedAt` flag, not a second copy. Restoring or deleting an entry here
+/// flips the one flag both views read, so the two can never disagree.
+///
+/// Everything here is recoverable until the 30-day purge; nothing on this page
+/// deletes without a confirmation.
 class VaultDocumentsTrashScreen extends ConsumerStatefulWidget {
   const VaultDocumentsTrashScreen({super.key});
 
@@ -37,158 +49,222 @@ class _VaultDocumentsTrashScreenState
   final Set<String> _selected = <String>{};
   final TextEditingController _searchController = TextEditingController();
 
+  /// Drives the list's scroll position for the drag's auto-scroll (D-120).
+  final ScrollController _scrollController = ScrollController();
+
   bool get _selecting => _selected.isNotEmpty;
 
   @override
   void dispose() {
     _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
-  /// Trashed documents, most recently deleted first, matching the search text.
-  List<VaultDocument> _resolved(VaultDocumentsState state) {
+  /// The bin's entries — documents and pictures — filtered by the search text
+  /// and most recently deleted first.
+  ///
+  /// [images] is optional: a bin that can list documents must render the moment
+  /// the document vault is readable, without waiting on the gallery's provider.
+  /// The pictures join the list the frame that provider lands, if it ever does.
+  List<VaultTrashEntry> _resolved(
+    VaultDocumentsState documents,
+    VaultImagesState? images,
+  ) {
     final needle = _query.trim().toLowerCase();
-    final list = <VaultDocument>[
-      for (final document in state.trash)
-        if (needle.isEmpty || document.fileName.toLowerCase().contains(needle))
-          document,
+    final list = <VaultTrashEntry>[
+      for (final document in documents.trash) VaultTrashEntry.document(document),
+      for (final image in images?.trash ?? <VaultImage>[])
+        VaultTrashEntry.image(image),
     ];
-    list.sort((a, b) {
-      final aAt = a.trashedAt ?? a.dateModified;
-      final bAt = b.trashedAt ?? b.dateModified;
-      return bAt.compareTo(aAt);
-    });
-    return list;
+    final filtered = <VaultTrashEntry>[
+      for (final entry in list)
+        if (needle.isEmpty || entry.name.toLowerCase().contains(needle)) entry,
+    ];
+    filtered.sort((a, b) => b.trashedAt.compareTo(a.trashedAt));
+    return filtered;
+  }
+
+  /// Every id currently in the bin, regardless of the search text.
+  ///
+  /// Used by "Empty recycle bin", which deletes the whole bin rather than the
+  /// rows a search happens to be showing.
+  Set<String> _allIds(VaultDocumentsState documents, VaultImagesState? images) {
+    return <String>{
+      for (final document in documents.trash) document.id,
+      for (final image in images?.trash ?? <VaultImage>[]) image.id,
+    };
+  }
+
+  bool _isDocument(VaultDocumentsState documents, String id) {
+    for (final document in documents.trash) {
+      if (document.id == id) return true;
+    }
+    return false;
   }
 
   @override
   Widget build(BuildContext context) {
     final documents = ref.watch(vaultDocumentsProvider);
-    return documents.when(
-      loading: () => SecondaryPageScaffold(
-        header: const SecondaryPageHeader(),
-        body: const Center(child: CircularProgressIndicator()),
-      ),
-      error: (error, _) => SecondaryPageScaffold(
-        header: const SecondaryPageHeader(),
-        body: EmptyState(
-          icon: Icons.error_outline,
-          title: 'Could not open the recycle bin',
-          message: 'Try again.',
-          action: FilledButton(
-            onPressed: () => ref.invalidate(vaultDocumentsProvider),
-            child: const Text('Try again'),
+    final documentsValue = documents.valueOrNull;
+
+    if (documentsValue == null) {
+      if (documents.hasError) {
+        return SecondaryPageScaffold(
+          header: const SecondaryPageHeader(),
+          body: EmptyState(
+            icon: Icons.error_outline,
+            title: 'Could not open the recycle bin',
+            message: 'Try again.',
+            action: FilledButton(
+              onPressed: () => ref.invalidate(vaultDocumentsProvider),
+              child: const Text('Try again'),
+            ),
           ),
-        ),
-      ),
-      data: (state) => _buildLoaded(context, state),
-    );
+        );
+      }
+      return const SecondaryPageScaffold(
+        header: SecondaryPageHeader(),
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    // The pictures are optional: the bin renders its documents now and folds the
+    // gallery's trashed pictures in the frame that provider lands. Watching it
+    // without gating on it keeps the page honest when the gallery store is slow
+    // or unavailable — a deleted PDF is still findable.
+    final images = ref.watch(vaultImagesProvider).valueOrNull;
+
+    return _buildLoaded(context, documentsValue, images);
   }
 
-  Widget _buildLoaded(BuildContext context, VaultDocumentsState state) {
-    final resolved = _resolved(state);
+  Widget _buildLoaded(
+    BuildContext context,
+    VaultDocumentsState documents,
+    VaultImagesState? images,
+  ) {
+    final resolved = _resolved(documents, images);
     final allSelected =
         resolved.isNotEmpty && resolved.every((e) => _selected.contains(e.id));
+    final isEmpty =
+        documents.trash.isEmpty && (images?.trash.isEmpty ?? true);
 
     return SecondaryPageScaffold(
-      header: VaultDocumentsHeader(
-        selecting: _selecting,
-        selectedCount: _selected.length,
-        allSelected: allSelected,
-        onCancel: () => setState(_selected.clear),
-        onSelectAll: () => _selectAll(resolved),
-        onSearch: _toggleSearch,
-        onMore: _showMoreSheet,
-      ),
+      header: _header(resolved, allSelected),
       body: Column(
         children: [
-          if (_searching) _searchField(),
-          Expanded(child: _body(state, resolved)),
-          if (_selecting) _selectionBar(state),
+          Expanded(
+            // D-120: hold a row and drag to paint a selection down the list.
+            child: DragSelectRegion(
+              controller: _scrollController,
+              onBegin: _beginDrag,
+              onPaint: _paintDrag,
+              child: _body(resolved, isEmpty),
+            ),
+          ),
+          if (_selecting) _selectionBar(),
         ],
       ),
     );
   }
 
-  Widget _body(VaultDocumentsState state, List<VaultDocument> resolved) {
-    if (state.trash.isEmpty) {
+  /// The top row: the documents header, or the shared search bar when a search
+  /// is open (and no selection has taken the row over).
+  Widget _header(List<VaultTrashEntry> resolved, bool allSelected) {
+    if (!_selecting && _searching) {
+      return VaultSearchHeader(
+        fieldKey: VaultDocumentsTrashScreen.searchFieldKey,
+        controller: _searchController,
+        query: _query,
+        hintText: 'Search recycle bin',
+        onChanged: (value) => setState(() => _query = value),
+        onClose: _closeSearch,
+      );
+    }
+    return VaultDocumentsHeader(
+      selecting: _selecting,
+      selectedCount: _selected.length,
+      allSelected: allSelected,
+      onCancel: () => setState(_selected.clear),
+      onSelectAll: () => _selectAll(resolved),
+      onSearch: () => setState(() => _searching = true),
+      onMore: _showMoreSheet,
+    );
+  }
+
+  Widget _body(List<VaultTrashEntry> resolved, bool isEmpty) {
+    if (isEmpty) {
       return EmptyState(
         iconWidget: AppTrashIcon(color: context.appColors.textSecondary),
         title: 'Recycle bin is empty',
-        message: 'Deleted documents rest here for 30 days.',
+        message: 'Deleted photos and documents rest here for 30 days.',
       );
     }
     if (resolved.isEmpty) {
       return const EmptyState(
         icon: Icons.search_off,
-        title: 'No documents found',
+        title: 'Nothing found',
         message: 'Try a different name.',
       );
     }
     return ListView.builder(
       key: VaultDocumentsTrashScreen.listKey,
+      controller: _scrollController,
       padding: const EdgeInsets.only(
         top: AppSpacing.sm,
         bottom: AppSpacing.xl,
       ),
       itemCount: resolved.length,
       itemBuilder: (context, index) {
-        final document = resolved[index];
-        return VaultDocumentRow(
-          key: Key('vault-document-trash-${document.id}'),
-          document: document,
-          selected: _selected.contains(document.id),
-          selecting: _selecting,
-          onTap: () {
-            if (_selecting) {
-              _toggleSelect(document);
-            } else {
-              showVaultDocumentInfo(context, document);
-            }
-          },
-          onLongPress: () => setState(() => _selected.add(document.id)),
-          onMenu: () => _showRowSheet(document),
+        final entry = resolved[index];
+        return DragSelectItem(
+          id: entry.id,
+          child: _row(entry),
         );
       },
     );
   }
 
-  Widget _searchField() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.screenHorizontal,
-        AppSpacing.sm,
-        AppSpacing.screenHorizontal,
-        AppSpacing.sm,
-      ),
-      child: TextField(
-        key: VaultDocumentsTrashScreen.searchFieldKey,
-        controller: _searchController,
-        autofocus: true,
-        decoration: InputDecoration(
-          hintText: 'Search recycle bin',
-          prefixIcon: const Icon(Icons.search),
-          suffixIcon: _query.isEmpty
-              ? null
-              : IconButton(
-                  icon: const Icon(Icons.clear),
-                  tooltip: 'Clear search',
-                  onPressed: () => setState(() {
-                    _query = '';
-                    _searchController.clear();
-                  }),
-                ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppRadius.card),
-          ),
-        ),
-        onChanged: (value) => setState(() => _query = value),
-      ),
+  Widget _row(VaultTrashEntry entry) {
+    final image = entry.image;
+    if (image != null) {
+      return VaultTrashImageRow(
+        key: Key('vault-image-trash-${entry.id}'),
+        image: image,
+        selected: _selected.contains(entry.id),
+        selecting: _selecting,
+        onTap: () {
+          if (_selecting) {
+            _toggleSelect(entry.id);
+          } else {
+            showVaultImageInfo(context, image);
+          }
+        },
+        onMenu: () => _showRowSheet(entry),
+      );
+    }
+    final document = entry.document!;
+    return VaultDocumentRow(
+      key: Key('vault-document-trash-${entry.id}'),
+      document: document,
+      selected: _selected.contains(entry.id),
+      selecting: _selecting,
+      onTap: () {
+        if (_selecting) {
+          _toggleSelect(entry.id);
+        } else {
+          showVaultDocumentInfo(context, document);
+        }
+      },
+      onMenu: () => _showRowSheet(entry),
     );
   }
 
-  Widget _selectionBar(VaultDocumentsState state) {
-    Widget action(IconData icon, String label, VoidCallback onTap) {
+  Widget _selectionBar() {
+    // [icon] is a widget so the bar can carry the painted [AppTrashIcon] (the
+    // History screen's delete glyph, D-119) as well as Material [Icon]s — the
+    // same shape the gallery's and the documents screen's bars already use.
+    Widget action(Widget icon, String label, VoidCallback onTap) {
       return Expanded(
         child: InkWell(
           onTap: onTap,
@@ -200,10 +276,12 @@ class _VaultDocumentsTrashScreenState
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  icon,
-                  size: AppSizes.rowIcon,
-                  color: context.appColors.textPrimary,
+                IconTheme(
+                  data: IconThemeData(
+                    color: context.appColors.textPrimary,
+                    size: AppSizes.rowIcon,
+                  ),
+                  child: icon,
                 ),
                 const SizedBox(height: 4),
                 Text(label, style: context.type.caption),
@@ -224,25 +302,31 @@ class _VaultDocumentsTrashScreenState
         ),
         child: Row(
           children: [
-            action(Icons.restore, 'Restore', _restoreSelected),
-            action(Icons.delete_forever, 'Delete forever', _deleteForeverSelected),
+            action(const Icon(Icons.restore), 'Restore', _restoreSelected),
+            // D-119's glyph, not Material's `delete_forever`: even a permanent
+            // delete paints the one trash the History screen deletes with.
+            action(
+              const AppTrashIcon(),
+              'Delete forever',
+              _deleteForeverSelected,
+            ),
           ],
         ),
       ),
     );
   }
 
-  void _toggleSelect(VaultDocument document) {
+  void _toggleSelect(String id) {
     setState(() {
-      if (_selected.contains(document.id)) {
-        _selected.remove(document.id);
+      if (_selected.contains(id)) {
+        _selected.remove(id);
       } else {
-        _selected.add(document.id);
+        _selected.add(id);
       }
     });
   }
 
-  void _selectAll(List<VaultDocument> list) {
+  void _selectAll(List<VaultTrashEntry> list) {
     setState(() {
       if (list.every((e) => _selected.contains(e.id))) {
         _selected.clear();
@@ -252,20 +336,79 @@ class _VaultDocumentsTrashScreenState
     });
   }
 
-  void _toggleSearch() {
+  /// Starts a long-press-and-drag selection (D-120).
+  ///
+  /// The row under the press is entered, and the drag's direction comes back as
+  /// the return value: an unselected row means the drag adds, an already chosen
+  /// one means it removes.
+  bool _beginDrag(String id) {
+    final selecting = !_selected.contains(id);
     setState(() {
-      _searching = !_searching;
-      if (!_searching) {
-        _query = '';
-        _searchController.clear();
+      if (selecting) {
+        _selected.add(id);
+      } else {
+        _selected.remove(id);
+      }
+    });
+    return selecting;
+  }
+
+  /// Applies the drag's mode to one row it passed over (D-120).
+  ///
+  /// *Sets* rather than toggles, so a finger that drifts back over a row does
+  /// not undo what it just did.
+  void _paintDrag(String id, bool select) {
+    if (select == _selected.contains(id)) return;
+    setState(() {
+      if (select) {
+        _selected.add(id);
+      } else {
+        _selected.remove(id);
       }
     });
   }
 
+  void _closeSearch() {
+    setState(() {
+      _searching = false;
+      _query = '';
+      _searchController.clear();
+    });
+  }
+
+  /// Splits [ids] into the document and picture halves of the bin.
+  ///
+  /// The two sections persist to different stores, so restore and delete-forever
+  /// have to be routed to the right notifier. An id the documents list claims is
+  /// a document; everything else is a picture. The two id spaces are uuid v4 and
+  /// never collide.
+  ({Set<String> documents, Set<String> images}) _split(Set<String> ids) {
+    final documents = ref.read(vaultDocumentsProvider).valueOrNull;
+    final documentIds = <String>{};
+    final imageIds = <String>{};
+    for (final id in ids) {
+      if (documents != null && _isDocument(documents, id)) {
+        documentIds.add(id);
+      } else {
+        imageIds.add(id);
+      }
+    }
+    return (documents: documentIds, images: imageIds);
+  }
+
   Future<void> _restoreSelected() async {
     if (_selected.isEmpty) return;
-    final ids = Set<String>.from(_selected);
-    await ref.read(vaultDocumentsProvider.notifier).restoreFromTrash(ids);
+    final split = _split(Set<String>.from(_selected));
+    if (split.documents.isNotEmpty) {
+      await ref
+          .read(vaultDocumentsProvider.notifier)
+          .restoreFromTrash(split.documents);
+    }
+    if (split.images.isNotEmpty) {
+      await ref
+          .read(vaultImagesProvider.notifier)
+          .restoreFromTrash(split.images);
+    }
     if (!mounted) return;
     setState(_selected.clear);
     ScaffoldMessenger.of(context).showSnackBar(
@@ -283,16 +426,27 @@ class _VaultDocumentsTrashScreenState
     final confirmed = await AppConfirmationDialog.show(
       context,
       title: count == 1 ? 'Delete forever?' : 'Delete $count forever?',
-      message: 'This cannot be undone. The encrypted copy is removed.',
+      message: 'This cannot be undone. The private copy is removed.',
       confirmLabel: 'Delete forever',
     );
     if (!confirmed || !mounted) return;
-    await ref.read(vaultDocumentsProvider.notifier).deletePermanently(ids);
+    final split = _split(ids);
+    if (split.documents.isNotEmpty) {
+      await ref
+          .read(vaultDocumentsProvider.notifier)
+          .deletePermanently(split.documents);
+    }
+    if (split.images.isNotEmpty) {
+      await ref
+          .read(vaultImagesProvider.notifier)
+          .deletePermanently(split.images);
+    }
     if (!mounted) return;
     setState(_selected.clear);
   }
 
-  Future<void> _showRowSheet(VaultDocument document) async {
+  Future<void> _showRowSheet(VaultTrashEntry entry) async {
+    final image = entry.image;
     final action = await showModalBottomSheet<String>(
       context: context,
       showDragHandle: true,
@@ -307,11 +461,14 @@ class _VaultDocumentsTrashScreenState
             ),
             ListTile(
               leading: const Icon(Icons.info_outline),
-              title: const Text('File info'),
+              title: Text(image != null ? 'Details' : 'File info'),
               onTap: () => Navigator.of(context).pop('info'),
             ),
             ListTile(
-              leading: const Icon(Icons.delete_forever),
+              // D-119: the History screen's trash rather than Material's
+              // `delete_forever`, so every delete in the sheet wears the one
+              // glyph the rest of the app deletes with.
+              leading: const AppTrashIcon(),
               title: const Text('Delete forever'),
               onTap: () => Navigator.of(context).pop('delete'),
             ),
@@ -322,17 +479,28 @@ class _VaultDocumentsTrashScreenState
     if (action == null || !mounted) return;
     switch (action) {
       case 'restore':
-        await ref
-            .read(vaultDocumentsProvider.notifier)
-            .restoreFromTrash(<String>{document.id});
+        final split = _split(<String>{entry.id});
+        if (split.documents.isNotEmpty) {
+          await ref
+              .read(vaultDocumentsProvider.notifier)
+              .restoreFromTrash(split.documents);
+        } else {
+          await ref
+              .read(vaultImagesProvider.notifier)
+              .restoreFromTrash(split.images);
+        }
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Restored')),
         );
       case 'info':
-        await showVaultDocumentInfo(context, document);
+        if (image != null) {
+          await showVaultImageInfo(context, image);
+        } else {
+          await showVaultDocumentInfo(context, entry.document!);
+        }
       case 'delete':
-        await _deleteForever(<String>{document.id});
+        await _deleteForever(<String>{entry.id});
     }
   }
 
@@ -346,7 +514,7 @@ class _VaultDocumentsTrashScreenState
           children: [
             ListTile(
               leading: const Icon(Icons.checklist),
-              title: const Text('Select documents'),
+              title: const Text('Select items'),
               onTap: () => Navigator.of(context).pop('select'),
             ),
             ListTile(
@@ -359,16 +527,17 @@ class _VaultDocumentsTrashScreenState
       ),
     );
     if (action == null || !mounted) return;
+    final documents = ref.read(vaultDocumentsProvider).valueOrNull;
+    if (documents == null) return;
+    final images = ref.read(vaultImagesProvider).valueOrNull;
     switch (action) {
       case 'select':
-        final resolved = _resolved(ref.read(vaultDocumentsProvider).requireValue);
+        final resolved = _resolved(documents, images);
         if (resolved.isNotEmpty) {
           setState(() => _selected.add(resolved.first.id));
         }
       case 'empty':
-        final state = ref.read(vaultDocumentsProvider).valueOrNull;
-        if (state == null) return;
-        await _deleteForever(state.trash.map((e) => e.id).toSet());
+        await _deleteForever(_allIds(documents, images));
     }
   }
 }

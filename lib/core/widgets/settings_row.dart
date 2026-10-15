@@ -24,6 +24,7 @@ class SettingsRow extends StatelessWidget {
     this.subtitle,
     this.trailing,
     this.onTap,
+    this.onLongPress,
     this.iconColor,
     this.showDivider = false,
   }) : assert(
@@ -67,6 +68,9 @@ class SettingsRow extends StatelessWidget {
   /// Makes the whole row a tap target. When set, a material ripple is added so
   /// feedback is not limited to the trailing control.
   final VoidCallback? onTap;
+
+  /// Makes the whole row respond to long press.
+  final VoidCallback? onLongPress;
 
   /// Leading icon colour — white for most rows, accent for active/feedback
   /// icons (desing.md §5.4).
@@ -166,11 +170,15 @@ class SettingsRow extends StatelessWidget {
           container: true,
           button: onTap != null,
           label: subtitle == null ? title : '$title, $subtitle',
-          child: onTap == null
+          child: (onTap == null && onLongPress == null)
               ? label
               : Material(
                   color: Colors.transparent,
-                  child: InkWell(onTap: onTap, child: label),
+                  child: InkWell(
+                    onTap: onTap,
+                    onLongPress: onLongPress,
+                    child: label,
+                  ),
                 ),
         ),
         if (showDivider)

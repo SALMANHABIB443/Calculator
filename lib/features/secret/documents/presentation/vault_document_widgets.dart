@@ -339,7 +339,7 @@ class VaultDocumentRow extends StatelessWidget {
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     if (selecting)
-                      _SelectionCheck(selected: selected)
+                      VaultSelectionCheck(selected: selected)
                     else if (onMenu != null)
                       AppIconButton(
                         icon: Icons.more_vert,
@@ -358,9 +358,13 @@ class VaultDocumentRow extends StatelessWidget {
   }
 }
 
-/// The circular tick the gallery uses, restated for a document row.
-class _SelectionCheck extends StatelessWidget {
-  const _SelectionCheck({required this.selected});
+/// The circular tick the gallery uses, restated for a list row.
+///
+/// Public because the Vault's global recycle bin lists pictures beside
+/// documents and they share one selection tick — two rows of the same list
+/// wearing two different checks would be the drift this widget exists to stop.
+class VaultSelectionCheck extends StatelessWidget {
+  const VaultSelectionCheck({required this.selected, super.key});
 
   final bool selected;
 

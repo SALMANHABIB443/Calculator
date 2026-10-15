@@ -434,5 +434,75 @@ void main() {
           reason: 'scale ~1 must read as unzoomed');
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets('swipe tracks the finger and eases into place', (tester) async {
+      // The old settle animated a fixed 220 ms from wherever the drag ended;
+      // a quick flick could already be at the target, so the transition read
+      // as an instant cut. The release must glide over several frames.
+      final store = _FakeStore(_pixel());
+      await tester.pumpWidget(_viewer(store, [_image('a'), _image('b')]));
+      await tester.pumpAndSettle();
+      final ctrl = tester.widget<PageView>(find.byType(PageView)).controller!;
+      final page = find.byKey(const ValueKey('vault-viewer-page-a'));
+      final drag = await tester.startGesture(tester.getCenter(page), pointer: 41);
+      await tester.pump(const Duration(milliseconds: 16));
+      for (var i = 0; i < 4; i++) {
+        await drag.moveBy(const Offset(-60, 0));
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+      // Mid-drag the pager is part-way across: it follows the finger rather
+      // than waiting for the release to jump.
+      final midPage = ctrl.page!;
+      expect(midPage, greaterThan(0.1));
+      expect(midPage, lessThan(1.0));
+      await drag.up();
+      await tester.pump();
+      final released = ctrl.page!;
+      expect(released, lessThan(1.0));
+      await tester.pump(const Duration(milliseconds: 40));
+      final gliding = ctrl.page!;
+      expect((gliding - released).abs(), greaterThan(0.001),
+          reason: 'the release must keep animating, not freeze');
+      expect(gliding, greaterThan(0.0),
+          reason: 'the glide must not finish within a single frame');
+      await tester.pumpAndSettle();
+      expect(ctrl.page, anyOf(closeTo(0, 0.001), closeTo(1, 0.001)));
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('a long drag rubber-bands before the release glide',
+        (tester) async {
+      final store = _FakeStore(_pixel());
+      await tester.pumpWidget(_viewer(store, [_image('a'), _image('b')]));
+      await tester.pumpAndSettle();
+      final ctrl = tester.widget<PageView>(find.byType(PageView)).controller!;
+      final page = find.byKey(const ValueKey('vault-viewer-page-a'));
+      final drag = await tester.startGesture(tester.getCenter(page), pointer: 43);
+      await tester.pump(const Duration(milliseconds: 16));
+      for (var i = 0; i < 12; i++) {
+        await drag.moveBy(const Offset(-80, 0));
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+      // ~960 px of finger travel exceeds the 800 px page, but the rubber-band
+      // keeps the page behind the finger so a glide always remains on release
+      // instead of the photo already sitting at its target.
+      expect(ctrl.page!, lessThan(0.95));
+      await drag.up();
+      await tester.pumpAndSettle();
+      expect(ctrl.page, closeTo(1, 0.001));
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('opening preloads the neighbouring photos', (tester) async {
+      // The first page plus its neighbour are read up front, so the first
+      // swipe slides in a decoded photo instead of flashing a spinner.
+      final store = _FakeStore(_pixel());
+      await tester.pumpWidget(
+        _viewer(store, [_image('a'), _image('b'), _image('c')]),
+      );
+      await tester.pumpAndSettle();
+      expect(store.reads, greaterThanOrEqualTo(2));
+      expect(tester.takeException(), isNull);
+    });
   });
 }

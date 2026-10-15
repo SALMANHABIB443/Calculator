@@ -16,6 +16,7 @@ export 'app_page_header.dart';
 export 'app_toggle.dart';
 export 'app_trash_icon.dart';
 export 'calculator_button.dart';
+export 'drag_select.dart';
 export 'empty_state.dart';
 export 'history_card.dart';
 export 'history_day_label.dart';

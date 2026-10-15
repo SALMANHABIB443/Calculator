@@ -17,6 +17,7 @@ import 'vault_image_viewer.dart';
 import 'vault_images_controller.dart';
 import 'vault_images_providers.dart';
 import 'vault_images_state.dart';
+import '../../presentation/vault_search_header.dart';
 
 /// Private image gallery: Pictures / Albums / Favorites / Trash (D-116).
 ///
@@ -64,6 +65,10 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
   bool _creatingAlbum = false;
   final TextEditingController _searchController = TextEditingController();
 
+  /// Drives the grid's scroll position, including the auto-scroll a drag uses
+  /// to reach photos that started off screen (D-120).
+  final ScrollController _scrollController = ScrollController();
+
   bool get _selecting => _selected.isNotEmpty;
 
   /// True when this instance is a pushed album-details page (see
@@ -85,6 +90,7 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -144,6 +150,38 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
     });
   }
 
+  /// Starts a long-press-and-drag selection (D-120).
+  ///
+  /// The photo under the press is entered, and the drag's direction comes back
+  /// as the return value: an unselected photo means the drag adds, an already
+  /// chosen one means it removes.
+  bool _beginDrag(String id) {
+    final selecting = !_selected.contains(id);
+    setState(() {
+      if (selecting) {
+        _selected.add(id);
+      } else {
+        _selected.remove(id);
+      }
+    });
+    return selecting;
+  }
+
+  /// Applies the drag's mode to one photo it passed over (D-120).
+  ///
+  /// *Sets* rather than toggles, so a finger that drifts back over a photo does
+  /// not undo what it just did.
+  void _paintDrag(String id, bool select) {
+    if (select == _selected.contains(id)) return;
+    setState(() {
+      if (select) {
+        _selected.add(id);
+      } else {
+        _selected.remove(id);
+      }
+    });
+  }
+
   /// True when [id] is a real album in the current gallery state — not one of
   /// the virtual rows (`all`, `favorites`, `recent`) the Albums landing page
   /// also lists. Virtual rows must never become a picture's `albumIds` entry.
@@ -182,32 +220,18 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
     final allSelected =
         list.isNotEmpty && list.every((e) => _selected.contains(e.id));
     return SecondaryPageScaffold(
-      header: VaultGalleryHeader(
-        selecting: _selecting,
-        selectedCount: _selected.length,
-        allSelected: allSelected,
-        onCancel: () => setState(_selected.clear),
-        onSelectAll: () => _selectAll(list),
-        onSearch: () => setState(() {
-          _searching = !_searching;
-          if (!_searching) {
-            _query = '';
-            _searchController.clear();
-          }
-        }),
-        onMore: () => _showMoreSheet(gallery),
-      ),
+      header: _header(gallery, list, allSelected),
       body: Column(
         children: [
-          if (_searching) _searchField(),
-          if (!_selecting && !_albumDetail) _tabRow(),
-          // Selection mode and the album-details page both hide the tab row,
-          // so each needs its own gap under the header. The album page used to
-          // fall through with none, leaving the grid glued to the header icons.
-          if (_selecting || _albumDetail)
+          if (!_selecting && !_albumDetail && !_searching) _tabRow(),
+          // Selection mode, the album-details page, and search all hide the tab
+          // row, so each needs its own gap under the header. The album page
+          // used to fall through with none, leaving the grid glued to the
+          // header icons.
+          if (_selecting || _albumDetail || _searching)
             const SizedBox(height: AppSpacing.lg),
           Expanded(child: _content(context, gallery, list)),
-          if (!_selecting && !_albumDetail) _bottomTabs(),
+          if (!_selecting && !_albumDetail && !_searching) _bottomTabs(),
           if (_selecting) _selectionBar(gallery, list),
           if (_importing) _importBanner(),
         ],
@@ -215,38 +239,54 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
     );
   }
 
-  Widget _searchField() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.screenHorizontal,
-        AppSpacing.sm,
-        AppSpacing.screenHorizontal,
-        AppSpacing.sm,
-      ),
-      child: TextField(
-        key: VaultImagesScreen.searchFieldKey,
+  /// The top row: the gallery's own header, or the shared search bar when a
+  /// search is open (and no selection has taken the row over).
+  Widget _header(
+    VaultImagesState gallery,
+    List<VaultImage> list,
+    bool allSelected,
+  ) {
+    if (!_selecting && _searching) {
+      return VaultSearchHeader(
+        fieldKey: VaultImagesScreen.searchFieldKey,
         controller: _searchController,
-        autofocus: true,
-        decoration: InputDecoration(
-          hintText: 'Search name, album, or date',
-          prefixIcon: const Icon(Icons.search),
-          suffixIcon: _query.isEmpty
-              ? null
-              : IconButton(
-                  icon: const Icon(Icons.clear),
-                  tooltip: 'Clear search',
-                  onPressed: () => setState(() {
-                    _query = '';
-                    _searchController.clear();
-                  }),
-                ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppRadius.card),
-          ),
-        ),
+        query: _query,
+        hintText: 'Search name, album, or date',
         onChanged: (value) => setState(() => _query = value),
-      ),
+        onClose: _closeSearch,
+      );
+    }
+    return VaultGalleryHeader(
+      selecting: _selecting,
+      selectedCount: _selected.length,
+      allSelected: allSelected,
+      onCancel: () => setState(_selected.clear),
+      onSelectAll: () => _selectAll(list),
+      onSearch: () => setState(() => _searching = true),
+      onMore: () => _showMoreSheet(gallery),
     );
+  }
+
+  void _closeSearch() {
+    setState(() {
+      _searching = false;
+      _query = '';
+      _searchController.clear();
+    });
+  }
+
+  /// Begins a selection, leaving search first: the selection header and the
+  /// search bar cannot both own the top row, and a long-press from search means
+  /// the user has chosen the grid over the query.
+  void _startSelection(String id) {
+    setState(() {
+      if (_searching) {
+        _searching = false;
+        _query = '';
+        _searchController.clear();
+      }
+      _selected.add(id);
+    });
   }
 
   /// Top text tabs. No numeric counters — the active tab is marked by a
@@ -370,41 +410,50 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
   Widget _photoGrid(BuildContext context, List<VaultImage> list) {
     return Stack(
       children: [
-        GridView.builder(
-          key: VaultImagesScreen.gridKey,
-          padding: const EdgeInsets.all(2),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: 2,
-            mainAxisSpacing: 2,
-          ),
-          itemCount: list.length,
-          itemBuilder: (context, index) {
-            final image = list[index];
-            final selected = _selected.contains(image.id);
-            return FutureBuilder<Uint8List?>(
-              future: _vaultBytes(image),
-              builder: (context, snapshot) {
-                final bytes = snapshot.data;
-                return VaultGridTile(
-                  image: image,
-                  bytes: bytes,
-                  selected: selected,
-                  selecting: _selecting,
-                  onTap: () {
-                    if (_selecting) {
-                      _toggleSelect(image);
-                    } else {
-                      _openViewer(list, index);
-                    }
+        // D-120: hold the grid and drag to paint a selection across the tiles.
+        // Plain swipes still scroll, because the region only claims a press that
+        // does not move first.
+        DragSelectRegion(
+          controller: _scrollController,
+          onBegin: _beginDrag,
+          onPaint: _paintDrag,
+          child: GridView.builder(
+            key: VaultImagesScreen.gridKey,
+            controller: _scrollController,
+            padding: const EdgeInsets.all(2),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 2,
+              mainAxisSpacing: 2,
+            ),
+            itemCount: list.length,
+            itemBuilder: (context, index) {
+              final image = list[index];
+              final selected = _selected.contains(image.id);
+              return DragSelectItem(
+                id: image.id,
+                child: FutureBuilder<Uint8List?>(
+                  future: _vaultBytes(image),
+                  builder: (context, snapshot) {
+                    final bytes = snapshot.data;
+                    return VaultGridTile(
+                      image: image,
+                      bytes: bytes,
+                      selected: selected,
+                      selecting: _selecting,
+                      onTap: () {
+                        if (_selecting) {
+                          _toggleSelect(image);
+                        } else {
+                          _openViewer(list, index);
+                        }
+                      },
+                    );
                   },
-                  onLongPress: () => setState(() {
-                    _selected.add(image.id);
-                  }),
-                );
-              },
-            );
-          },
+                ),
+              );
+            },
+          ),
         ),
         if (_tab == _VaultTab.pictures || _albumDetail)
           Positioned(
@@ -919,6 +968,43 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
     );
   }
 
+  Future<void> _showAlbumOptions(String albumId, String albumName) async {
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              // D-119: the History screen's trash rather than Material's
+              // `delete_outline`, so the album sheet deletes with the same
+              // glyph as the selection bar and the viewer's Delete action.
+              leading: const AppTrashIcon(),
+              title: const Text('Delete album'),
+              onTap: () => Navigator.of(context).pop('delete'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (action == null || !mounted) return;
+    if (action == 'delete') {
+      final confirmed = await AppConfirmationDialog.show(
+        context,
+        title: 'Delete album?',
+        message: 'Photos in this album stay in your gallery.',
+        confirmLabel: 'Delete',
+      );
+      if (!confirmed || !mounted) return;
+      await ref.read(vaultImagesProvider.notifier).deleteAlbum(albumId);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Album deleted')),
+      );
+    }
+  }
+
   Future<void> _sortSheet() async {
     final picked = await showModalBottomSheet<VaultImageSort>(
       context: context,
@@ -976,7 +1062,7 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
     switch (action) {
       case 'select':
         final list = _currentList(gallery);
-        if (list.isNotEmpty) setState(() => _selected.add(list.first.id));
+        if (list.isNotEmpty) _startSelection(list.first.id);
       case 'sort':
         await _sortSheet();
       case 'add':
@@ -1049,6 +1135,7 @@ class _VaultImagesScreenState extends ConsumerState<VaultImagesScreen>
                   subtitle:
                       '${gallery.visible.where((e) => e.albumIds.contains(album.id)).length} photos',
                   onTap: () => _openAlbum(album.id, album.name),
+                  onLongPress: () => _showAlbumOptions(album.id, album.name),
                 ),
             ],
           ),

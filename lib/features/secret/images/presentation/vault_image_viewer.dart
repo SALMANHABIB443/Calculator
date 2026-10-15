@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 
@@ -70,6 +71,15 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
   double _swipeStartPixels = 0;
   double _swipeStartX = 0;
   static const double _kSwipeFlingVelocity = 350.0;
+  // Fraction of a page a drag tracks 1:1 before rubber-banding kicks in, and
+  // how much of the excess beyond that still moves the page (0..1).
+  static const double _kDragFreeFraction = 0.5;
+  static const double _kDragResistance = 0.4;
+  // Bounds for the release glide. A fixed short settle read as an instant cut;
+  // scaling it with the leftover distance keeps the tail of a flick moving
+  // while a gentle release eases home instead of snapping.
+  static const double _kSettleMinMs = 260.0;
+  static const double _kSettleMaxMs = 420.0;
   TapDownDetails? _doubleTap;
 
   @override
@@ -78,6 +88,12 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
     WidgetsBinding.instance.addObserver(this);
     _index = widget.initialIndex.clamp(0, widget.images.length - 1);
     _pages = PageController(initialPage: _index);
+    // Warm the first page's neighbours once the tree can show an image, so the
+    // very first swipe already has the next photo decoded (see
+    // [_precacheAround]).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _precacheAround(_index);
+    });
   }
 
   @override
@@ -181,6 +197,31 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
     );
   }
 
+  /// Resolves and decodes the pages either side of [index] ahead of time.
+  ///
+  /// The viewer drives the pager by hand (see [_onInteractionUpdate]) instead
+  /// of letting `PageView` scroll, so a neighbour can be halfway on screen
+  /// before its `FutureBuilder` has resolved. Without warming both the byte
+  /// cache (used by `build`) and the image cache (used by the painter, the
+  /// decode that actually costs a frame) the incoming photo showed a spinner
+  /// and then popped into place instead of sliding in with the finger.
+  void _precacheAround(int index) {
+    for (var offset = -1; offset <= 1; offset++) {
+      final int i = index + offset;
+      if (i < 0 || i >= widget.images.length) continue;
+      final image = widget.images[i];
+      unawaited(
+        _bytes(image).then((bytes) {
+          if (bytes == null || !mounted) return;
+          precacheImage(MemoryImage(bytes), context);
+        }).catchError((Object _) {
+          // A damaged or missing neighbour must not break the current page;
+          // the per-page `errorBuilder` will surface it if the user swipes in.
+        }),
+      );
+    }
+  }
+
   void _toggleChrome() => setState(() => _chrome = !_chrome);
 
   void _doubleTapZoom(int page, TapDownDetails details) {
@@ -216,6 +257,9 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
       _swipeActive = true;
       _swipeStartPixels = _pages.position.pixels;
       _swipeStartX = details.localFocalPoint.dx;
+      // Decode both neighbours now that a swipe is actually starting, so
+      // whichever way the finger goes the next photo is ready to slide in.
+      _precacheAround(_index);
     } else {
       _swipeActive = false;
     }
@@ -230,9 +274,21 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
     }
     if (_zoomed || !_swipeActive || !_pages.hasClients) return;
     if (!_pages.position.hasContentDimensions) return;
+    final double viewport = _pages.position.viewportDimension;
+    if (viewport <= 0) return;
     final double dx = details.localFocalPoint.dx - _swipeStartX;
-    final double next =
-        (_swipeStartPixels - dx).clamp(0.0, _pages.position.maxScrollExtent);
+    // Rubber-band resistance past [_kDragFreeFraction] of a page: the photo
+    // tracks the finger 1:1 for the first stretch, then trails behind, so a
+    // quick flick can never drag the page all the way home under the finger.
+    // Without this the pager was already at the target on release, leaving
+    // nothing to animate and the swipe read as an instant cut.
+    final double raw = -dx;
+    final double limit = viewport * _kDragFreeFraction;
+    final double eased = raw.abs() <= limit
+        ? raw
+        : (limit + (raw.abs() - limit) * _kDragResistance) * raw.sign;
+    final double next = (_swipeStartPixels + eased)
+        .clamp(0.0, _pages.position.maxScrollExtent);
     if (next != _pages.position.pixels) {
       _pages.position.jumpTo(next);
       _pagerMoved = true;
@@ -265,6 +321,11 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
   }
 
   /// Settles a manual pager swipe to the nearest page, or flings by velocity.
+  ///
+  /// The release is animated with `position.animateTo` (not a fixed
+  /// `animateToPage`) so the glide length follows the distance still to travel
+  /// and the speed the finger left with: a fast flick keeps its momentum, a
+  /// slow release eases gently, and neither ends in a hard cut.
   void _settlePager(double velocityX) {
     final position = _pages.position;
     if (position.viewportDimension <= 0) return;
@@ -279,9 +340,18 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
       target = page.round();
     }
     target = target.clamp(0, count - 1);
-    _pages.animateToPage(
-      target,
-      duration: const Duration(milliseconds: 220),
+    final double targetPixels = target * position.viewportDimension;
+    final double remaining = (targetPixels - position.pixels).abs();
+    if (remaining < 1) return;
+    // Distance / speed, floored at a visible minimum and capped so a very slow
+    // drag does not crawl. The velocity floor (px/s) keeps the maths sane near
+    // zero without ever making the animation disappear.
+    final double speed = math.max(velocityX.abs(), 700.0);
+    final double durationMs =
+        (remaining / speed * 1000).clamp(_kSettleMinMs, _kSettleMaxMs);
+    position.animateTo(
+      targetPixels,
+      duration: Duration(milliseconds: durationMs.round()),
       curve: Curves.easeOutCubic,
     );
   }
@@ -462,6 +532,7 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
                   _index = i;
                   _zoomed = zoomed;
                 });
+                _precacheAround(i);
               },
               itemBuilder: (context, i) {
                 final image = widget.images[i];
@@ -502,13 +573,24 @@ class _VaultImageViewerState extends ConsumerState<VaultImageViewer>
                         onInteractionUpdate: _onInteractionUpdate,
                         onInteractionEnd: (d) => _onInteractionEnd(i, d),
                         child: Center(
-                          child: Image.memory(
-                            bytes,
-                            fit: BoxFit.contain,
-                            errorBuilder: (_, _, _) => Text(
-                              'This photo is damaged',
-                              style: context.type.rowSubtitle.copyWith(
-                                color: Colors.white,
+                          child: TweenAnimationBuilder<double>(
+                            // Plays once per page (the key survives rebuilds),
+                            // fading the decoded photo in so it never pops
+                            // against the black backdrop mid-swipe.
+                            key: ValueKey('vault-viewer-fade-${image.id}'),
+                            tween: Tween<double>(begin: 0, end: 1),
+                            duration: const Duration(milliseconds: 180),
+                            curve: Curves.easeOut,
+                            builder: (context, opacity, child) =>
+                                Opacity(opacity: opacity, child: child),
+                            child: Image.memory(
+                              bytes,
+                              fit: BoxFit.contain,
+                              errorBuilder: (_, _, _) => Text(
+                                'This photo is damaged',
+                                style: context.type.rowSubtitle.copyWith(
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),

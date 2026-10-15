@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:calculator/core/design/app_spacing.dart';
+import 'package:calculator/core/widgets/core_widgets.dart';
 import 'package:calculator/features/secret/images/data/shared_preferences_vault_image_repository.dart';
 import 'package:calculator/features/secret/images/domain/vault_image.dart';
 import 'package:calculator/features/secret/images/presentation/vault_gallery_widgets.dart';
@@ -105,6 +106,32 @@ void main() {
     expect(find.text('Trip'), findsOneWidget);
     expect(find.byKey(const Key('vault-bottom-tabs')), findsOneWidget);
     expect(find.byType(VaultGridTile), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('long-pressing an album opens its options with the one trash', (
+    tester,
+  ) async {
+    _seedAlbumGallery();
+    await tester.pumpWidget(_gallery());
+    await tester.pumpAndSettle();
+
+    await _openAlbumsTab(tester);
+    await tester.longPress(find.text('Trip'));
+    await tester.pumpAndSettle();
+
+    // D-119: the sheet's "Delete album" wears the History screen's painted
+    // trash, so the gallery never shows a second delete glyph.
+    expect(find.text('Delete album'), findsOneWidget);
+    final deleteTile = tester.widget<ListTile>(
+      find.ancestor(
+        of: find.text('Delete album'),
+        matching: find.byType(ListTile),
+      ),
+    );
+    expect(deleteTile.leading, isA<AppTrashIcon>());
+    expect(find.byIcon(Icons.delete_outline), findsNothing);
+    expect(find.byIcon(Icons.delete_forever), findsNothing);
     expect(tester.takeException(), isNull);
   });
 

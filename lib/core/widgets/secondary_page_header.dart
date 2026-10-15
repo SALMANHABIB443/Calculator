@@ -32,10 +32,15 @@ import 'app_icon_button.dart';
 class SecondaryPageHeader extends StatelessWidget {
   const SecondaryPageHeader({
     super.key,
+    this.title,
     this.onBack,
     this.trailing,
     this.backIcon = Icons.arrow_back,
   });
+
+  /// Screen title. Vault pages pass nothing; other screens (Settings, About,
+  /// History, Legal, Catalog) pass their title.
+  final String? title;
 
   /// Overrides the default `Navigator.pop`. Used by tests.
   final VoidCallback? onBack;
@@ -72,7 +77,18 @@ class SecondaryPageHeader extends StatelessWidget {
               onPressed: onBack ?? () => Navigator.of(context).maybePop(),
             ),
             const SizedBox(width: AppSpacing.md),
-            const Spacer(),
+            if (title != null)
+              Expanded(
+                child: Text(
+                  title!,
+                  style: context.type.screenTitle,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              )
+            else
+              const Spacer(),
             const SizedBox(width: AppSpacing.md),
             // The mirror of the back box. A caller's action sits in the slot;
             // an absent one is filled with its own width so the title stays

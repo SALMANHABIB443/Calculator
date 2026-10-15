@@ -115,7 +115,7 @@ class VaultGridTile extends StatelessWidget {
     required this.selected,
     required this.selecting,
     required this.onTap,
-    required this.onLongPress,
+    this.onLongPress,
     super.key,
   });
 
@@ -124,7 +124,12 @@ class VaultGridTile extends StatelessWidget {
   final bool selected;
   final bool selecting;
   final VoidCallback onTap;
-  final VoidCallback onLongPress;
+
+  /// Optional, and null in the gallery: entering selection is a *region* gesture
+  /// now, so the tile carries none of its own (D-120). Kept on the widget for
+  /// the same reason [HistoryCard] keeps its tap — the tile is still usable
+  /// standalone — but the region is what actually listens.
+  final VoidCallback? onLongPress;
 
   @override
   Widget build(BuildContext context) {

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:calculator/core/design/app_theme.dart';
+import 'package:calculator/core/widgets/core_widgets.dart';
 import 'package:calculator/features/secret/documents/documents.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -60,6 +61,24 @@ Finder _chip(String label) => find.descendant(
   matching: find.text(label),
 );
 
+/// Opens the All-documents collection page from the landing page's row.
+Future<void> _openAllDocuments(WidgetTester tester) async {
+  await tester.ensureVisible(
+    find.byKey(const Key('vault-documents-collection')),
+  );
+  await tester.pumpAndSettle();
+  // Tap the row's InkWell directly: [SettingsRow] puts its key on the outer
+  // column while the gesture area wraps only the label, so the key's centre can
+  // miss it after a scroll.
+  await tester.tap(
+    find.descendant(
+      of: find.byKey(const Key('vault-documents-collection')),
+      matching: find.byType(InkWell),
+    ),
+  );
+  await tester.pumpAndSettle();
+}
+
 void main() {
   group('the landing page', () {
     testWidgets('an empty vault shows the full layout with an inline empty message', (
@@ -68,8 +87,8 @@ void main() {
       _useTallView(tester);
       await _pump(tester, const VaultDocumentsScreen());
 
-      // The full layout is always visible: filter chips, Recent Documents,
-      // Browse by type, All Documents, and the floating Home button.
+      // The full layout is always visible: Recent Documents, Browse by type,
+      // All Documents, and the floating Home button.
       expect(find.text('No documents yet. Tap ADD to import.'), findsOneWidget);
       expect(find.text('RECENT DOCUMENTS'), findsOneWidget);
       expect(find.text('BROWSE BY TYPE'), findsOneWidget);
@@ -112,7 +131,7 @@ void main() {
       expect(find.textContaining('3.00 KB'), findsOneWidget);
     });
 
-    testWidgets('a type chip filters the list in place', (tester) async {
+    testWidgets('the All-documents page carries the type chips', (tester) async {
       _useTallView(tester);
       await _pump(
         tester,
@@ -123,6 +142,13 @@ void main() {
         ]),
       );
 
+      // The landing page has no filter chips of its own.
+      expect(find.byType(VaultDocumentFilterBar), findsNothing);
+
+      await _openAllDocuments(tester);
+
+      // The All-documents page offers them, and a chip filters in place.
+      expect(find.byType(VaultDocumentFilterBar), findsOneWidget);
       await tester.tap(_chip('PDF'));
       await tester.pumpAndSettle();
 
@@ -163,6 +189,39 @@ void main() {
         find.textContaining('No documents match the current search or filter'),
         findsOneWidget,
       );
+    });
+
+    testWidgets('search hides the landing sections and shows only results', (
+      tester,
+    ) async {
+      _useTallView(tester);
+      await _pump(
+        tester,
+        const VaultDocumentsScreen(),
+        repository: _repo(<VaultDocument>[
+          seededDocument(id: 'a', fileName: 'Report.pdf'),
+          seededDocument(id: 'b', fileName: 'notes.txt'),
+        ]),
+      );
+
+      await tester.tap(find.byIcon(Icons.search));
+      await tester.pumpAndSettle();
+
+      // Before typing: the landing's controls are gone and the prompt shows.
+      expect(find.text('BROWSE BY TYPE'), findsNothing);
+      expect(find.text('RECENT DOCUMENTS'), findsNothing);
+      expect(find.text('Search your documents'), findsOneWidget);
+
+      await tester.enterText(
+        find.byKey(VaultDocumentsScreen.searchFieldKey),
+        'note',
+      );
+      await tester.pumpAndSettle();
+
+      // Results only — the matching row, and still no landing sections.
+      expect(find.text('notes.txt'), findsOneWidget);
+      expect(find.text('BROWSE BY TYPE'), findsNothing);
+      expect(find.text('RECENT DOCUMENTS'), findsNothing);
     });
 
     testWidgets('the overflow sorts by name', (tester) async {
@@ -223,6 +282,18 @@ void main() {
         find.byKey(VaultDocumentsScreen.selectionBarKey),
         findsOneWidget,
       );
+
+      // D-119: the bar deletes with the History screen's painted trash, and no
+      // Material `delete*` glyph is on the screen in any state.
+      expect(
+        find.descendant(
+          of: find.byKey(VaultDocumentsScreen.selectionBarKey),
+          matching: find.byType(AppTrashIcon),
+        ),
+        findsOneWidget,
+      );
+      expect(find.byIcon(Icons.delete_outline), findsNothing);
+      expect(find.byIcon(Icons.delete_forever), findsNothing);
     });
   });
 
@@ -264,6 +335,18 @@ void main() {
 
       await tester.tap(_rowMenu('a'));
       await tester.pumpAndSettle();
+
+      // D-119: the sheet's Delete action wears the one trash, not Material's
+      // `delete_outline`.
+      final deleteTile = tester.widget<ListTile>(
+        find.ancestor(
+          of: find.text('Delete'),
+          matching: find.byType(ListTile),
+        ),
+      );
+      expect(deleteTile.leading, isA<AppTrashIcon>());
+      expect(find.byIcon(Icons.delete_outline), findsNothing);
+
       await tester.tap(find.text('Delete'));
       await tester.pumpAndSettle();
 
@@ -428,6 +511,8 @@ void main() {
 
       expect(find.text('Report.pdf'), findsOneWidget);
       expect(find.text('notes.txt'), findsNothing);
+      // A single-family page has no chips: every row already belongs to it.
+      expect(find.byType(VaultDocumentFilterBar), findsNothing);
     });
 
     testWidgets('a family with nothing in it offers Add', (tester) async {
@@ -457,20 +542,7 @@ void main() {
         ]),
       );
 
-      await tester.ensureVisible(
-        find.byKey(const Key('vault-documents-collection')),
-      );
-      await tester.pumpAndSettle();
-      // Tap the row's InkWell directly: [SettingsRow] puts its key on the
-      // outer column while the gesture area wraps only the label, so the
-      // key's centre can miss it after a scroll.
-      await tester.tap(
-        find.descendant(
-          of: find.byKey(const Key('vault-documents-collection')),
-          matching: find.byType(InkWell),
-        ),
-      );
-      await tester.pumpAndSettle();
+      await _openAllDocuments(tester);
 
       // The pushed collection page covers the landing page (an opaque route
       // keeps the landing offstage, so `byType` still finds one screen):
@@ -512,10 +584,59 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
+
+      // D-119: even a permanent delete wears the History screen's trash rather
+      // than Material's `delete_forever`.
+      final deleteTile = tester.widget<ListTile>(
+        find.ancestor(
+          of: find.text('Delete forever'),
+          matching: find.byType(ListTile),
+        ),
+      );
+      expect(deleteTile.leading, isA<AppTrashIcon>());
+      expect(find.byIcon(Icons.delete_forever), findsNothing);
+
       await tester.tap(find.text('Restore'));
       await tester.pumpAndSettle();
 
       expect(find.text('Recycle bin is empty'), findsOneWidget);
+    });
+
+    testWidgets('selecting rows brings a bar that deletes with the one trash', (
+      tester,
+    ) async {
+      _useTallView(tester);
+      await _pump(
+        tester,
+        const VaultDocumentsTrashScreen(),
+        repository: _repo(<VaultDocument>[
+          seededDocument(
+            id: 'a',
+            fileName: 'old.txt',
+            trashedAt: DateTime(2026, 2, 1),
+          ),
+        ]),
+      );
+
+      // The header's More sheet is how a resting bin enters selection.
+      await tester.tap(_headerMenu());
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Select items'));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(VaultDocumentsTrashScreen.selectionBarKey),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: find.byKey(VaultDocumentsTrashScreen.selectionBarKey),
+          matching: find.byType(AppTrashIcon),
+        ),
+        findsOneWidget,
+      );
+      expect(find.byIcon(Icons.delete_forever), findsNothing);
+      expect(find.byIcon(Icons.delete_outline), findsNothing);
     });
 
     testWidgets('an empty bin shows the place\'s own empty state', (

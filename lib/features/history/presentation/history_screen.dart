@@ -64,6 +64,11 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   /// calculator recorded something new.
   final Set<String> _selectedIds = <String>{};
 
+  /// Drives the list's scroll position, including the auto-scroll a drag uses
+  /// to reach items that started off screen (D-120). A controller is the only
+  /// way [DragSelectRegion] can move the list under the held finger.
+  final ScrollController _scrollController = ScrollController();
+
   /// Whether the screen is in selection mode.
   ///
   /// Derived from the set rather than stored, so there is no state in which a
@@ -83,6 +88,40 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
       _selectedIds.contains(id)
           ? _selectedIds.remove(id)
           : _selectedIds.add(id);
+    });
+  }
+
+  /// Starts a long-press-and-drag selection (D-120).
+  ///
+  /// The entry under the press is entered, and the direction the drag will paint
+  /// comes back as its return value: a press on an unselected row adds, one on
+  /// an already-chosen row removes. Returning the mode rather than reading it
+  /// back keeps the decision in the one place that knows the pre-press state.
+  bool _beginDrag(String id) {
+    final selecting = !_selectedIds.contains(id);
+    setState(() {
+      if (selecting) {
+        _selectedIds.add(id);
+      } else {
+        _selectedIds.remove(id);
+      }
+    });
+    return selecting;
+  }
+
+  /// Applies the drag's mode to one row it passed over (D-120).
+  ///
+  /// *Sets* rather than toggles: a finger that drifts back over a row must not
+  /// undo the selection it just made, so the row is put into [select] and left
+  /// there.
+  void _paintDrag(String id, bool select) {
+    if (select == _selectedIds.contains(id)) return;
+    setState(() {
+      if (select) {
+        _selectedIds.add(id);
+      } else {
+        _selectedIds.remove(id);
+      }
     });
   }
 
@@ -127,6 +166,12 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
     // alone would have the header keep claiming rows that no longer exist, and
     // a second tap on the delete button would come back with an empty delete.
     if (mounted) setState(_selectedIds.clear);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -209,6 +254,9 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
           history: history,
           selectedIds: _selectedIds,
           onToggle: _toggleSelection,
+          scrollController: _scrollController,
+          onBeginDrag: _beginDrag,
+          onPaintDrag: _paintDrag,
           onClearAll: () => _confirmClear(context, ref),
           onSecretRequested: _openSecret,
         ),
@@ -259,6 +307,9 @@ class _HistoryBody extends ConsumerWidget {
     required this.history,
     required this.selectedIds,
     required this.onToggle,
+    required this.scrollController,
+    required this.onBeginDrag,
+    required this.onPaintDrag,
     required this.onClearAll,
     required this.onSecretRequested,
   });
@@ -274,6 +325,15 @@ class _HistoryBody extends ConsumerWidget {
 
   /// Adds or removes one entry by id (D-76).
   final void Function(String id) onToggle;
+
+  /// Drives the list's scroll position for the drag's auto-scroll (D-120).
+  final ScrollController scrollController;
+
+  /// Enters the drag and returns the mode it paints in (D-120).
+  final bool Function(String id) onBeginDrag;
+
+  /// Applies the drag's mode to one entry (D-120).
+  final void Function(String id, bool select) onPaintDrag;
 
   /// Opens the Clear History confirmation (D-05).
   final VoidCallback onClearAll;
@@ -323,6 +383,9 @@ class _HistoryBody extends ConsumerWidget {
         groups: value,
         selectedIds: selectedIds,
         onToggle: onToggle,
+        scrollController: scrollController,
+        onBeginDrag: onBeginDrag,
+        onPaintDrag: onPaintDrag,
         onClearAll: onClearAll,
         onSecretRequested: onSecretRequested,
       ),
@@ -341,6 +404,9 @@ class _HistoryList extends StatelessWidget {
     required this.groups,
     required this.selectedIds,
     required this.onToggle,
+    required this.scrollController,
+    required this.onBeginDrag,
+    required this.onPaintDrag,
     required this.onClearAll,
     required this.onSecretRequested,
   });
@@ -352,6 +418,15 @@ class _HistoryList extends StatelessWidget {
 
   /// Adds or removes one entry by id (D-76).
   final void Function(String id) onToggle;
+
+  /// Drives the list's scroll position for the drag's auto-scroll (D-120).
+  final ScrollController scrollController;
+
+  /// Enters the drag and returns the mode it paints in (D-120).
+  final bool Function(String id) onBeginDrag;
+
+  /// Applies the drag's mode to one entry (D-120).
+  final void Function(String id, bool select) onPaintDrag;
 
   /// Opens the Clear History confirmation (D-05).
   final VoidCallback onClearAll;
@@ -372,23 +447,34 @@ class _HistoryList extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          child: CustomScrollView(
-            key: const Key('history-list'),
-            slivers: <Widget>[
-              // The scroll view starts below the header rather than flush under
-              // it: the first day label carries its own [AppSpacing.historyGroupGap]
-              // for the days that follow it, and a gap that only applies from the
-              // second group onwards would put the newest day hard against the
-              // title. One `lg` puts the whole page's top rhythm back in balance
-              // (D-72).
-              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
-              for (final group in groups) ..._sliversFor(context, group),
-              // Clears the gesture bar / home indicator, and keeps the last card
-              // from being the thing a scroll fling ends on.
-              const SliverToBoxAdapter(
-                child: SizedBox(height: AppSpacing.bottomSafe),
-              ),
-            ],
+          // D-120: the region owns long-press so a hold-then-drag paints a
+          // selection across the cards. The scroll view keeps its plain drag,
+          // so an ordinary swipe still scrolls this list.
+          child: DragSelectRegion(
+            controller: scrollController,
+            onBegin: onBeginDrag,
+            onPaint: onPaintDrag,
+            child: CustomScrollView(
+              key: const Key('history-list'),
+              controller: scrollController,
+              slivers: <Widget>[
+                // The scroll view starts below the header rather than flush under
+                // it: the first day label carries its own [AppSpacing.historyGroupGap]
+                // for the days that follow it, and a gap that only applies from the
+                // second group onwards would put the newest day hard against the
+                // title. One `lg` puts the whole page's top rhythm back in balance
+                // (D-72).
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AppSpacing.lg),
+                ),
+                for (final group in groups) ..._sliversFor(context, group),
+                // Clears the gesture bar / home indicator, and keeps the last card
+                // from being the thing a scroll fling ends on.
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AppSpacing.bottomSafe),
+                ),
+              ],
+            ),
           ),
         ),
         // D-38: hidden when there is nothing to clear. The header trash stays
@@ -423,20 +509,25 @@ class _HistoryList extends StatelessWidget {
       delegate: SliverChildBuilderDelegate((context, index) {
         final entry = group.entries[index];
         final selected = selectedIds.contains(entry.id);
-        return HistoryCard(
-          expression: entry.expression,
-          result: entry.result,
-          // D-76: a long-press enters selection; a *tap* toggles while the mode
-          // is already on. The tap has to change meaning, because a user who
-          // has already entered selection mode and then taps a row means
-          // "include this one" — popping back to the calculator with the
-          // result loaded would throw away the mode they are halfway through.
-          onTap: _selecting
-              ? () => onToggle(entry.id)
-              : () => _load(context, entry),
-          onLongPress: () => onToggle(entry.id),
-          selecting: _selecting,
-          selected: selected,
+        // D-120: the marker is what lets the surrounding drag region answer
+        // "which entry is under the finger?". Long-press itself now lives on
+        // the region, so the card carries only the tap.
+        return DragSelectItem(
+          id: entry.id,
+          child: HistoryCard(
+            expression: entry.expression,
+            result: entry.result,
+            // D-76: a *tap* toggles while the mode is already on. The tap has
+            // to change meaning, because a user who has already entered
+            // selection mode and then taps a row means "include this one" —
+            // popping back to the calculator with the result loaded would throw
+            // away the mode they are halfway through.
+            onTap: _selecting
+                ? () => onToggle(entry.id)
+                : () => _load(context, entry),
+            selecting: _selecting,
+            selected: selected,
+          ),
         );
       }, childCount: group.entries.length),
     ),

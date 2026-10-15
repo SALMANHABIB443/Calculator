@@ -1,10 +1,12 @@
 # UI/UX Design System & Mockup Specification
 ## Calculator App
 
-**Document Status:** Current — regenerated from `lib/` on 2026-10-01  
+**Document Status:** Current — regenerated from `lib/` on 2026-10-13  
 **Source of Truth:** The four mockups in `../Mockups/` **and** the shipped code. Where the
-two disagree, §12 lists the departure and the code wins.  
-**Theme:** Dark mode only (as shown)  
+two disagree, §12 lists the departure and the code wins. The **white theme** has no mockup:
+its palette is the sibling Ethar app's (D-90, §2.4).  
+**Theme:** Two themes — **Dark** (the mockups) and **White** (D-90). Dark is the default and
+the stored preference (`AppSettings.defaults.theme` = `'dark'`).  
 **Decisions:** See [DECISIONS.md](DECISIONS.md) — cited here as `D-xx`, never restated  
 **Tokens:** `lib/core/design/app_tokens.dart` — see §11 for the full reference
 
@@ -25,15 +27,22 @@ two disagree, §12 lists the departure and the code wins.
 
 ## 1. Design Philosophy and Visual Identity
 
-A **modern, minimalist dark aesthetic** with high contrast, generous spacing, and a clear
-visual hierarchy.
+A **modern, minimalist aesthetic** with high contrast, generous spacing, and a clear
+visual hierarchy, shipped in **two themes** (D-90): a **dark** theme measured from the
+mockup pixels, and a **white** theme taken from the sibling **Ethar** app so the two
+apps read as one family.
 
 **Core Principles**
 
-- **Dark backgrounds** reduce eye strain and match modern mobile OS preferences.
+- **One palette per theme.** Every colour is read through `AppPalette` (D-90), never from a
+  frozen `static const`, so the two themes differ only in the instance they install. The dark
+  page is `#000000`; the white page is `#FEFEFE`. Both are chosen for contrast against the ink
+  they carry, so a value that only works on one background is half a token.
 - **Orange accent, primary actions only** — operators, `=`, toggles when ON, Clear History,
-  active icons. Never selection, never decoration.
-- **Circular keys** create a soft, approachable feel.
+  active icons. Never selection, never decoration. Each theme states its own orange: `#F89508`
+  (the calculator mockup's) on dark, `#FE651B` (Ethar's brand) on white. Neither accent had to
+  be re-measured to give the other up.
+- **Rounded-square keys** create a soft, approachable feel (D-114, reversing the circles of D-29).
 - **The result is the hero.** Nothing on the calculator competes with the number.
 - **Cards and grouped sections** give structure without clutter.
 - **One optical margin.** Every card edge, section label, row, and header action box sits on
@@ -61,28 +70,42 @@ Mockups are 884 × 1779 px at 2× (logical 442 × 890), portrait.
 
 ## 2. Color Palette
 
-The single definition site is `AppColors` (`lib/core/design/app_colors.dart`). Nothing
-outside that class may hard-code a hex value — screens and components read from here so a
-token change propagates in one edit.
+The single definition site is `AppPalette` (`lib/core/design/app_palette.dart`), a
+`ThemeExtension` carrying **one value per theme**. `AppPalette.dark` is the token set
+`AppColors` (`lib/core/design/app_colors.dart`) already holds — the dark theme is unchanged —
+and `AppPalette.light` is the white theme (§2.4). Nothing outside these may hard-code a hex
+value: screens and components read `context.appColors.<token>`, so a token change propagates
+in one edit **and follows the active theme** (D-90).
 
-### 2.1 Core palette
+`AppTheme` (`app_theme.dart`) builds the two `ThemeData`s from the two palettes, and
+`AppType` resolves the §3 ramp's colours per palette, so a difference between the two themes
+cannot appear on one side only.
+
+### 2.1 Core palette — the dark theme (`AppPalette.dark` / `AppColors`)
 
 | Token | Value | Role | Prov. |
 |-------|-------|------|-------|
 | `background` | `#000000` | Full screen background; the page behind every card | M |
-| `surface` | `#101011` | Shared card & row surface: Settings groups, About hero card, confirmation dialog, decimal-places sheet, header action boxes | M |
-| `surfaceRaised` | `#151517` | History cards only — one step lighter than `surface` | C (D-72) |
+| `surface` | `#101011` | Shared card & row surface: Settings groups, **History cards**, About hero card, confirmation dialog, decimal-places sheet, header action boxes | M |
+| `surfaceRaised` | `#151517` | A surface one step above `surface` that is **not** a card (D-91). The History card used to read this; it now reads `surface` like every other card | C (D-72) |
+| `surfaceSoft` | `#20232A` | Soft fill behind a row's 44 px leading icon tile (D-91) — Ethar's `_SettingsIconTile` fill | C (D-91) |
+| `cardBorder` | `#292D35` | The 1 px outline around a grouped card (D-91) | C (D-91) |
+| `ruleOnPage` | `#45454A` | 1 px rule across the calculator's display-to-keypad boundary — a different object from `divider` | C |
 | `accent` | `#F89508` | Primary action: operator keys, `=`, toggles ON, Clear History, active icons | M |
-| `buttonDigit` | `#1E1E1E` | Digit keys and the decimal point | M |
-| `buttonFunction` | `#949494` | `AC`, `+/−`, `%` | M |
+| `danger` | `#FF5A5F` | Wrong-PIN feedback — the dots and the "Wrong PIN" line (D-88) | C |
+| `buttonDigit` | `#242428` | Digit keys and the decimal point | M |
+| `buttonFunction` | `#A2A2A8` | `AC`, `+/−`, `%` | M |
 | `textPrimary` | `#FFFFFF` | Main result, headings, active labels, keys on dark fills | M |
 | `textOnFunction` | `#000000` | Labels on the light function keys | M |
+| `textOnAccent` | `#FFFFFF` | Labels on anything filled with `accent`. Named as its own token so the **light** theme can print ink on a light accent instead (D-90) | D |
 | `textSecondary` | `#949AA4` | Expression line, subtitles, captions, section headers, chevrons | M |
-| `divider` | `#1A1A1B` | Hairline between rows inside a grouped card | C |
+| `divider` | `#292D35` | Hairline between rows inside a grouped card (retuned in D-91) | C |
 | `toggleTrackOn` | `#F89508` | Toggle track, ON | M |
 | `toggleTrackOff` | `#2A2A2A` | Toggle track, OFF | C — **R-1**, D-61 |
 | `toggleThumb` | `#FFFFFF` | Toggle thumb, ON and OFF alike | M |
 | `pressedOpacity` | `0.85` | Opacity of a pressed key or button | C |
+
+The three selection tokens live in §2.2; the keypad's fill, halo, and gradient tokens in §5.1.
 
 **The function keys are the palette's trap.** They are a *light* mid-gray carrying
 *near-black* labels — not a medium gray with white labels. This was the largest single
@@ -114,8 +137,55 @@ what makes a selected card unreadable.
   `#0E0F11` against History's `#101011` in the mockups. A 3-unit spread across AI-rendered
   images; treated as noise, not a real palette split — which is why the History redesign
   introduced `surfaceRaised` rather than moving `surface` and restyling three other screens.
+  The History card itself has since returned to `surface` (D-91) like every other card.
 - **Icons** are `#FFFFFF` by default and `#F89508` for active/feedback glyphs, passed
   explicitly per call site (§5.4).
+
+### 2.4 The white theme (`AppPalette.light`, D-90)
+
+The second theme is **not** a re-measure of anything: it is the sibling **Ethar** app's white
+palette, so the two apps read as one family. Every value below is Ethar's own token except
+the keypad fills, which Ethar has no equivalent of and which follow the *same relationship the
+dark theme uses* — digits a step below the card, function keys a step further still.
+
+| Token | Dark | White |
+|-------|------|-------|
+| `background` | `#000000` | `#FEFEFE` |
+| `surface` | `#101011` | `#FFFFFF` |
+| `surfaceRaised` | `#151517` | `#FAFAFB` |
+| `surfaceSelected` | `#2E2E31` | `#F0F1F3` |
+| `surfaceSoft` | `#20232A` | `#FAFAFB` |
+| `cardBorder` | `#292D35` | `#ECEDEF` |
+| `cardShadow` | `null` (none) | `0x0D0F172A`, blur 24, offset (0, 8) |
+| `accent` | `#F89508` | `#FE651B` |
+| `danger` | `#FF5A5F` | `#D92D20` |
+| `buttonDigit` | `#242428` | `#F4F5F7` |
+| `buttonFunction` | `#A2A2A8` | `#D9DADD` |
+| `textPrimary` | `#FFFFFF` | `#0C0F16` |
+| `textOnFunction` | `#000000` | `#0C0F16` |
+| `textOnAccent` | `#FFFFFF` | `#FFFFFF` |
+| `textSecondary` | `#949AA4` | `#656A78` |
+| `divider` | `#292D35` | `#ECEDEF` |
+| `ruleOnPage` | `#45454A` | `#DCDEE2` |
+| `toggleTrackOn` | `#F89508` | `#FE651B` |
+| `toggleTrackOff` | `#2A2A2A` | `#DFE1E5` |
+| `toggleThumb` | `#FFFFFF` | `#FFFFFF` |
+| `selectionAccent` | `#FFFFFF` | `#0C0F16` |
+| `selectionCheck` | `#000000` | `#FFFFFF` |
+| `keyShadow` | `#1AFFFFFF` halo, blur 10, offset (0, 2) | `#1F0F172A` dark shadow |
+| `keyBorder` | `#33333A` | `#E4E6EA` |
+
+**Card edges swap jobs between themes.** The dark theme separates a card from the page with a
+1 px `cardBorder` and **no** shadow (a black shadow on a black page is invisible at every
+elevation); the white theme keeps Ethar's border *and* adds `cardShadow`. Ethar drops the
+shadow in dark for the same reason, so the two themes differ because the page differs, not
+for variety.
+
+**Two pairings invert on purpose.** `selectionAccent`/`selectionCheck` are white-fill +
+black-tick on dark and ink-fill + white-tick on white (a white disc on a white card is
+invisible). `textOnAccent` stays white in both because both accents are oranges that want a
+white label — but it is a **named token** so the light theme is free to disagree without
+restyling the dark one.
 
 ---
 
@@ -123,7 +193,10 @@ what makes a selected card unreadable.
 
 The single definition site is `AppTypography` (`lib/core/design/app_typography.dart`). The
 system font is used throughout (SF Pro on iOS, Roboto on Android) so no custom asset ships;
-only weight, size, and spacing are specified. **Dark mode only**, so there is no light ramp.
+only weight, size, and spacing are specified. **One ramp serves both themes**: the `Colour`
+column below names the palette token each style reads, and `AppType` (`app_type.dart`)
+re-colours `AppTypography`'s tokens per `AppPalette`, so the same size lands as white on dark
+and ink on white (D-90) with no second scale.
 
 ### 3.1 The scale
 
@@ -189,7 +262,10 @@ them (§12.1).
 | Token | Value | Use |
 |-------|-------|-----|
 | `screenHorizontal` | **24** | The screen margin. The most important number in the app (§4.3). |
+| `calculatorSideMargin` | 16 | The calculator's own side margin (D-110) — every other screen is still 24 |
 | `cardPadding` | 16 | Inner padding of a card or list row |
+| `dividerIndent` | 72 | Start of a row divider, so the hairline begins where the titles do (D-91) |
+| `dividerEndIndent` | 16 | End of a row divider |
 | `sectionGap` | 32 | Vertical gap between major page sections |
 | `xl` | 24 | Large step — also the margin and the header gap |
 | `lg` | 16 | Medium step — card padding is `lg` horizontally inside rows |
@@ -199,25 +275,28 @@ them (§12.1).
 | `bottomSafe` | 24 | Below the last element, clearing the gesture bar |
 | `calculatorDisplayGap` | 24 | Between the display block and the top key row |
 | `historyCardGap` | 8 | Between two History cards (applied half above / half below each) |
+| `historyCardHorizontal` | 18 | Horizontal padding inside a History card (D-93) |
+| `historyCardVertical` | 17 | Vertical padding inside a History card (D-93) |
 | `historyGroupGap` | 24 | Above a day label — the gap that separates two groups |
 
 ### 4.2 Radii
 
 | Token | Value | Use |
 |-------|-------|-----|
-| `card` | 14 | Settings groups, About hero card, dialog, bottom sheet |
-| `historyCard` | 14 | History cards |
+| `card` | 14 | Settings groups, About hero card, dialog, bottom sheet, the Vault's Categories card |
+| `historyCard` | 12 | History cards (**D-93**, corrected from 14) |
 | `tile` | 12 | A row inside a grouped card |
 | `iconButton` | 12 | The header action's bordered square |
 | `dialog` | 20 | The About hero card and the confirmation dialog |
-| `button` | `999` | Calculator keys — a full circle |
+| `calculatorKey` | 26 | Rounded-square calculator keys (**D-114**) |
 
-**Two tokens that hold the same number on purpose.** `historyCard` and `card` are both 14
-(D-77), and `tile` and `iconButton` are both 12. They are *not* duplicates. A 150 pt History
-card and a 68 pt Settings row are different objects that must not be allowed to drift, and
-one shared value standing for both is precisely the drift a token file exists to prevent. A
-test asserts the pair in both directions, so an edit that moves one and not the other fails
-and an edit that moves both is deliberate.
+**A radius names an object, not a number.** `tile` and `iconButton` are both 12 without being
+duplicates — a row inside a grouped card and the header action's square are different objects
+that must not be allowed to drift — and one shared value standing for both is precisely the
+drift a token file exists to prevent. `historyCard` and `card` once held the same number for
+the same reason; **D-93 split them** (12 and 14) when it corrected which Ethar card a History
+entry actually tracks. A test asserts the pairs in both directions, so an edit that moves one
+and not the other fails, and an edit that moves both is deliberate.
 
 ### 4.3 The 24 px screen margin
 
@@ -257,13 +336,21 @@ card edge in every other screen is still at 24 — `screenHorizontal` did not mo
 | Token | Value | Min or fixed | Use |
 |-------|-------|--------------|-----|
 | `headerHeight` | 56 | **min** | Every top bar. A minimum because the bar grows for Dynamic Type, and every screen's top spacing is measured from it. |
-| `rowMinHeight` | 56 | **min** | A tappable settings row — the whole row is the target, so the switch is operable from anywhere across it |
+| `rowMinHeight` | **64** | **min** | A tappable settings row — raised from 56 in **D-91** because the row now holds a 44 px icon tile; the whole row is the target, so the switch is operable from anywhere across it |
 | `rowIcon` | 22 | fixed | The icon inside a list row |
 | `iconTouchTarget` | 48 | fixed | Side of an icon-only action, and the header action's box |
+| `historyMetaGlyph` | 17 | fixed | The glyph leading a History card's meta row (D-93) |
+| `historyMetaGap` | 5 | fixed | Gap between that glyph and its text (D-93) |
 | `brandIcon` | 88 | fixed | The About hero brand mark |
 | `historyCardMinHeight` | 88 | **min** | A History card — see below |
 | `calculatorPanelMaxWidth` | 480 | fixed | The calculator's header + display + keypad column |
 | `calculatorHeaderAction` | 56 | fixed | The calculator's Settings and History buttons — its own scale, since a 48 px box above a 90 px key reads as a header for a smaller app (D-110) |
+| `calculatorBackspaceRow` | 48 | fixed | The calculator's backspace row, one header box tall; reserved before the keypad is sized (D-81) |
+| `secretHomeButton` | 56 | fixed | The floating home button on the Secret Mode screens; a Material small-FAB silhouette (D-86) |
+
+`AppSecretSpacing.homeButtonInset` (24) is the inset the floating home button keeps from the
+right and bottom edges, under the `SafeArea` — named so its clearance is one fact rather than
+a number retyped at each of the two screens it appears on.
 
 **Why the minimums are minimums.** A hard `SizedBox(height: 88)` on a History card would be
 the one value that is wrong on every screen except a 1× one. At 1× its content settles at
@@ -293,7 +380,11 @@ AC      +/−     %       ÷
 ```
 
 Verified against mockup `02_22_43`: the operator column (`÷ × − +`) and `=` are orange, the
-`0` key spans two columns, and there is **no backspace key** (D-19).
+`0` key spans two columns, and the **grid** has no backspace key (D-19). **D-81** added a
+backspace control — this app's own painted `AppBackspaceIcon`, not Material's
+`backspace_outlined` — in a row of its own *between the display and the rule*, one
+`iconTouchTarget` (48) tall, on the left of the same column the keys use. So the grid is
+still 4 × 5; the backspace is not one of its cells.
 
 **Variants.** Each owns its own fill and label colour **and its own label size**,
 so a screen can never pair a fill with the wrong foreground, or paint the orange
@@ -304,6 +395,13 @@ column at the digit size (D-111):
 | `digit` | `0`–`9`, `.` | `#242428` | `#FFFFFF` | 25 / w500 |
 | `operator` | `+ − × ÷` and `=` | `#F89508` | `#FFFFFF` | **32 / w600** |
 | `function` | `AC`, `+/−`, `%` | `#A2A2A8` | `#000000` | **24 / w600** |
+
+Each variant also carries a **tactile surface** (D-114): a subtle vertical gradient
+(`keyDigitTop`/`Bottom`, `keyFunctionTop`/`Bottom`, `keyOperatorTop`/`Bottom`), an inner
+top-edge highlight (`keyDigitHighlight`, `keyFunctionHighlight`, `keyOperatorHighlight`), and
+— for the operator column only — an accent-tinted `keyOperatorShadow` (blur 14, offset (0, 3))
+behind a `keyOperatorBorder`. The white theme states the same recipe in light values (§2.4) so
+the keys keep their depth on a white page.
 
 **The keys are painted, not elevated (D-111).** A `Material` casts its elevation
 shadow in a colour the framework chooses — black in the dark theme — and the page
@@ -318,29 +416,31 @@ three that says where a key *ends*.
 
 | Token | Value | Meaning |
 |-------|-------|---------|
-| `keyGap` | 14 | Measured 13 horizontal / 15 vertical — treated as one value |
+| `keyGap` | **16** | Widened from 14 with the calculator margin in **D-110** |
 | `minTouchTarget` | 44 | Accessibility floor for the cell |
-| `maxCellSize` | 132 | Ceiling, so a tall phone stops growing the keys |
+| `maxCellSize` | **160** | Ceiling, so a tall phone stops growing the keys |
 | `columnCount` / `rowCount` | 4 / 5 | From the mockup |
 
 ```
-cellSize = min( (width  - 3*14) / 4 ,  (height - 4*14) / 5 )   clamped to [0, 132]
+cellSize = min( (width  - 3*16) / 4 ,  (height - 4*16) / 5 )   clamped to [0, 160]
 ```
 
 Whichever axis is tighter decides the size, so the grid shrinks on a small phone instead of
 overflowing and stops growing on a tall one. There is deliberately **no matching floor**:
 `minTouchTarget` sizes the *space the screen reserves* for the grid, not the cell inside it,
 because on a very short screen the display's number outranks the key size. `CalculatorButton`
-then takes the smaller of its own box's two axes and stays a circle at any phone size.
+then takes the smaller of its own box's two axes and keeps its shape at any phone size.
 
 **The gap is a real child.** `keyGap` is rendered as actual `SizedBox` widgets between keys
-rather than subtracted from a width (D-69). An earlier version reserved the same 14 px and
+rather than subtracted from a width (D-69). An earlier version reserved the same gap and
 still drew touching keys — the reservation and the rendering were two different numbers that
 agreed by coincidence.
 
-**The wide `0` key is a stadium, not a circle.** Every other key is a circle *and* `0` spans
-two columns, which cannot both hold. A pill is the only shape that is as tall as its
-neighbours, two columns wide, and round at both ends (D-29).
+**The keys are rounded squares, not circles** (D-114, reversing D-29). Each is an
+`AppRadius.calculatorKey` (26) corner on the ~90 px cell — moderate corners that read compact
+and refined. **The wide `0` key reuses the same radius** while spanning two columns, so it is
+a wide rounded rectangle rather than a pill; a circle and a two-column span cannot both hold,
+and the rounded rectangle is the shape that keeps every key's corners identical.
 
 **Pressed state.** `AnimatedOpacity` to `pressedOpacity` (0.85) over 100 ms. Not present in
 the mockups; standard platform feedback is used.
@@ -374,7 +474,8 @@ the mockups; standard platform feedback is used.
   the width the control does not need. Ethar bounds its value at the same 105.
 - Separators between rows use `divider` `#292D35` (retuned in **D-91**), indent **72** so the
   hairline starts where the titles do and never runs under the icon tile, end-indent 16.
-- **Cards** are `#101011` (or `surfaceRaised` in History) with a 14 px corner and **a 1 px
+- **Cards** are `surface` (`#101011` dark, `#FFFFFF` light) with a 14 px corner — a History card's
+  corner is `historyCard` (**12**, D-93) — and **a 1 px
   `cardBorder` outline** (`#292D35` dark, `#ECEDEF` light). The white theme additionally lifts
   the card with `cardShadow` `0x0D0F172A`, blur 24, offset (0, 8); **dark casts none**, matching
   Ethar. **D-91 reverses the earlier "no border, no elevation" rule:** on a black page the fill
@@ -413,6 +514,11 @@ which reads as a missing asset rather than as "nothing here yet".
   Vault's Recycle bin row and its empty page, the gallery's Trash tab, its empty illustration,
   and the delete action inside the Trash — paints this widget. Material's `delete_outline` and
   `delete_forever` are **not** used anywhere, so no two screens can show two different trashes.
+- **`AppBackspaceIcon`** is the app's own `⌫` glyph, a `CustomPainter` like `AppTrashIcon`
+  rather than Material's `backspace_outlined` (D-81). It is painted in two places — the
+  calculator's backspace row and the Secret Mode PIN keypad's bottom-right key — so the two
+  `⌫`s are the same shape. `AppIconTile` (D-91) is the app's 44 px icon container: the leading
+  tile on every settings row and on each Vault category cell, so those read as one object.
 - Icons sitting beside a text label are **decorative** and carry no semantic label, so a
   screen reader does not announce the row twice.
 
@@ -473,7 +579,9 @@ no screen can reintroduce the two-line banner by accident.
 
 ## 6. Screen Specifications
 
-Seven routes exist (`app_router.dart`); six ship, and `/catalog` is debug-only (D-20).
+Twelve routes exist (`app_router.dart`); eleven ship, and `/catalog` is debug-only (D-20).
+The Vault screens (§6.8–§6.10, §6.11) are ordinary registered routes because the
+five-second hold has to push one, and pushing needs a registered path.
 
 | Route | Screen | Header |
 |-------|--------|--------|
@@ -483,6 +591,11 @@ Seven routes exist (`app_router.dart`); six ship, and `/catalog` is debug-only (
 | `/about` | About | `SecondaryPageHeader` |
 | `/privacy` | Privacy Policy | `SecondaryPageHeader` |
 | `/terms` | Terms of Service | `SecondaryPageHeader` |
+| `/secret/unlock` | PIN prompt (D-82) | none — a bare `Scaffold` with a top-left back arrow (D-87) |
+| `/secret` | **Vault** (D-84, FEAT-SEC-003) | `AppPageHeader` titled "Vault", actions = Search + Menu |
+| `/secret/settings` | Vault settings (FEAT-SEC-004) | `SecondaryPageHeader` |
+| `/secret/change-pin` | Change PIN flow | `SecretPinField` steps (D-113) |
+| `/secret/browse/:place` | One Vault place (FEAT-SEC-007, D-114) | `SecondaryPageHeader` |
 | `/catalog` | Component Catalog | `AppPageHeader` — **debug only**, behind `kDebugMode` |
 
 ### 6.1 Calculator
@@ -554,7 +667,9 @@ SecondaryPageScaffold
 
 **A History card:**
 
-- Fill `#151517` (`surfaceRaised`), radius 14, **minimum** height 88, padding 16.
+- Fill `surface` (`#101011`) with a 1 px `cardBorder` outline, radius `historyCard` (12,
+  D-93), **minimum** height 88, padding 18 horizontal / 17 vertical (D-93). The card no longer
+  reads `surfaceRaised`; it is the same object as every other card (D-91).
 - Expression (16 w500 secondary, ellipsised) above an 8 px gap and the result (22 w600
   primary, tabular figures, `scaleDown` and never truncated).
 - Trailing chevron at `AppIconSize.row` (22) in `textSecondary`. A row-sized chevron, not a
@@ -588,6 +703,7 @@ keeps the action reachable either way.
 |-------------|-----------|
 | **Enter** | **Long-press** a card. Not double-tap, and not a persistent checkbox column: on a list of up to 200 rows an always-on affordance costs a row's worth of height, and the trailing slot already changes shape in selection mode. |
 | **Toggle** | Tap a card to add or remove it. In selection mode the row is a *choice*, not a load action. |
+| **Paint** | Keep the finger down and **drag** after the long-press: every row the finger crosses is set — not toggled — and the press's own row decides the direction, so starting on an unselected row adds and starting on a chosen one removes. Dragging back over a row already touched does nothing. Shared with the gallery, the documents list, and its recycle bin (`DragSelectRegion`, D-120); the region auto-scrolls near an edge so a row off-screen can be reached without lifting. |
 | **Header** | Swapped for `AppSelectionHeader`: "N selected", select-all / deselect-all, delete, cancel. |
 | **Back gesture** | **Cancels the selection** rather than leaving the screen. A mode that swallowed the back button would make History unreachable by the gesture every other pushed screen answers to, and losing a selection is a far smaller loss than losing the page. |
 | **Bottom action** | Hidden while selecting. |
@@ -600,14 +716,14 @@ rest. The border lives on the wrapper rather than the `Material`'s own `shape` b
 `Material` asserts that `shape` and `borderRadius` are never both given, and `borderRadius`
 is what the resting card's geometry test asserts on.
 
-The resting card has **no border at all**, so a selected row does not merely grow a hairline —
-it gains an outline the other rows have never had. That is what makes a selection of twenty
-rows scannable at a glance.
+At rest the card already carries the 1 px `cardBorder` outline every card now shares (D-91),
+so selection does not invent a border — it **recolours and thickens it** to 2 px
+`selectionAccent`. That is what makes a selection of twenty rows scannable at a glance, with no
+change in width.
 
-**The checkbox** is a 28 px circle — the app's key diameter, so the circle and a calculator
-key read as the same object and the user is choosing rows with the gesture language they use
-to enter numbers. Unchecked it keeps a visible ring, so an unselected row in selection mode
-still reads as *offering a choice* rather than as a row that has lost its affordance.
+**The checkbox** is a 28 px circle (`selectionCircle`, §11). Unchecked it keeps a visible
+ring, so an unselected row in selection mode still reads as *offering a choice* rather than as
+a row that has lost its affordance.
 
 ### 6.3 Settings
 
@@ -616,7 +732,7 @@ SecondaryPageScaffold
 ├── SecondaryPageHeader — bordered back box | "Settings"
 └── ListView
     ├── SectionHeader "APPEARANCE"
-    │   └── Theme        sun + "Theme" / "Dark mode"        (display-only)
+    │   └── Theme        sun + "Theme" / "Dark" or "White"   → Theme sheet (D-90)
     ├── SectionHeader "PREFERENCES"
     │   ├── Sound        speaker + "Key press sound"        toggle
     │   ├── Vibration    phone   + "Vibrate on key press"   toggle
@@ -629,9 +745,13 @@ SecondaryPageScaffold
     └── Footer caption: "Calculator 1.0.0"
 ```
 
-**The Theme row is display-only.** v1.0 is dark-only, so the row states the one theme that
-exists and has no chevron and no tap target (D-45). A row that looks navigable and does
-nothing is the exact failure mode the disabled trash avoids.
+**The Theme row is a picker.** It shows the current theme's human name — "Dark" or "White",
+resolved through `AppThemeName.from(stored)`, never by comparing the raw string — and opens a
+modal bottom sheet (`ThemeSheet`) with one row per theme (D-90). Each row previews **three
+chips of that theme's real palette**, so the user recognises a theme by what it looks like
+rather than by its name, and the sheet opens with the current choice check-marked. Choosing
+persists the name and the whole app repaints; dismissing without choosing leaves the theme
+alone. This **supersedes D-45's display-only row**, which held only while one theme existed.
 
 **The header is the title alone** (D-71, D-75). The mockup's subtitle
 ("Customize your calculator experience") was struck because it restated what every row on the
@@ -769,11 +889,14 @@ both of those rules intact.
 - **Four dots**, centred in the upper half, on a single row with an even gap. Each is a small
   circle: `textSecondary` when empty, `textPrimary` when filled. They are **not** characters and
   **not** asterisks — the code is never rendered as text at any point (D-83).
-- **A "Forgot PIN?" link** in `textSecondary` directly below the dots, carrying a 48 px touch target,
-  opening the reset confirmation (**D-86**). It sits with the dots rather than at the foot of the screen
-  because a user who has forgotten their PIN is looking at the prompt, not at the floor.
-- **A floating white home button**, bottom-right, 56 px, taking the user to the calculator (**D-86**).
-  The only exit from this screen that leaves Secret Mode.
+- **No "Forgot PIN?" link.** D-86 added one below the dots; **D-88 removed it**, because with the
+  30-second lockout in place it was an unlimited bypass of the lockout. Recovery is the reset in
+  the Vault's own Settings page (§6.10), which can only be reached after unlocking.
+- **A top-left back arrow**, the shared `AppIconButton` on the app's 24 px margin, tooltip "Back to
+  calculator", going to the calculator with `go` (**D-87**). It is the only exit, and deliberately
+  **not** the bottom-right FAB D-86 put here — on a screen whose one task is typing four digits, a
+  FAB reads as a competing primary action. D-87 amended D-84's "no back arrow" clause for this screen
+  only; the content rules (no title, no logo, no copy) still hold.
 - **A keypad** below the dots, styled on §5.1's keys: `0`–`9` plus a backspace glyph in the
   bottom-right position, digit keys on `buttonDigit` and the backspace on the same fill. It is
   **not** the calculator's `CalculatorKeypad` — no operators, no `=`, no `AC`, no `.` — because a
@@ -795,38 +918,84 @@ the shake itself announces nothing. Touch targets stay at the §4.4 floor.
 
 ---
 
-### 6.9 Secret Screen
+### 6.9 Vault (the unlocked secret screen)
 
-**Purpose.** What the correct code reveals. It is **blank** as to content (D-84), and as of **D-86** it
-carries a second control: the floating home button. Every clause below about what the screen does *not* say
-still holds; only the control count and the exit policy changed.
+**Purpose.** What the correct code reveals: the hidden area's own file manager
+(`SecretScreen`, **FEAT-SEC-003**). **D-84 said this page would stay blank** — one control and
+nothing else, so a screenshot would give nothing away. **It has been reversed on the record:**
+a file manager that lists nothing, opens nothing, and stores nothing is not a private area, it
+is a wall, and a user who has already proved they know the PIN is exactly the user least served
+by one. What the reversal costs is stated rather than hidden: the title "Vault" **names the
+area** a screenshot could read, which withdraws §6.8's naming rule *for this screen only*. The
+rule that still holds is the one about the code: `0000`, "PIN", "default", and "Secret" appear
+nowhere, so a screenshot of this page hands over the *name* of a private storage area and never
+the four digits that open it.
 
 **Layout.**
 
-- Full-page `AppColors.background`.
-- **One** header control: `AppIconButton(icon: Icons.more_vert, tooltip: 'Settings')` in the **top-left**,
-  in the same position, with the same 48 px bordered square, and on the same 24 px margin as every
-  other header action in the app (D-74). It is the shared component, not a bespoke glyph, so it
-  looks entirely ordinary — a control that looked special would advertise the screen it lives on.
-- **A floating white home button**, bottom-right, 56 px, `textPrimary` behind `textOnFunction`, going to
-  the calculator with `go` (**D-86**). The system back gesture still works and is still the only way
-  *back within the router*, but it is no longer the only way out — see D-86's rationale for why that
-  reversal was necessary.
-- **Nothing else.** No title, no subtitle, no logo, no illustration, no `EmptyState`, no footer.
-- **No back arrow** in the header, unchanged: there is no back box, only the two controls above.
+```
+Scaffold (background) → SafeArea → Stack
+├── Column
+│   ├── AppPageHeader   title "Vault"   actions: Search · Menu
+│   │     (Search on → VaultSearchHeader replaces the header in place)
+│   └── Expanded: ListView (secret-home-list)
+│       ├── 16 px lead-in
+│       ├── SettingsGroup — "Recent files"          (history glyph)
+│       ├── SectionHeader "Categories"
+│       │   └── _SecretCategoryCard                 (3 × 2 grid, the card recipe)
+│       ├── SectionHeader "Storage"
+│       │   └── SettingsGroup — "Internal storage" · "SD card"
+│       ├── 24 px gap
+│       └── SettingsGroup — "Recycle bin" · "Analyse storage"
+└── SecretHomeButton (floating, bottom-right, 56 px)   [hidden while searching]
+```
 
-**Deliberately no new token.** The screen needs no colour, radius, or size of its own — it uses
-`AppColors.background`, `AppIconButton`, and the home button's two **pre-existing** palette entries
-(`textPrimary`, `textOnFunction`) plus one size. D-84 warned that "if this screen ever needed a new token,
-that would be the signal that it had stopped being blank"; D-86 answers that warning honestly rather than
-quietly — the screen did stop being blank, and the record says so instead of adding a colour to hide it.
+- Full-page `background`. A plain `Scaffold`, **not** `SecondaryPageScaffold` — this screen has
+  no argument with the app's chrome, but it also has no ordinary secondary-page title; it carries
+  the app's destination header instead.
+- **The header is `AppPageHeader` titled "Vault"** (`screenTitle`), with **two** actions on the
+  right: a Search button (`Icons.search`, tooltip "Search") and an overflow button
+  (`Icons.more_vert`, tooltip "Menu"), both the shared bordered `AppIconButton` on the app's
+  24 px margin. `AppPageHeader.title` takes the slack, so the two boxes still land on the right
+  margin by construction — the same header shape every other destination uses.
+- **The floating home button** (**D-86**) stays, bottom-right, 56 px (`secretHomeButton`),
+  `textPrimary` behind `textOnFunction`, going to the calculator with `go`. It is a sibling of
+  the scrolling column rather than of a one-button `Stack`, so the list's last card must pad
+  clear of it — `secretHomeButton + homeButtonInset + md`, written from the same two tokens that
+  size it.
+- **Search is inline.** Tapping Search replaces `AppPageHeader` with the shared `VaultSearchHeader`
+  and the body with live results: a `Photos (N)` group and a `Documents (N)` group of `SettingsRow`s,
+  filtered on name, date, or (for photos) album. An empty query shows "Search your vault"; nothing
+  matching shows "No results found". Closing restores the header and the home list, and the floating
+  home button is hidden while the field is open.
 
-**Tap target.** The overflow button opens the secret Settings screen (§6.10). The home button returns to
-the calculator.
+**The Categories grid.** A card using the same recipe as `SettingsGroup` (fill, `cardBorder`,
+radius `card`, `cardPadding`), holding six cells in **3 columns × 2 rows** — a
+`_SecretCategoryTile` per cell: an `AppIconTile` (44) above its label (`rowSubtitle`, centred,
+two lines). The six come from `vaultCategoryIds` — **Images, Videos, Audio files, Documents,
+Downloads, Installation files** — each resolved to its `VaultPlace` so the tile and the page it
+opens cannot disagree about the title or the glyph. Tapping a cell pushes `/secret/browse/:id`.
+
+**The two Storage rows carry real figures.** "Internal storage" (smartphone glyph) and "SD card"
+(`sd_card` glyph) read their subtitles from `vaultStorageProvider`, which asks the platform:
+`'…'` while the channel answers, `'Unavailable'` if it never does, and for the SD row
+`'Not inserted'` when no card is present. A figure on this screen is therefore a fact about the
+phone, not a constant — and its `/secret/browse/:place` page stays a list waiting for files.
+
+**The two bottom rows are actions, not a group** — "Recycle bin" (which wears the painted
+`AppTrashIcon`, D-119) and "Analyse storage" — so they get a plain 24 px gap rather than a
+`SectionHeader`.
+
+**Every row leads somewhere.** All eleven `VaultPlace`s open a page (FEAT-SEC-007, §6.11); the
+pages for *Images*, *Documents*, and *Recycle bin* are the live features of §6.12–§6.14, and the
+rest honestly say they are empty.
+
+**Tap targets.** Search toggles inline search; Menu opens `SecretMenu` (§6.10); every row pushes
+`/secret/browse/:id`; the home button returns to the calculator.
 
 ---
 
-### 6.10 Secret Settings & Change PIN
+### 6.10 Vault Settings & Change PIN
 
 **Secret Settings.** An ordinary pushed page — `SecondaryPageScaffold` with a `SecondaryPageHeader`
 carrying a back box and the title "Settings" — holding **exactly one** `SettingsGroup` with **two**
@@ -834,13 +1003,17 @@ carrying a back box and the title "Settings" — holding **exactly one** `Settin
 then a restart glyph titled "Reset PIN" in `accent`, also with a chevron. The main Settings screen's four
 preferences are **not** duplicated here; this page exists only to change the PIN (D-84). The header is
 identical to every other Settings bar in the app, which is the point: a different-looking page would
-announce itself.
+announce itself. **D-115** made it reachable through the Vault's overflow menu rather than directly:
+that button now opens `SecretMenu` — the shared `MenuSlider`, sliding in from the left with a lock
+avatar, the title "Vault", and one row, "Settings" — which pushes this page. Nothing about the page
+changed; it gained a hop, and back from here returns to the Vault rather than to an open panel.
 
-**Reset PIN** (**D-86**). Opens `AppConfirmationDialog` reading "Reset PIN?" / "Your PIN will return to the
+**Reset PIN** (**D-86**, revised by **D-88**). Opens `AppConfirmationDialog` reading "Reset PIN?" / "Your PIN will return to the
 default, 0000. You will need 0000 to get back in." Confirmed, the stored code is **erased** — a `remove`,
-not a write of `0000` — and the user lands on the secret screen rather than being left on this page, whose
-other row needs the PIN they have just forgotten. This is the same dialog the PIN screen's "Forgot PIN?"
-link opens, with the same wording, because it is the same problem and the same person. **The security cost
+not a write of `0000` — and the user lands on the Vault screen rather than being left on this page, whose
+other row needs the PIN they have just forgotten. **D-88 removed the "Forgot PIN?" link the PIN screen
+used to carry**, because with the 30-second lockout in place it was an unlimited bypass; this row is
+therefore the *only* recovery, and it is reached only after unlocking. **The security cost
 is on the record in D-86: anyone who reaches this page can wipe the PIN in one tap.** The row is placed
 last because it is destructive and because the user browsing for "Change PIN" should not meet it first.
 
@@ -857,7 +1030,7 @@ last because it is destructive and because the user browsing for "Change PIN" sh
    dots cleared").
 
 A match persists the code at once, shows **"PIN changed successfully"** in `textSecondary` in the same
-reserved status line, and returns to the secret settings page after **1200 ms**. The pause is deliberate:
+reserved status line, and returns to the Vault settings page after **1200 ms**. The pause is deliberate:
 AC-021 persists the code *before* the flow ends so an interruption cannot lose it, which leaves the user
 owed an answer. The pad and the back arrow are inert while the line is up, and no `Snackbar` is
 introduced — the app has none, and this is the one screen that must not gain ink (D-84).
@@ -874,6 +1047,120 @@ candidate exists only in the screen's own memory.
 
 ---
 
+### 6.11 Vault place pages (FEAT-SEC-007, D-114)
+
+`VaultPlaceScreen` is the destination behind `/secret/browse/:place` and the one screen for all eleven
+rows of §6.9. `vaultPlaces` is the **single description of every place** — `id`, `title`, glyph, and
+`emptyTitle` — so the row that opens a page and the page it opens cannot disagree about either.
+
+Three ids hand off to a live feature; every other id renders an empty page:
+
+- `images` → the gallery (§6.12)
+- `documents` → the document vault (§6.13)
+- `recycle-bin` → the document recycle bin (§6.14)
+
+Everything else is a plain `SecondaryPageScaffold` (back box + the place's title) whose body is a single
+`EmptyState`: the place's own glyph at the **illustration size** (`AppIconSize.illustration`), in
+`textSecondary`, above the place's own `emptyTitle` ("No images yet", "No videos yet", …). The glyph *is*
+the content on these pages rather than a decoration beside some, so it is drawn at the illustration size
+and `EmptyState` is told so explicitly.
+
+**An unknown segment is not an error.** The route matches any segment, so a hand-typed or stale
+`/secret/browse/anything` finds no place and falls back to the generic page — title **"Files"**, which
+names no category — rather than throwing. On Android a thrown `Widget` error inside the vault is a crash
+the user sees, not an error state, so the fallback is the whole point (D-114). The literal segment
+`:place` itself takes the same path, which is what keeps `navigation_graph_test`'s "every registered path
+resolves to a screen" honest.
+
+### 6.12 Images gallery (FEAT-SEC-008, D-116)
+
+`VaultImagesScreen` is **two modes in one widget**:
+
+- **Landing** (no `albumId`) — the tabbed gallery.
+- **Album details** (`albumId` set, with `albumTitle`) — a page scoped to one album; the tab strip and
+  bottom bar are hidden and the header carries the album's title. The virtual ids `all`, `favorites`, and
+  `recent` are accepted the same way, so the Quick Access rows open a page too.
+
+**Tabs** are `_VaultTab` — **Pictures / Albums / Favorites / Trash** — shown as a four-way strip under
+the header *and* as the bottom tab bar (`vault-bottom-tabs`, icon + label), both bound to the same
+`_tab`. Both are hidden in selection, album-detail, and search modes, so each of those modes carries its
+own gap under the header instead of inheriting the strip's.
+
+- **Pictures** — the 3-column grid (`vault-images-grid`) of every visible image.
+- **Albums** — the album list, led by the virtual **Quick Access** rows (All · Favorites · Recent) then
+  the concrete albums.
+- **Favorites** — the grid filtered to favourited images; empty state "No favorites yet".
+- **Trash** — soft-deleted images, restored or deleted permanently from here.
+
+**Grid cells** (`VaultGridTile`) carry a **circular selection check** and, when favourited, a heart badge.
+Selection is a `Set<String>` of image ids and `_selecting` is derived from it being non-empty, so a screen
+with nothing selected has no selection state to reset.
+
+**The header** is `VaultGalleryHeader`. Not selecting, it is a compact row — back box, title, search, and
+an overflow; selecting, it becomes a close box, a centred `"N selected"` line, and an **All / None** text
+button. Tapping Search swaps the header for the shared `VaultSearchHeader` (§7) filtering on name, album,
+or date.
+
+**The bottom bar** appears in selection mode only (`_selectionBar`):
+
+- on **Trash**: **Restore · Share · Delete** (Delete opens the permanent-delete confirmation),
+- elsewhere: **Create · Share · Delete** (Create opens the add-to-album sheet; Delete moves to the
+  recycle bin),
+- always: **More**, which opens the overflow sheet.
+
+**Import** runs `image_picker.pickMultiImage()` and copies the picked files into the vault, showing an
+import banner while it works. The target album is the **concrete** album currently open (only when the
+Albums tab holds a real id); otherwise — and always for the virtual `all`/`favorites`/`recent` rows, which
+must never become a picture's `albumIds` entry — it imports into **Pictures**.
+
+**Opening an album pushes a route.** `_openAlbum` pushes a fresh `VaultImagesScreen(albumId:, albumTitle:)`
+on its own `MaterialPageRoute` rather than flipping `_albumId` in place. The inline swap left Back
+pointing at the whole Gallery, so returning from an album left the vault; pushing also keeps the gallery —
+its selected tab and scroll position — mounted underneath, so Back lands exactly where the album was
+opened from.
+
+### 6.13 Document vault (FEAT-SEC-009)
+
+`VaultDocumentsScreen` mirrors the gallery's shape — **two modes in one screen**:
+
+- **Landing** (no `initialFilter`) — a **Browse by type** card, the **All documents** collection row, and
+  the **five most recent** documents, above the floating Home button.
+- **Collection** (`initialFilter` set) — the same rows scoped to one family (or all), pushed from a Browse
+  row or the collection row so Back returns to whatever opened it. The title is "All documents" for
+  `all`, otherwise the type's label. **Only the All-documents page carries the type filter chips**; a
+  single-family page does not, since every row there already belongs to its family.
+
+The search text and the chip filter are **local to the screen**, not in a provider: they are transient,
+and a data mutation must not also clear what the user typed.
+
+Filters are `VaultDocumentFilter` — **All · PDF · Word · Text · Other** (`all` carries no type; the others
+map onto `VaultDocumentType`). Each row is a document row led by its type glyph and type accent (the
+PDF/Word/Text accents; `textSecondary` for Other), with an overflow offering **Open · Rename · Share ·
+File info · Delete**. Delete confirms first ("Move document to recycle bin?" / "Delete N documents?").
+
+**Import** uses `file_picker`, encrypts the file into the vault (AES-256-GCM, the key held in
+`flutter_secure_storage`), and never leaves plaintext anywhere the user or another app could browse to.
+
+### 6.14 Recycle bins and viewers
+
+**Two recycle bins, one per medium.** Images have the **Trash** tab of §6.12; documents have
+`VaultDocumentsTrashScreen`, which is where the `recycle-bin` place lands (§6.11). Both restore an entry
+or delete it permanently, and both exist because deletion in a vault is **soft**: a trashed entry is
+hidden from its live list and permanently removed after a **30-day** retention window.
+
+**Two viewers, one per medium.**
+
+- **`VaultImageViewer`** — a full-screen pager over the list it was opened from: swipe between images,
+  pinch and double-tap to zoom (one `TransformationController` per page, so zoom on one image does not
+  follow the user to the next), tap to hide or show the chrome, and a favourite toggle plus Share and
+  Delete in the chrome.
+- **`VaultDocumentViewerScreen`** — a header viewer whose body depends on the type: a PDF renders through
+  `pdfx` (`VaultPdfPreview`, with a `vaultPdfViewerBuilderProvider` seam so widget tests can substitute a
+  fake), plain text renders as selectable text, and Word/Other fall through to an "open in another app"
+  view rather than pretending to render a format the app cannot.
+
+---
+
 ## 7. Component Catalogue
 
 Every shared component, exported from `lib/core/widgets/core_widgets.dart`. Screens import
@@ -885,10 +1172,14 @@ place and a rename moves one import instead of six.
 | `AppPageHeader` | `app_page_header.dart` | A screen that is a destination — the calculator's bar |
 | `SecondaryPageHeader` | `secondary_page_header.dart` | Any pushed screen: back box, centred title, optional trailing action |
 | `AppSelectionHeader` | `selection_header.dart` | The History selection bar: count, select-all, delete, cancel |
+| `DragSelectRegion` / `DragSelectItem` | `drag_select.dart` | The hold-and-drag multi-select gesture and its per-item marker (D-120) — wraps any list where a selection is painted across items |
 | `SecondaryPageScaffold` | `secondary_page_scaffold.dart` | The black page + safe area + header-above-body frame every pushed screen uses |
 | `AppIconButton` | `app_icon_button.dart` | A header action: the bordered 48 px square |
 | `AppIcon` | `app_icon.dart` | Any Material glyph, sized from a named bucket |
 | `AppTrashIcon` | `app_trash_icon.dart` | The painted delete glyph — **every** delete affordance in the app (D-73, D-119) |
+| `AppBackspaceIcon` | `app_backspace_icon.dart` | The painted `⌫` glyph — the calculator's backspace and the Secret keypad's (D-81) |
+| `AppIconTile` | `app_icon_tile.dart` | The 44 px icon container: a settings row's leading tile and each Vault category cell (D-91) |
+| `MenuSlider` | `menu_slider.dart` | The slide-in panel behind an overflow button — header, rows, footer (D-115); `MenuSliderTile` / `MenuSliderIconTile` / `MenuSliderHeader` / `MenuSliderFooter` are its parts |
 | `AppBrandIcon` | `app_brand_icon.dart` | The About hero brand mark, drawn from tokens |
 | `AppToggle` | `app_toggle.dart` | The switch; owns the theme's track colours |
 | `ToggleRow` | `toggle_row.dart` | A `SettingsRow` whose control is a toggle — the whole row is the target |
@@ -902,7 +1193,13 @@ place and a rename moves one import instead of six.
 | `CalculatorButton` | `calculator_button.dart` | One key; sizes itself from the box its parent gives it |
 
 **Feature-local** (not in the shared library): `CalculatorKeypad`, `CalculatorDisplay`,
-`ComponentCatalogScreen`.
+`ComponentCatalogScreen`; the Vault's `VaultSearchHeader`, `SecretMenu` (a configured `MenuSlider`), and
+the media widgets `VaultGalleryHeader`, `VaultGridTile`, and `VaultDocumentRow`.
+
+**`VaultSearchHeader` is one widget for four screens** (D-114) — the Vault home's inline search and the
+gallery, documents, and recycle-bin searches all render this one bar rather than each drawing its own
+field, so a search looks the same wherever the user is. It takes the field's `Key`, its controller, and
+its hint text; the caller keeps its own query state.
 
 **Naming note.** The old document listed `PrimaryDisplay` / `SecondaryDisplay` and called the
 brand mark `AppIcon`. Both were wrong: the display widget is `CalculatorDisplay`, and `AppIcon`
@@ -917,7 +1214,7 @@ is the generic glyph wrapper while the brand mark is `AppBrandIcon`.
 | Calculator key | Fill per §5.1 | Opacity → 0.85 over 100 ms | Opacity → 0.85, inert |
 | Toggle | Track per §5.2 | Immediate position change | — |
 | Settings row | `surface` via its group | Material ripple across the whole row | `onTap: null` → no ripple, no chevron |
-| History card | `surfaceRaised` | Ink ripple | — |
+| History card | `surface` + 1 px `cardBorder` | Ink ripple | — |
 | History card, selected | `surfaceSelected` + 2 px outline | Ink ripple | — |
 | Header action box | `surface` fill, 1 px `divider` border | IconButton's own feedback | `textSecondary` glyph, `onPressed: null` |
 | Back / chevron | `#FFFFFF` / `textSecondary` | IconButton feedback | — |
@@ -934,8 +1231,9 @@ is the generic glyph wrapper while the brand mark is `AppBrandIcon`.
    working button that is merely not responding, which is worse than either an enabled button
    or a visibly inert one. The button's *behaviour* and its *paint* are stated once, in the
    screen, so they cannot disagree.
-2. **A row that is not navigable must not draw a chevron.** The Theme row is display-only
-   (D-45); an affordance that leads nowhere is worse than no affordance.
+2. **A row that is not navigable must not draw a chevron.** `SettingsRow` draws one only when it
+   has an `onTap`; an affordance that leads nowhere is worse than no affordance. (The Theme row
+   now leads to a sheet, so it draws one — D-90.)
 
 ---
 
@@ -974,10 +1272,15 @@ as a missing asset rather than as "nothing here yet".
 - **Calculation error**: the display's result line shows "Error"; the expression line retains
   what was typed. No dialog — errors are inline.
 - **Legal copy missing**: `EmptyState` rather than a blank page.
+- **Vault states**: each Vault place draws its own `EmptyState` ("No images yet", "No videos yet", …);
+  the Vault's inline search shows "Search your vault" for an empty query and "No results found"
+  when nothing matches; the gallery's Favorites tab shows "No favorites yet"; and the documents
+  list shows "Could not open the documents" with a real **Try again** on error, or "No documents
+  found" when there are none.
 
 ### 9.3 Confirmations
 
-Destructive actions are never immediate (D-05). Two copy sets exist:
+Destructive actions are never immediate (D-05). The History copy sets:
 
 | Action | Title | Message | Confirm |
 |--------|-------|---------|---------|
@@ -988,6 +1291,13 @@ Destructive actions are never immediate (D-05). Two copy sets exist:
 dialog that states *how many* is about to be deleted is the last place to get that wrong. The
 singular and plural are separate strings rather than a pluralisation helper, because the
 message differs in structure too, not only in number.
+
+**The Vault adds three more destructive confirmations**, each its own copy rather than a shared
+"Are you sure?": the **reset PIN** dialog of §6.10, the document vault's
+**move-to-recycle-bin** dialog ("Move document to recycle bin?" for one, "Delete N documents?"
+for several, §6.13), and the **permanent delete** offered from either recycle bin (§6.14). The
+same rules hold throughout — the count is worded, the confirm label names the action, and
+nothing destructive is immediate (D-05).
 
 Dialog styling: `AppRadius.dialog` (20), `surface` fill, title in `rowTitle`, message in
 `body`, and the confirm label in **`accent`** — the one destructive action on the page.
@@ -1031,14 +1341,14 @@ them together or saying what activating one would do.
 | **Keys are named** | `CalculatorButton` announces as a button with an explicit label, because the visible glyph is wrong for `AC`. |
 | **The sheet is one group** | The seven decimal-place options are a single radio group, announced with the current choice. |
 | **The PIN is never spoken** | The four dots report *how many* digits are entered and never their values, so a screen reader cannot read the code back to anyone. Each key announces its own digit as a button, and the wrong-code shake is announced as nothing at all — a spoken "incorrect" would confirm the screen is real (D-84, D-85). |
-| **The blank screen names itself once** | The secret screen's only control is named by its `tooltip`, "Settings" (D-84). The screen has no heading to announce, so the button is the entire accessible surface of it. |
+| **The Vault names each header action** | The Vault home's two header actions are named by their tooltips, "Search" and "Menu" (D-115); every row and category cell is named by its visible label. |
 
 **Contrast.** Every text/background pair in §2 clears WCAG AA at its size: white on black,
-`#949AA4` on `#101011` (~7.4:1), black on `#949494` (~7.4:1), white on `#F89508` (~2.6:1 —
+`#949AA4` on `#101011` (~7.4:1), black on `#A2A2A8` (~7.4:1), white on `#F89508` (~2.6:1 —
 used only for large/bold glyphs and for the `=` key label, where AA's large-text threshold
-applies).
+applies). The white theme's pairs are checked the same way against `#FEFEFE` and `#FFFFFF`.
 
-**Touch targets.** Every tappable row is ≥ 56 px tall, every icon-only action is a 48 px box,
+**Touch targets.** Every tappable row is ≥ 64 px tall (D-91), every icon-only action is a 48 px box,
 and every calculator cell is ≥ 44 px (§5.1).
 
 ---
@@ -1050,13 +1360,24 @@ is typed by hand at a call site.** Full rationale for each value is in §2–§5
 the reference.
 
 ```
-AppColors — 16 values, §2
-  background      #000000     surface         #101011     surfaceRaised  #151517
-  accent          #F89508     buttonDigit     #1E1E1E     buttonFunction #949494
-  textPrimary     #FFFFFF     textOnFunction  #000000     textSecondary  #949AA4
-  divider         #1A1A1B     toggleTrackOn   #F89508     toggleTrackOff #2A2A2A
-  toggleThumb     #FFFFFF     selectionAccent #FFFFFF     surfaceSelected #2E2E31
-  selectionCheck  #000000     pressedOpacity  0.85
+AppColors — the dark theme's tokens, §2 (installed as `AppPalette.dark`)
+  background #000000  surface #101011  surfaceRaised #151517  surfaceSoft #20232A
+  cardBorder #292D35  accent #F89508  danger #FF5A5F  ruleOnPage #45454A
+  buttonDigit #242428  buttonFunction #A2A2A8
+  textPrimary #FFFFFF  textOnFunction #000000  textSecondary #949AA4
+  divider #292D35  toggleTrackOn #F89508  toggleTrackOff #2A2A2A  toggleThumb #FFFFFF
+  selectionAccent #FFFFFF  surfaceSelected #2E2E31  selectionCheck #000000
+  keys: keyBorder #33333A  keyDigitTop #2B2B30  keyDigitBottom #1D1D21
+        keyFunctionTop #B4B4BA  keyFunctionBottom #97979E  keyFunctionBorder #8E8E95
+        keyOperatorTop #FFA62B  keyOperatorBottom #E07F00  keyOperatorBorder #D97A04
+        keyShadow #1AFFFFFF (blur 10, offsetY 2), operator shadow #4DF89508 (blur 14, offsetY 3)
+        highlights: digit #14FFFFFF · function #33FFFFFF · operator #40FFFFFF
+  pressedOpacity 0.85
+
+AppPalette — one value per theme, §2.4 (dark = `AppColors`; light = the white theme)
+  cardShadow: none (dark) / #0D0F172A (white)     textOnAccent: #FFFFFF / #FFFFFF
+  background: #000000 / #FEFEFE   surface: #101011 / #FFFFFF   accent: #F89508 / #FE651B
+  textPrimary: #FFFFFF / #0C0F16  selectionAccent: #FFFFFF / #0C0F16  (full table in §2.4)
 
 AppTypography — 19 tokens, size / weight, §3
   resultLarge 60/w600   resultMedium 44/w600   expression 20/w400
@@ -1066,18 +1387,21 @@ AppTypography — 19 tokens, size / weight, §3
   buttonLabel 25/w500  bottomAction 17/w500  caption 12/w400  body 15/w400
   legalHeading 18/w600  selectionCount 20/w700
 
-AppSpacing — 13, §4.1
-  screenHorizontal 24  cardPadding 16  sectionGap 32  xl 24  lg 16  md 12  sm 8
-  headerTopGap 24  bottomSafe 24  calculatorDisplayGap 24  calculatorSideMargin 16
-  historyCardGap 8  historyGroupGap 24
+AppSpacing — 17, §4.1
+  screenHorizontal 24  calculatorSideMargin 16  cardPadding 16  sectionGap 32
+  headerTopGap 24  bottomSafe 24  calculatorDisplayGap 24
+  xl 24  lg 16  md 12  sm 8
+  dividerIndent 72  dividerEndIndent 16
+  historyCardGap 8  historyCardHorizontal 18  historyCardVertical 17  historyGroupGap 24
 
 AppRadius — 6, §4.2
-  card 14  historyCard 14  tile 12  iconButton 12  dialog 20  button 999
+  card 14  historyCard 12  tile 12  iconButton 12  dialog 20  calculatorKey 26
 
-AppSizes — 8, §4.4
-  headerHeight 56 (min)  rowMinHeight 56 (min)  rowIcon 22  iconTouchTarget 48
-  brandIcon 88  historyCardMinHeight 88 (min)  calculatorPanelMaxWidth 480
-  calculatorHeaderAction 56
+AppSizes — 13, §4.4
+  headerHeight 56 (min)  rowMinHeight 64 (min)  rowIcon 22  iconTouchTarget 48
+  brandIcon 88  historyCardMinHeight 88 (min)  historyMetaGlyph 17  historyMetaGap 5
+  calculatorPanelMaxWidth 480  calculatorHeaderAction 56  calculatorHeaderGlyphRatio 26/56
+  calculatorBackspaceRow 48  secretHomeButton 56
 
 Feature-local — calculator_keypad.dart
   keyGap 16  minTouchTarget 44  maxCellSize 160  columnCount 4  rowCount 5
@@ -1099,10 +1423,10 @@ images by eye and, in the margin's case, simply wrong.
 |----------|-----------|----------|-------------|
 | Screen margin | "~16–20 pt" | **24–25 px** (consistent across all three list screens) | `screenHorizontal = 24` |
 | Calculator key diameter | "~85–95 px" | **86.5–87.5 px** (five key rows) | 88 px, derived |
-| Key gap, horizontal | "consistent gaps" | 13 px | `keyGap = 14` |
-| Key gap, vertical | "consistent gaps" | 15 px | `keyGap = 14` |
+| Key gap, horizontal | "consistent gaps" | 13 px | `keyGap = 16` (D-110) |
+| Key gap, vertical | "consistent gaps" | 15 px | `keyGap = 16` (D-110) |
 | Toggle track | not stated | 44 × 25.5 px (ON only) | Material `Switch` |
-| Palette | §2 | `#000000`, `#1E1E1E`, `#F89508` all confirmed | unchanged (D-03) |
+| Palette | §2 | `#000000`, `#242428`, `#F89508` all confirmed | unchanged as the dark theme (D-03) |
 
 **R-2 was a symptom of the margin error.** Under D-27 the keypad derives its cells from the
 width left after the margins, so `(442 − 2·margin − 3·14) / 4` gives 90.0 px at margin 20 and
@@ -1120,10 +1444,13 @@ following departures are intentional and were each recorded as a decision.
 | 3 | **No header subtitle anywhere** | Settings' subtitle restated what every row already says. The parameter was removed so no screen can reintroduce a two-line banner. | D-71, D-75 |
 | 4 | **Selection is white, not orange** | Orange is the app's primary-*action* colour. Selection is a mode; painting three rows orange would claim three button presses. | D-76 |
 | 5 | **Decimal Places is a bottom sheet, not a route** | A route would also buy a back arrow and a title this option list does not need. | — |
-| 6 | **History cards are 14 px, equal to grouped cards** | Nothing in the design asks for a History card to be *softer* than a Settings group — the two are the same object: a rounded surface holding rows the user taps. | D-77 |
-| 7 | **Theme row is display-only** | v1.0 is dark-only. A row that looks navigable and does nothing is the failure mode §8 forbids. | D-45 |
+| 6 | **History cards are 12 px, one step tighter than grouped cards** | D-77 first made them equal (14) to a Settings group; D-93 corrected *which* Ethar card a History entry tracks — the task card (`radius: 12`), not the editor option row — so it now differs from `card` (14) on purpose. | D-77, D-93 |
+| 7 | **The Theme row is a picker, not a label** | D-45's display-only row held only while one theme existed. With a second theme (D-90) the row opens a sheet of live palette swatches; a row that looks navigable and does nothing is the failure mode §8 forbids, and it is now the *wrong* row for that failure. | D-45 (superseded), D-90 |
 | 8 | **Calculator column is capped at 480 px** | Without it a resizable window would render 268 px keys. | D-69 |
-| 9 | **The whole Secret Mode area has no mockup at all** | Not a departure from a mockup so much as an absence of one: D-13 maps all four mockups to real screens and none of them shows a PIN screen, a blank screen, or a hidden settings page. §6.8–§6.10 are therefore specified from the app's own tokens — `AppColors.background`, `AppIconButton`, `SettingsRow` — and introduce **no new token**. The five-second hold that reaches them is likewise invisible by design, so §8 records the held state as identical to the default. | D-82, D-83, D-84 |
+| 9 | **The whole Secret Mode area has no mockup at all** | Not a departure from a mockup so much as an absence of one: D-13 maps all four mockups to real screens and none of them shows a PIN screen, a Vault, or a settings page. §6.8–§6.14 are therefore specified from the app's own tokens and components, not from pixels. | D-82, D-83 |
+| 10 | **The Vault is a live file manager, not a blank screen** | D-84 said the unlocked page would stay blank — the safest possible screenshot. It is reversed on the record: a vault that lists nothing is a wall, and the user who proved they know the PIN is the one it least serves. The title "Vault" now names the area; the PIN's four digits, "PIN", "default", and "Secret" still appear nowhere. | D-84 (reversed) |
+| 11 | **A second, white theme exists** | There is no white mockup. The theme is the sibling Ethar app's palette (D-90), so the two apps read as one family, and every colour is read through `AppPalette` so the two never drift onto one side only. | D-90 |
+| 12 | **Calculator keys are rounded squares, not circles** | D-29 drew every key as a circle; D-114 replaced the circles with an `AppRadius.calculatorKey` (26) rounded square, and the wide `0` reuses that radius as a rounded rectangle rather than a stadium. | D-29 (reversed), D-114 |
 
 ### 12.3 Residual unknowns
 
@@ -1135,7 +1462,7 @@ following departures are intentional and were each recorded as a decision.
 ### 12.4 Standing notes, not blockers
 
 - **Pressed / hover states** are not shown in the mockups → standard platform feedback.
-- **No light theme mockup exists** → dark mode only.
+- **No light theme mockup exists** → the white theme comes from the sibling Ethar app's palette, not from a measurement (D-90).
 - **Surface spread** of 3 units across the mockups → generation noise, not a palette split.
 - **Legal copy is placeholder text** a developer must replace before release (D-07), and its
   claims are test-gated (D-68).

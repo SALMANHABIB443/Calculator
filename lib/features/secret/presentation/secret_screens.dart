@@ -21,6 +21,7 @@ import 'secret_lockout_controller.dart';
 import 'secret_menu.dart';
 import 'secret_pin_field.dart';
 import 'vault_place.dart';
+import 'vault_search_header.dart';
 
 /// The way out of the PIN screen: one back arrow in the **top-left** corner,
 /// going home (D-87).
@@ -577,7 +578,17 @@ class _SecretScreenState extends ConsumerState<SecretScreen> {
           children: <Widget>[
             Column(
               children: <Widget>[
-                if (_searching) _searchHeader(context) else _defaultHeader(context, ref),
+                if (_searching)
+                  VaultSearchHeader(
+                    fieldKey: const Key('secret-vault-search'),
+                    controller: _searchController,
+                    query: _query,
+                    hintText: 'Search files...',
+                    onChanged: (value) => setState(() => _query = value),
+                    onClose: _closeSearch,
+                  )
+                else
+                  _defaultHeader(context, ref),
                 Expanded(
                   child: _searching
                       ? _searchResults(context, ref)
@@ -615,61 +626,6 @@ class _SecretScreenState extends ConsumerState<SecretScreen> {
           onPressed: () => SecretMenu.show(context),
         ),
       ],
-    );
-  }
-
-  Widget _searchHeader(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: AppSpacing.md,
-        right: AppSpacing.screenHorizontal,
-        top: AppSpacing.headerTopGap,
-      ),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: AppSizes.headerHeight),
-        child: Row(
-          children: [
-            AppIconButton(
-              icon: Icons.arrow_back,
-              tooltip: 'Close search',
-              onPressed: _closeSearch,
-              bordered: false,
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: TextField(
-                key: const Key('secret-vault-search'),
-                controller: _searchController,
-                autofocus: true,
-                decoration: InputDecoration(
-                  hintText: 'Search files...',
-                  filled: true,
-                  fillColor: Colors.grey.withOpacity(0.15),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.sm,
-                  ),
-                  suffixIcon: _query.isEmpty
-                      ? null
-                      : IconButton(
-                          icon: const Icon(Icons.clear),
-                          tooltip: 'Clear search',
-                          onPressed: () => setState(() {
-                            _query = '';
-                            _searchController.clear();
-                          }),
-                        ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(AppRadius.card),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-                onChanged: (value) => setState(() => _query = value),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 

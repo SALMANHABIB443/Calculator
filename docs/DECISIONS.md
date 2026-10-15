@@ -2145,7 +2145,10 @@ History screen already used. Material's `Icons.delete_outline` and
 that still carried a Material glyph are replaced: the Vault screen's **Recycle
 bin** row and that place's empty page, the image gallery's **Trash** tab, its
 "Trash is empty" illustration, and the **Delete** action in the Trash selection
-bar (plus the debug-only component catalog's sample).
+bar (plus the debug-only component catalog's sample). A later pass carried the
+same rule to the delete affordances the Vault's list screens still spelled with
+Material: the documents screen's selection bar and row sheet, the Recycle bin's
+selection bar and row sheet, and the album options sheet.
 
 **Rationale:** the user asked for one delete glyph. The app had two: the
 design's own solid trash (D-73) on History, the selection bar, and the image
@@ -2163,6 +2166,51 @@ becomes nullable so the Recycle bin can carry no Material icon at all. A new
 and the page it opens cannot disagree — the guarantee `vaultPlaces` exists to
 make structural. `secret_flow_test` now asserts `AppTrashIcon` on the Vault
 screen and the absence of `Icons.delete_outline`.
+
+---
+
+### D-120 - Selection Is Painted by a Hold and Drag, Not One Row at a Time
+
+**Decision:** every screen with multi-select — History, the image gallery, the
+documents list, and the documents recycle bin — gains the same gesture: a
+long-press enters selection *and arms the drag*, and from then on every item the
+finger passes over (without lifting) is set to the same state. The item the press
+landed on decides the direction: an unselected item means the drag **adds**, an
+already-chosen one means it **removes**. Dragging back over an item already
+touched does nothing, because items are *set* rather than toggled. A quick swipe
+still scrolls: the two gestures are told apart by *when* they start, not by where
+on the screen they happen.
+
+The behaviour lives in one shared pair — `DragSelectRegion`, which owns the
+gesture, and `DragSelectItem`, a per-item render-object marker — in
+`lib/core/widgets/drag_select.dart`. Each screen keeps its own `Set<String>` and
+its own header; the region reports ids and a boolean and nothing else.
+
+**Rationale:** the user asked to be able to drag over items to select them.
+Selection is a *mode* (D-76), and painting a run of items is how that mode is
+driven everywhere the user already knows — the iOS Photos and Google Photos
+grids — so the app should not make the same result cost one tap per row. A
+long-press first rather than a plain drag is what keeps the feature compatible
+with the lists it lands on: a plain drag is already the scroll gesture, so the
+selection *has* to be conditional on a hold for both to stay usable.
+
+**Consequence:** the item-level `onLongPress` pass-throughs are gone —
+`HistoryCard`, `VaultGridTile`, and `VaultDocumentRow` no longer fire one, and
+`VaultGridTile.onLongPress` becomes optional. Two long-press recognizers on the
+same pointer would race in the gesture arena, so the region owns the whole
+gesture and the items own only their taps. The region auto-scrolls while the
+finger rests near an edge, so an item off-screen can be reached without releasing
+the selection, and it answers "which item is under the finger?" with a hit test
+against the tree that is actually on screen, so a recycled list child or a body
+swap mid-drag still resolves correctly. `drag_select_test` covers adding,
+removing, the scroll-versus-drag distinction, and the documents landing→selection
+swap a press triggers; the existing selection suites still drive a plain
+`tester.longPress`, which the region answers exactly as the item used to.
+
+**Unchanged by it:** what selection *means* on each screen, the headers, the
+select-all actions, the delete confirmations, and D-76's white-not-orange
+palette. The five-second Secret Mode hold on the History screen's bottom action
+(D-82) is untouched — it is a different widget, and the region is not over it.
 
 ---
 
