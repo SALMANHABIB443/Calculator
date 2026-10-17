@@ -415,7 +415,7 @@ Locked in Phase 1 (D-01).
 | `share_plus`             | Share App system sheet                           |
 | `cupertino_icons`        | Icons                                            |
 
-Dev: `flutter_lints`, `flutter_test`, `integration_test`.
+Dev: `flutter_lints`, `flutter_test`.
 
 **Explicitly NOT used:** a database package (D-02), an audio or haptics package
 (D-16), a web-view package (D-07), a URL launcher (D-07), an HTTP client (NFR-005).

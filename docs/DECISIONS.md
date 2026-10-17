@@ -2214,4 +2214,39 @@ palette. The five-second Secret Mode hold on the History screen's bottom action
 
 ---
 
+### D-121 - The Unused `integration_test` Dev Dependency Is Removed
+
+**Decision:** `integration_test` is removed from `pubspec.yaml`'s
+`dev_dependencies`. There is no `integration_test/` directory, no `test_driver/`
+directory, and no Dart file anywhere that imports the package, so it was installed
+in Phase 1 and then never used. `flutter_lints` and `flutter_test` stay.
+
+**Rationale:** a release build failed at `:app:compileReleaseJavaWithJavac` with
+`error: package dev.flutter.plugins.integration_test does not exist`. The
+generated `GeneratedPluginRegistrant.java` still registered
+`IntegrationTestPlugin`, but Flutter's Gradle plugin deliberately keeps
+dev-dependency plugins off the release compile classpath
+(`PluginHandler.configurePluginProject` only adds a `dev_dependency` plugin to
+non-release build types), so the two disagreed. This is
+[flutter/flutter#169336](https://github.com/flutter/flutter/issues/169336): the
+registrant loses its dev-dependency entries only when the tool regenerates it in
+release mode, and that regeneration is skipped by `--no-pub` or a Gradle-only
+invocation, leaving a debug-time registrant in place. Rather than carry that
+workaround (`flutter build apk --config-only` before every direct Gradle build)
+for a package nothing imports, the package is dropped — a dev-dependency plugin
+that is not there cannot be half-filtered.
+
+**Consequence:** `pubspec.lock` no longer resolves `integration_test`; the five
+packages only it pulled in go with it — `flutter_driver`,
+`fuchsia_remote_debug_protocol`, `process`, `sync_http`, and `webdriver`.
+`struction.md` §15's dev list drops to `flutter_lints`, `flutter_test`. The
+registrant regenerates without the `IntegrationTestPlugin` entry, so release
+builds no longer need a pre-step. If integration tests are written later, the
+package is re-added then, together with a real `integration_test/` directory.
+
+**Closes:** the `integration_test` half of the release-build failure. No product
+behaviour changes.
+
+---
+
 **End of Decision Record**
