@@ -1,12 +1,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!--
-        No <uses-permission> is declared here, and that is load-bearing rather
+        No INTERNET permission is declared here, and that is load-bearing rather
         than incidental. The release APK ships with no INTERNET permission at
         all (verified with aapt2 in Phase 10), which is what makes the Privacy
         Policy's "the app makes no network requests" claim true at the platform
         level rather than merely intended. Adding any permission that implies
         network access would falsify it.
+
+        The audio_vault permissions below (D-123) are the exception that proves
+        the rule: they let Android keep the private audio vault playing while
+        the app is backgrounded and show a media notification. None of them
+        grant, imply, or enable network access, so the release APK still lists
+        no INTERNET permission (re-verified with aapt2 when this landed).
     -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <application
         android:label="Calculator"
         android:name="${applicationName}"
@@ -62,6 +72,32 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <!--
+            audio_service (D-123): the foreground service that keeps the audio
+            vault playing in the background and the receiver that routes
+            headset/Bluetooth media-button events into the same media session.
+            Both classes live in the audio_service plugin; declaring them here
+            (rather than relying on manifest merging) is what audio_service's
+            setup requires, and `foregroundServiceType="mediaPlayback"` is what
+            the FOREGROUND_SERVICE_MEDIA_PLAYBACK permission above guards.
+        -->
+        <service
+            android:name="com.ryanheise.audioservice.AudioService"
+            android:foregroundServiceType="mediaPlayback"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name="com.ryanheise.audioservice.MediaButtonReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

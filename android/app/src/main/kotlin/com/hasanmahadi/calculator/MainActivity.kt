@@ -2,11 +2,14 @@ package com.hasanmahadi.calculator
 
 import android.os.Environment
 import android.os.StatFs
-import io.flutter.embedding.android.FlutterActivity
+import com.ryanheise.audioservice.AudioServiceActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
-class MainActivity : FlutterActivity() {
+// Extends AudioServiceActivity rather than FlutterActivity so audio_service can
+// share this activity's Flutter engine with the media foreground service
+// (D-123). Everything else about the activity is unchanged.
+class MainActivity : AudioServiceActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)

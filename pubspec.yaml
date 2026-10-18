@@ -28,6 +28,18 @@ dependencies:
   in_app_review: ^2.0.12
   share_plus: ^13.3.0
 
+  # Encrypted vault audio playback (FEAT-SEC-010, D-122). `audioplayers` plays
+  # decrypted in-memory bytes via `BytesSource`, so no plaintext temp file is
+  # ever written; `just_audio` 0.10 has no bytes source and would need one.
+  audioplayers: ^6.8.1
+
+  # Background playback + notification/lock-screen transport (D-123). The
+  # Android foreground service this brings keeps the process (and so the
+  # `audioplayers` player) alive while the app is backgrounded. It adds
+  # FOREGROUND_SERVICE / WAKE_LOCK / POST_NOTIFICATIONS, none of which imply
+  # network access — the no-INTERNET privacy claim holds.
+  audio_service: ^0.18.18
+
   # Key-press sound and haptics use Flutter's built-in services APIs, so no
   # audio or haptics package is used (D-16).
   cupertino_icons: ^1.0.8

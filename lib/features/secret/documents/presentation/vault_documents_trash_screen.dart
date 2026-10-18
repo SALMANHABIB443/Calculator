@@ -10,6 +10,10 @@ import '../../presentation/vault_trash.dart';
 import '../../images/domain/vault_image.dart';
 import '../../images/presentation/vault_images_controller.dart';
 import '../../images/presentation/vault_images_state.dart';
+import '../../audio/domain/vault_audio.dart';
+import '../../audio/presentation/vault_audio_controller.dart';
+import '../../audio/presentation/vault_audio_state.dart';
+import '../../audio/presentation/vault_audio_widgets.dart';
 import 'vault_document_widgets.dart';
 import 'vault_documents_controller.dart';
 import 'vault_documents_state.dart';
@@ -18,10 +22,10 @@ import 'vault_documents_state.dart';
 /// 30 days (FEAT-SEC-009, D-116).
 ///
 /// The `recycle-bin` place's page, and the vault's *one* bin. It lists trashed
-/// documents **and** trashed pictures together, because both are rows the same
-/// vault keeps and both carry a `trashedAt`; a user who deleted a photo and a
-/// PDF on the same afternoon should find them in the same list, ordered the way
-/// they were deleted.
+/// documents, trashed pictures, and trashed audios together, because all three
+/// are rows the same vault keeps and all three carry a `trashedAt`; a user who
+/// deleted a photo, a PDF, and a recording on the same afternoon should find
+/// them in the same list, ordered the way they were deleted.
 ///
 /// **The gallery's own Trash tab is untouched.** A picture moved to trash still
 /// shows under Pictures ▸ Trash; this page is a second view over the same
@@ -61,21 +65,26 @@ class _VaultDocumentsTrashScreenState
     super.dispose();
   }
 
-  /// The bin's entries — documents and pictures — filtered by the search text
-  /// and most recently deleted first.
+  /// The bin's entries — documents, pictures, and audios — filtered by the
+  /// search text and most recently deleted first.
   ///
-  /// [images] is optional: a bin that can list documents must render the moment
-  /// the document vault is readable, without waiting on the gallery's provider.
-  /// The pictures join the list the frame that provider lands, if it ever does.
+  /// [images] and [audios] are optional: a bin that can list documents must
+  /// render the moment the document vault is readable, without waiting on the
+  /// gallery's or audio vault's provider. They join the list the frame their
+  /// provider lands, if it ever does.
   List<VaultTrashEntry> _resolved(
     VaultDocumentsState documents,
     VaultImagesState? images,
+    VaultAudiosState? audios,
   ) {
     final needle = _query.trim().toLowerCase();
     final list = <VaultTrashEntry>[
-      for (final document in documents.trash) VaultTrashEntry.document(document),
+      for (final document in documents.trash)
+        VaultTrashEntry.document(document),
       for (final image in images?.trash ?? <VaultImage>[])
         VaultTrashEntry.image(image),
+      for (final audio in audios?.trash ?? <VaultAudio>[])
+        VaultTrashEntry.audio(audio),
     ];
     final filtered = <VaultTrashEntry>[
       for (final entry in list)
@@ -89,16 +98,28 @@ class _VaultDocumentsTrashScreenState
   ///
   /// Used by "Empty recycle bin", which deletes the whole bin rather than the
   /// rows a search happens to be showing.
-  Set<String> _allIds(VaultDocumentsState documents, VaultImagesState? images) {
+  Set<String> _allIds(
+    VaultDocumentsState documents,
+    VaultImagesState? images,
+    VaultAudiosState? audios,
+  ) {
     return <String>{
       for (final document in documents.trash) document.id,
       for (final image in images?.trash ?? <VaultImage>[]) image.id,
+      for (final audio in audios?.trash ?? <VaultAudio>[]) audio.id,
     };
   }
 
   bool _isDocument(VaultDocumentsState documents, String id) {
     for (final document in documents.trash) {
       if (document.id == id) return true;
+    }
+    return false;
+  }
+
+  bool _isAudio(VaultAudiosState? audios, String id) {
+    for (final audio in audios?.trash ?? <VaultAudio>[]) {
+      if (audio.id == id) return true;
     }
     return false;
   }
@@ -129,25 +150,29 @@ class _VaultDocumentsTrashScreenState
       );
     }
 
-    // The pictures are optional: the bin renders its documents now and folds the
-    // gallery's trashed pictures in the frame that provider lands. Watching it
-    // without gating on it keeps the page honest when the gallery store is slow
-    // or unavailable — a deleted PDF is still findable.
+    // The pictures and audios are optional: the bin renders its documents now
+    // and folds the gallery's and audio vault's trashed items in the frame that
+    // provider lands. Watching them without gating keeps the page honest when a
+    // store is slow or unavailable — a deleted PDF is still findable.
     final images = ref.watch(vaultImagesProvider).valueOrNull;
+    final audios = ref.watch(vaultAudiosProvider).valueOrNull;
 
-    return _buildLoaded(context, documentsValue, images);
+    return _buildLoaded(context, documentsValue, images, audios);
   }
 
   Widget _buildLoaded(
     BuildContext context,
     VaultDocumentsState documents,
     VaultImagesState? images,
+    VaultAudiosState? audios,
   ) {
-    final resolved = _resolved(documents, images);
+    final resolved = _resolved(documents, images, audios);
     final allSelected =
         resolved.isNotEmpty && resolved.every((e) => _selected.contains(e.id));
     final isEmpty =
-        documents.trash.isEmpty && (images?.trash.isEmpty ?? true);
+        documents.trash.isEmpty &&
+        (images?.trash.isEmpty ?? true) &&
+        (audios?.trash.isEmpty ?? true);
 
     return SecondaryPageScaffold(
       header: _header(resolved, allSelected),
@@ -197,7 +222,7 @@ class _VaultDocumentsTrashScreenState
       return EmptyState(
         iconWidget: AppTrashIcon(color: context.appColors.textSecondary),
         title: 'Recycle bin is empty',
-        message: 'Deleted photos and documents rest here for 30 days.',
+        message: 'Deleted photos, documents, and audios rest here for 30 days.',
       );
     }
     if (resolved.isEmpty) {
@@ -210,17 +235,11 @@ class _VaultDocumentsTrashScreenState
     return ListView.builder(
       key: VaultDocumentsTrashScreen.listKey,
       controller: _scrollController,
-      padding: const EdgeInsets.only(
-        top: AppSpacing.sm,
-        bottom: AppSpacing.xl,
-      ),
+      padding: const EdgeInsets.only(top: AppSpacing.sm, bottom: AppSpacing.xl),
       itemCount: resolved.length,
       itemBuilder: (context, index) {
         final entry = resolved[index];
-        return DragSelectItem(
-          id: entry.id,
-          child: _row(entry),
-        );
+        return DragSelectItem(id: entry.id, child: _row(entry));
       },
     );
   }
@@ -238,6 +257,23 @@ class _VaultDocumentsTrashScreenState
             _toggleSelect(entry.id);
           } else {
             showVaultImageInfo(context, image);
+          }
+        },
+        onMenu: () => _showRowSheet(entry),
+      );
+    }
+    final audio = entry.audio;
+    if (audio != null) {
+      return VaultAudioRow(
+        key: Key('vault-audio-trash-${entry.id}'),
+        audio: audio,
+        selected: _selected.contains(entry.id),
+        selecting: _selecting,
+        onTap: () {
+          if (_selecting) {
+            _toggleSelect(entry.id);
+          } else {
+            showVaultAudioInfo(context, audio);
           }
         },
         onMenu: () => _showRowSheet(entry),
@@ -376,24 +412,31 @@ class _VaultDocumentsTrashScreenState
     });
   }
 
-  /// Splits [ids] into the document and picture halves of the bin.
+  /// Splits [ids] into the document, picture, and audio thirds of the bin.
   ///
-  /// The two sections persist to different stores, so restore and delete-forever
-  /// have to be routed to the right notifier. An id the documents list claims is
-  /// a document; everything else is a picture. The two id spaces are uuid v4 and
-  /// never collide.
-  ({Set<String> documents, Set<String> images}) _split(Set<String> ids) {
+  /// The three sections persist to different stores, so restore and
+  /// delete-forever have to be routed to the right notifier. An id the documents
+  /// list claims is a document; an id the audio list claims is an audio;
+  /// everything else is a picture. The three id spaces are uuid v4 and never
+  /// collide.
+  ({Set<String> documents, Set<String> images, Set<String> audios}) _split(
+    Set<String> ids,
+  ) {
     final documents = ref.read(vaultDocumentsProvider).valueOrNull;
+    final audios = ref.read(vaultAudiosProvider).valueOrNull;
     final documentIds = <String>{};
     final imageIds = <String>{};
+    final audioIds = <String>{};
     for (final id in ids) {
       if (documents != null && _isDocument(documents, id)) {
         documentIds.add(id);
+      } else if (_isAudio(audios, id)) {
+        audioIds.add(id);
       } else {
         imageIds.add(id);
       }
     }
-    return (documents: documentIds, images: imageIds);
+    return (documents: documentIds, images: imageIds, audios: audioIds);
   }
 
   Future<void> _restoreSelected() async {
@@ -409,11 +452,15 @@ class _VaultDocumentsTrashScreenState
           .read(vaultImagesProvider.notifier)
           .restoreFromTrash(split.images);
     }
+    if (split.audios.isNotEmpty) {
+      await ref
+          .read(vaultAudiosProvider.notifier)
+          .restoreFromTrash(split.audios);
+    }
     if (!mounted) return;
     setState(_selected.clear);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Restored')),
-    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text('Restored')));
   }
 
   Future<void> _deleteForeverSelected() async {
@@ -440,6 +487,11 @@ class _VaultDocumentsTrashScreenState
       await ref
           .read(vaultImagesProvider.notifier)
           .deletePermanently(split.images);
+    }
+    if (split.audios.isNotEmpty) {
+      await ref
+          .read(vaultAudiosProvider.notifier)
+          .deletePermanently(split.audios);
     }
     if (!mounted) return;
     setState(_selected.clear);
@@ -484,18 +536,23 @@ class _VaultDocumentsTrashScreenState
           await ref
               .read(vaultDocumentsProvider.notifier)
               .restoreFromTrash(split.documents);
+        } else if (split.audios.isNotEmpty) {
+          await ref
+              .read(vaultAudiosProvider.notifier)
+              .restoreFromTrash(split.audios);
         } else {
           await ref
               .read(vaultImagesProvider.notifier)
               .restoreFromTrash(split.images);
         }
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Restored')),
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Restored')));
       case 'info':
         if (image != null) {
           await showVaultImageInfo(context, image);
+        } else if (entry.audio != null) {
+          await showVaultAudioInfo(context, entry.audio!);
         } else {
           await showVaultDocumentInfo(context, entry.document!);
         }
@@ -530,14 +587,15 @@ class _VaultDocumentsTrashScreenState
     final documents = ref.read(vaultDocumentsProvider).valueOrNull;
     if (documents == null) return;
     final images = ref.read(vaultImagesProvider).valueOrNull;
+    final audios = ref.read(vaultAudiosProvider).valueOrNull;
     switch (action) {
       case 'select':
-        final resolved = _resolved(documents, images);
+        final resolved = _resolved(documents, images, audios);
         if (resolved.isNotEmpty) {
           setState(() => _selected.add(resolved.first.id));
         }
       case 'empty':
-        await _deleteForever(_allIds(documents, images));
+        await _deleteForever(_allIds(documents, images, audios));
     }
   }
 }
